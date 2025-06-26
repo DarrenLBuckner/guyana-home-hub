@@ -1,129 +1,77 @@
-'use client'
+// src/components/layout/Navbar.tsx
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { 
-  Menu, 
-  X, 
-  Home, 
-  Search, 
-  Users, 
-  Building2, 
-  Phone,
-  LogIn,
-  UserPlus
-} from 'lucide-react'
+import { useState } from "react";
+import Link from "next/link";
+import { Menu, X } from "lucide-react";
 
-export function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
-  const navigation = [
-    { name: 'Home', href: '/', icon: Home },
-    { name: 'Properties', href: '/properties', icon: Search },
-    { name: 'Agents', href: '/agents', icon: Users },
-    { name: 'List Property', href: '/list', icon: Building2 },
-    { name: 'Contact', href: '/contact', icon: Phone },
-  ]
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <Building2 className="h-8 w-8 text-green-600" />
-              <span className="text-2xl font-bold text-green-600">
-                Guyana Home Hub
-              </span>
+    <header className="bg-white shadow-md fixed w-full top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <Link href="/" className="text-xl font-bold text-green-600 flex items-center">
+            <img src="/images/flag-icon.png" alt="Guyana Flag" className="w-6 h-6 mr-2" />
+            Guyana Home Hub
+          </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-6">
+            <Link href="/" className="hover:text-green-600">Home</Link>
+            <Link href="/properties/buy" className="hover:text-green-600">Buy</Link>
+            <Link href="/properties/rent" className="hover:text-green-600">Rent</Link>
+            <Link href="/properties/developments" className="hover:text-green-600">Developments</Link>
+
+            {/* Dropdown */}
+            <div className="relative group">
+              <button className="hover:text-green-600 focus:outline-none">List Property ▾</button>
+              <div className="absolute left-0 mt-2 w-56 bg-white shadow-md rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 ease-in-out">
+                <Link href="/list-owner" className="block px-4 py-2 hover:bg-gray-100">List My Home</Link>
+                <Link href="/list-agent" className="block px-4 py-2 hover:bg-gray-100">Agents Only</Link>
+                <Link href="/list-rental" className="block px-4 py-2 hover:bg-gray-100">List My Rental</Link>
+              </div>
+            </div>
+
+            <Link href="/signin" className="hover:text-green-600">Sign In</Link>
+            <Link href="/contact" className="hover:text-green-600">Contact Us</Link>
+            <Link href="/advertise">
+              <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md">
+                Advertise
+              </button>
             </Link>
           </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-green-600 hover:bg-green-50 transition-colors"
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.name}</span>
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link href="/login">
-              <Button variant="ghost" size="sm">
-                <LogIn className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm">
-                <UserPlus className="h-4 w-4 mr-2" />
-                Get Started
-              </Button>
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-green-600 hover:bg-green-50"
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+          {/* Mobile Hamburger */}
+          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-green-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.name}</span>
-                  </Link>
-                )
-              })}
-              
-              {/* Mobile Auth Buttons */}
-              <div className="border-t pt-4 space-y-2">
-                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Sign In
-                  </Button>
-                </Link>
-                <Link href="/register" onClick={() => setIsMenuOpen(false)}>
-                  <Button className="w-full">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
+        {menuOpen && (
+          <div className="md:hidden mt-2 space-y-2 bg-white px-4 pb-4">
+            <Link href="/" className="block">Home</Link>
+            <Link href="/properties/buy" className="block">Buy</Link>
+            <Link href="/properties/rent" className="block">Rent</Link>
+            <Link href="/properties/developments" className="block">Developments</Link>
+            <div>
+              <span className="block font-semibold">List Property</span>
+              <Link href="/list-owner" className="block pl-4">List My Home</Link>
+              <Link href="/list-agent" className="block pl-4">Agents Only</Link>
+              <Link href="/list-rental" className="block pl-4">List My Rental</Link>
             </div>
+            <Link href="/signin" className="block">Sign In</Link>
+            <Link href="/contact" className="block">Contact Us</Link>
+            <Link href="/advertise">
+              <button className="w-full bg-green-600 text-white py-2 rounded-md mt-2">
+                Advertise
+              </button>
+            </Link>
           </div>
         )}
-      </div>
-    </nav>
-  )
+      </nav>
+    </header>
+  );
 }
