@@ -17,10 +17,11 @@
     "isolatedModules": true,
     "allowJs": true,
 
-    /* Alias configuration (single, universal alias) */
+    /* Alias configuration */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"]
     },
 
     /* VS Code / Next plugin */
