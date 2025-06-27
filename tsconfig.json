@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
-    /* Language & emit */
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "preserve",
     "module": "esnext",
     "moduleResolution": "bundler",
-
-    /* Strictness & safety */
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
@@ -17,16 +14,17 @@
     "isolatedModules": true,
     "allowJs": true,
 
-    /* Alias configuration */
-    "baseUrl": "src",
+    /* Path alias configuration */
+    "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
       "@components/*": ["components/*"]
     },
 
-    /* VS Code / Next plugin */
+    /* Plugin for VS Code */
     "plugins": [{ "name": "next" }]
   },
+
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

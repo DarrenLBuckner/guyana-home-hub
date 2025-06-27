@@ -1,7 +1,8 @@
 // src/app/list-agent/page.tsx
 "use client";
 
-import Navbar from '@/components/layout/Navbar';
+import Navbar from '@components/layout/Navbar';
+
 
 export default function ListAgentPage() {
   return (
