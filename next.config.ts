@@ -1,13 +1,9 @@
-// next.config.ts
-import type { NextConfig } from 'next';
 import path from 'path';
+import { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   webpack: (config) => {
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@components': path.resolve(__dirname, 'src/components'),
-    };
+    config.resolve.alias['@components'] = path.resolve(__dirname, 'src/components');
     return config;
   },
 };
