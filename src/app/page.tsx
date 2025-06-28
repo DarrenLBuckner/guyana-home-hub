@@ -9,13 +9,14 @@ export default function HomePage() {
       <main className="min-h-screen bg-green-700 flex items-center justify-center">
         <div className="relative z-10 flex flex-col items-center text-center text-white px-4 max-w-4xl drop-shadow-xl">
           {/* Flag above headline */}
-          <Image
-            src="/images/flag-bg.png"
-            alt="Guyana Flag"
-            width={96}
-            height={48}
-            className="object-contain mb-4 w-24 h-auto"
-          />
+          <img 
+  src="/images/flag-bg.png" 
+  alt="Guyana Flag"
+  width="96"
+  height="48"
+  className="object-contain mb-4 w-24 h-auto"
+/>
+
 
           {/* Hero Heading */}
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
