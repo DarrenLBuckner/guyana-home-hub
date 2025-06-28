@@ -10,7 +10,7 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col items-center text-center text-white px-4 max-w-4xl drop-shadow-xl">
           {/* Flag above headline */}
           <Image
-            src="/images/flag-bg.svg"
+            src="/images/flag-bg.png"
             alt="Guyana Flag"
             width={96}
             height={48}

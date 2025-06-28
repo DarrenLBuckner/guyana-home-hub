@@ -9,69 +9,158 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md fixed w-full top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <Link href="/" className="text-xl font-bold text-green-600 flex items-center">
-            <img src="/images/flag-icon.png" alt="Guyana Flag" className="w-6 h-6 mr-2" />
+    <header className="bg-white shadow-lg sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <span className="text-2xl font-bold text-green-600">
             Guyana Home Hub
+          </span>
+        </Link>
+
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center space-x-8">
+          <Link href="/" className="hover:text-green-600">
+            Home
+          </Link>
+          <Link href="/properties/buy" className="hover:text-green-600">
+            Buy
+          </Link>
+          <Link href="/properties/rent" className="hover:text-green-600">
+            Rent
+          </Link>
+          <Link
+            href="/properties/developments"
+            className="hover:text-green-600"
+          >
+            Developments
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="hover:text-green-600">Home</Link>
-            <Link href="/properties/buy" className="hover:text-green-600">Buy</Link>
-            <Link href="/properties/rent" className="hover:text-green-600">Rent</Link>
-            <Link href="/properties/developments" className="hover:text-green-600">Developments</Link>
-
-            {/* Dropdown */}
-            <div className="relative group">
-              <button className="hover:text-green-600 focus:outline-none">List Property ▾</button>
-              <div className="absolute left-0 mt-2 w-56 bg-white shadow-md rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-200 ease-in-out">
-                <Link href="/list-owner" className="block px-4 py-2 hover:bg-gray-100">List My Home</Link>
-                <Link href="/list-agent" className="block px-4 py-2 hover:bg-gray-100">Agents Only</Link>
-                <Link href="/list-rental" className="block px-4 py-2 hover:bg-gray-100">List My Rental</Link>
-              </div>
+          {/* Desktop "List Property" Dropdown */}
+          <div className="relative group">
+            <button className="hover:text-green-600 font-medium">
+              List Property ▼
+            </button>
+            <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+              <Link
+                href="/list-owner"
+                className="block px-4 py-2 hover:bg-gray-50"
+              >
+                List My Home
+              </Link>
+              <Link
+                href="/list-agent"
+                className="block px-4 py-2 hover:bg-gray-50"
+              >
+                Agents Only
+              </Link>
+              <Link
+                href="/list-rental"
+                className="block px-4 py-2 hover:bg-gray-50"
+              >
+                List My Rental
+              </Link>
             </div>
-
-            <Link href="/signin" className="hover:text-green-600">Sign In</Link>
-            <Link href="/contact" className="hover:text-green-600">Contact Us</Link>
-            <Link href="/advertise">
-              <button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md">
-                Advertise
-              </button>
-            </Link>
           </div>
 
-          {/* Mobile Hamburger */}
-          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <Link href="/contact" className="hover:text-green-600">
+            Contact Us
+          </Link>
         </div>
 
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="md:hidden mt-2 space-y-2 bg-white px-4 pb-4">
-            <Link href="/" className="block">Home</Link>
-            <Link href="/properties/buy" className="block">Buy</Link>
-            <Link href="/properties/rent" className="block">Rent</Link>
-            <Link href="/properties/developments" className="block">Developments</Link>
-            <div>
-              <span className="block font-semibold">List Property</span>
-              <Link href="/list-owner" className="block pl-4">List My Home</Link>
-              <Link href="/list-agent" className="block pl-4">Agents Only</Link>
-              <Link href="/list-rental" className="block pl-4">List My Rental</Link>
-            </div>
-            <Link href="/signin" className="block">Sign In</Link>
-            <Link href="/contact" className="block">Contact Us</Link>
-            <Link href="/advertise">
-              <button className="w-full bg-green-600 text-white py-2 rounded-md mt-2">
-                Advertise
-              </button>
+        {/* Desktop Auth Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Link href="/signin" className="hover:text-green-600">
+            Sign In
+          </Link>
+          <Link
+            href="/register"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Get Started
+          </Link>
+        </div>
+
+        {/* Mobile menu button */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden flex items-center justify-center p-2 rounded-md text-gray-700"
+        >
+          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </nav>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white px-4 pb-4 space-y-2">
+          <Link
+            href="/"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Home
+          </Link>
+          <Link
+            href="/properties/buy"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Buy
+          </Link>
+          <Link
+            href="/properties/rent"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Rent
+          </Link>
+          <Link
+            href="/properties/developments"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Developments
+          </Link>
+
+          <div className="pt-2 border-t border-gray-200">
+            <span className="block font-semibold text-green-700">
+              List Property
+            </span>
+            <Link
+              href="/list-owner"
+              className="block pl-4 text-green-700 hover:text-green-800"
+            >
+              List My Home
+            </Link>
+            <Link
+              href="/list-agent"
+              className="block pl-4 text-green-700 hover:text-green-800"
+            >
+              Agents Only
+            </Link>
+            <Link
+              href="/list-rental"
+              className="block pl-4 text-green-700 hover:text-green-800"
+            >
+              List My Rental
             </Link>
           </div>
-        )}
-      </nav>
+
+          <Link
+            href="/signin"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/contact"
+            className="block text-green-700 hover:text-green-800"
+          >
+            Contact Us
+          </Link>
+          <Link href="/advertise" className="block">
+            <button className="w-full bg-green-600 text-white py-2 rounded-md">
+              Advertise
+            </button>
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

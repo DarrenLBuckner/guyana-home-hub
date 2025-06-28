@@ -3,7 +3,6 @@
 
 import Navbar from '../../components/layout/Navbar';
 
-
 export default function AdvertisePage() {
   return (
     <div>
