@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from '@components/layout/Navbar';
+
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 
 export default function SignInPage() {
