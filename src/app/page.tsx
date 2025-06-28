@@ -1,5 +1,3 @@
-// Trigger rebuild
-
 import Image from 'next/image'
 import Navbar from '../components/layout/Navbar'
 
@@ -22,8 +20,9 @@ export default function HomePage() {
 
           {/* Hero Heading */}
           <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
-            Welcome to <span className="text-yellow-400">Guyana Home Hub</span>
-          </h1>
+  Welcome to <span className="text-yellow-400">The Real Guyana Hub</span>
+</h1>
+
 
           {/* Subheading */}
           <p className="text-lg md:text-xl mb-8">
