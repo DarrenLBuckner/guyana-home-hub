@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from '@components/layout/Navbar';
+import Navbar from '@/components/Navbar';
 
 import { FaGoogle, FaFacebookF } from "react-icons/fa";
 

@@ -1,7 +1,8 @@
 // src/app/list-owner/page.tsx
 "use client";
 
-import Navbar from '@components/layout/Navbar';
+import Navbar from '../../components/Navbar';
+
 
 export default function ListOwnerPage() {
   return (
