@@ -74,11 +74,12 @@ export default function Navbar() {
             Sign In
           </Link>
           <Link
-            href="/register"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            Get Started
-          </Link>
+  href="/advertise"
+  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
+>
+  Advertise
+</Link>
+
         </div>
 
         {/* Mobile menu button */}
