@@ -62,10 +62,7 @@ export default function Navbar() {
               </Link>
             </div>
           </div>
-
-          <Link href="/contact" className="hover:text-green-600">
-            Contact Us
-          </Link>
+          
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -150,11 +147,10 @@ export default function Navbar() {
             Sign In
           </Link>
           <Link
-            href="/contact"
-            className="block text-green-700 hover:text-green-800"
-          >
-            Contact Us
-          </Link>
+  href="/contact"
+  className="block text-green-700 hover:text-green-800"
+>  Contact Us
+</Link>
           <Link href="/advertise" className="block">
             <button className="w-full bg-green-600 text-white py-2 rounded-md">
               Advertise
