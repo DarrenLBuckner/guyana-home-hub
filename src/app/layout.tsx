@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Guyana Home Hub",
-  description: "Your gateway to Guyana real estate.",
+  description: "Your Gateway to Guyana Real Estate",
   icons: {
-    icon: "/images/favicon.png", // ✅ This works without moving it
+    icon: "/favicon.ico",
   },
 };
 
