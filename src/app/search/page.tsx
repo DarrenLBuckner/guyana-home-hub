@@ -1,11 +1,23 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
+
+/* ---------- 1. Define the shape of one card ---------- */
+interface PropertyCard {
+  id: string
+  title: string
+  price: number
+  status: string
+  property_images: { url: string }[]
+}
 
 export default function SearchPage() {
   const params = useSearchParams()
   const q = params.get('q') || ''
-  const [results, setResults] = useState<any[]>([])
+
+  /* ---------- 2. Use the typed array instead of any[] ---------- */
+  const [results, setResults] = useState<PropertyCard[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -25,10 +37,7 @@ export default function SearchPage() {
       </h1>
 
       {loading && <p>Loading…</p>}
-
-      {!loading && results.length === 0 && (
-        <p>No listings found.</p>
-      )}
+      {!loading && results.length === 0 && <p>No listings found.</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {results.map((p) => (
@@ -37,7 +46,7 @@ export default function SearchPage() {
             <p className="text-sm text-gray-600 mb-2">
               ${p.price?.toLocaleString()}
             </p>
-            {/* show first image when we have one */}
+
             {p.property_images?.[0]?.url && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
