@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "../components/Navbar";
+
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import Image from "next/image";
@@ -12,7 +12,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <Navbar />
+     
 
       <main className="min-h-screen bg-green-700 flex flex-col items-center justify-start pt-12 pb-24 px-4">
         <div className="relative z-10 flex flex-col items-center text-center text-white max-w-4xl drop-shadow-xl">
