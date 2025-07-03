@@ -10,14 +10,19 @@ export default function SignIn() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
+  /** Safe redirect: works in build (no window) and in browser */
+  const redirectTo =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/dashboard`
+      : '/dashboard'
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <Auth
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
         providers={[]}
-       redirectTo={`${location.origin}/dashboard`}
-
+        redirectTo={redirectTo}
       />
     </div>
   )
