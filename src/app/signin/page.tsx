@@ -2,19 +2,13 @@
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 
 export default function SignIn() {
-  const supabase = createBrowserClient(
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
-
-  /** Safe redirect: works in build (no window) and in browser */
-  const redirectTo =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/dashboard`
-      : '/dashboard'
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -22,7 +16,11 @@ export default function SignIn() {
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
         providers={[]}
-        redirectTo={redirectTo}
+        redirectTo={
+          typeof window !== 'undefined'
+            ? `${window.location.origin}/dashboard`
+            : undefined
+        }
       />
     </div>
   )
