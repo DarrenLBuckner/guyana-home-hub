@@ -66,15 +66,7 @@ export default function Footer() {
                 Register
               </Link>
             </li>
-            {/* subtle agent / admin link */}
-            <li className="mt-2">
-              <Link
-                href="/signin"
-                className="text-sm text-gray-400 hover:text-green-700"
-              >
-                Agent&nbsp;Login
-              </Link>
-            </li>
+            
           </ul>
         </div>
       </div>
