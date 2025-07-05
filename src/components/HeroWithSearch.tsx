@@ -218,23 +218,7 @@ export default function HeroWithSearch() {
           </button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-gray-700 mb-12">
-          <div>
-            <h3 className="text-4xl font-bold text-green-700">500+</h3>
-            <p className="text-lg">Properties Listed</p>
-          </div>
-          <div>
-            <h3 className="text-4xl font-bold text-green-700">50+</h3>
-            <p className="text-lg">Professional Agents</p>
-          </div>
-          <div>
-            <h3 className="text-4xl font-bold text-green-700">1000+</h3>
-            <p className="text-lg">Happy Customers</p>
-          </div>
-        </div>
-
-        {/* Card Sections */}
+                {/* Card Sections */}
         <section className="w-full max-w-6xl">
           {showBrowseCards && <BrowsePropertiesCards />}
           {showListCards && <ListYourPropertyCards />}
