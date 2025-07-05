@@ -21,13 +21,13 @@ export default function CustomerSignIn() {
       </p>
 
       <div className="w-full max-w-md bg-white p-6 rounded shadow">
-        <Auth
-          supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
-          providers={['google', 'facebook']}
-          magicLink={true}
-          redirectTo="https://www.guyanahomehub.com/onboard/profile"
-        />
+      <Auth
+  supabaseClient={supabase}
+  appearance={{ theme: ThemeSupa }}
+  providers={['google', 'facebook']}
+  magicLink={true}
+/>
+
       </div>
     </div>
   )
