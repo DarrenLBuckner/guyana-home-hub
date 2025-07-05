@@ -18,8 +18,10 @@ export default function SignInPage() {
       <Auth
         supabaseClient={supabase}
         appearance={{ theme: ThemeSupa }}
-        providers={[]}
-        redirectTo="https://www.guyanahomehub.com/auth/verify"
+        providers={['google', 'facebook']}
+        magicLink={true}
+        redirectTo="https://www.guyanahomehub.com/agent/home"
+
       />
     </div>
   )

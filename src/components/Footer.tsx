@@ -52,11 +52,15 @@ export default function Footer() {
                 Contact&nbsp;Us
               </Link>
             </li>
-            <li>
-              <Link href="/signin" className="hover:text-green-700">
-                Customer&nbsp;Sign&nbsp;In
-              </Link>
-            </li>
+           <li className="mt-2">
+  <Link
+    href="/agent-login"
+    className="text-sm text-gray-400 hover:text-green-700"
+  >
+    Agent&nbsp;Login
+  </Link>
+</li>
+
             <li>
               <Link href="/register" className="hover:text-green-700">
                 Register

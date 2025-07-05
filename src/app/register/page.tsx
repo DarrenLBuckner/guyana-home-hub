@@ -17,7 +17,7 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <Navbar />
+      
       <main className="min-h-screen py-20 px-4 bg-gradient-to-b from-[#c0f0ff] via-[#e5fce0] to-white">
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
           <h1 className="text-3xl font-bold text-green-700 mb-6 text-center">
