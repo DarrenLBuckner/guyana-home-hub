@@ -60,6 +60,16 @@ export default function Footer() {
     Agent&nbsp;Login
   </Link>
 </li>
+<li>
+  <Link href="/privacy" className="hover:text-green-700">
+    Privacy Policy
+  </Link>
+</li>
+<li>
+  <Link href="/terms" className="hover:text-green-700">
+    Terms of Service
+  </Link>
+</li>
 
             <li>
               <Link href="/register" className="hover:text-green-700">
