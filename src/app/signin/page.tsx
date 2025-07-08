@@ -1,21 +1,30 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { supabase } from '@/lib/supabaseClient'
+import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
 
 export default function CustomerSignIn() {
-  useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
+  const router = useRouter()
+  const supabase = createBrowserSupabaseClient()
 
-      console.log('👤 Current Google session:', session)
+  useEffect(() => {
+    // Listen for all auth events (including OAuth)
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // whenever someone signs in (email, magic link or OAuth),
+        // immediately redirect them to the onboarding/profile page
+        router.push('/onboard/profile')
+      }
+    })
+
+    // Cleanup our listener on unmount
+    return () => {
+      listener.subscription.unsubscribe()
     }
-    checkSession()
-  }, [])
+  }, [router, supabase])
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gray-50">
@@ -32,7 +41,7 @@ export default function CustomerSignIn() {
           appearance={{ theme: ThemeSupa }}
           providers={['google', 'facebook']}
           magicLink={true}
-          redirectTo="https://www.guyanahomehub.com/onboard/profile"
+          // note: redirectTo only works for magic links; our listener will handle OAuth
         />
       </div>
     </div>
