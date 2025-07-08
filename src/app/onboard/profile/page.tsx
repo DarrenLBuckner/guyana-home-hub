@@ -96,16 +96,23 @@ export default function OnboardProfile() {
           onChange={(e) => setPhone(e.target.value)}
         />
 
-        <input
-          type="text"
-          placeholder="Country You Currently Live In *"
-          required
-          className="w-full border border-gray-300 rounded px-3 py-2"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-        />
+        
+          <select
+  required
+  className="w-full border border-gray-300 rounded px-3 py-2"
+  value={country}
+  onChange={(e) => setCountry(e.target.value)}
+>
+  <option value="">Select your country</option>
+  <option value="Guyana">Guyana</option>
+  <option value="United States">United States</option>
+  <option value="Canada">Canada</option>
+  <option value="United Kingdom">United Kingdom</option>
+  <option value="England">England</option>
+  <option value="Other">Other</option>
+</select>
 
-        <input
+              <input
           type="text"
           placeholder="Your Budget (If Buying or Renting – Optional)"
           className="w-full border border-gray-300 rounded px-3 py-2"
