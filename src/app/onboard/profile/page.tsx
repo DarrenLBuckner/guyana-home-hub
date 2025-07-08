@@ -2,64 +2,67 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabaseClient'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { CountryDropdown } from 'react-country-region-selector'
 
 export default function OnboardProfile() {
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const supabase = createClientComponentClient()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [phone, setPhone] = useState('')
   const [country, setCountry] = useState('')
   const [budget, setBudget] = useState('')
-  const [interests, setInterests] = useState<string[]>([])
+  const [roles, setRoles] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
     const getUser = async () => {
       const { data, error } = await supabase.auth.getUser()
       if (data?.user) {
         setUser(data.user)
+        setLoading(false)
       } else {
         router.push('/signin')
       }
-      setLoading(false)
     }
     getUser()
-  }, [router])
+  }, [supabase, router])
+
+  const handleRoleChange = (value: string) => {
+    setRoles((prev) =>
+      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!user) {
-      alert('Please sign in to continue.')
+      alert('Please sign in.')
       return
     }
 
     const { error } = await supabase.from('profiles').upsert({
       id: user.id,
-      first_name: firstName,
-      last_name: lastName,
-      phone: phone,
-      country: country,
-      budget: budget,
-      interests: interests.join(','),
+      email: user.email,
+      full_name: `${firstName} ${lastName}`,
+      phone,
+      country,
+      budget,
+      roles: roles.join(', '),
+      user_type: 'client',
       updated_at: new Date().toISOString()
     })
 
     if (error) {
-      alert('Error saving profile info.')
       console.error(error)
+      alert('Error saving profile info.')
     } else {
-      router.push('/properties/buy') // or dashboard if you prefer
+      router.push('/properties/buy')
     }
-  }
-
-  const handleInterestChange = (value: string) => {
-    setInterests((prev) =>
-      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
-    )
   }
 
   if (loading) return <p className="text-center p-8">Loading...</p>
@@ -96,23 +99,13 @@ export default function OnboardProfile() {
           onChange={(e) => setPhone(e.target.value)}
         />
 
-        
-          <select
-  required
-  className="w-full border border-gray-300 rounded px-3 py-2"
-  value={country}
-  onChange={(e) => setCountry(e.target.value)}
->
-  <option value="">Select your country</option>
-  <option value="Guyana">Guyana</option>
-  <option value="United States">United States</option>
-  <option value="Canada">Canada</option>
-  <option value="United Kingdom">United Kingdom</option>
-  <option value="England">England</option>
-  <option value="Other">Other</option>
-</select>
+        <CountryDropdown
+          value={country}
+          onChange={(val) => setCountry(val)}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+        />
 
-              <input
+        <input
           type="text"
           placeholder="Your Budget (If Buying or Renting – Optional)"
           className="w-full border border-gray-300 rounded px-3 py-2"
@@ -128,8 +121,8 @@ export default function OnboardProfile() {
                 <input
                   type="checkbox"
                   value={item}
-                  checked={interests.includes(item)}
-                  onChange={() => handleInterestChange(item)}
+                  checked={roles.includes(item)}
+                  onChange={() => handleRoleChange(item)}
                 />
                 <span>{item}</span>
               </label>
