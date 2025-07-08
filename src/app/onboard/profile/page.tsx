@@ -1,165 +1,142 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabaseClient'
 
 export default function OnboardProfile() {
-  const [supabase] = useState(() =>
-    createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-  )
+  const router = useRouter()
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const [userEmail, setUserEmail] = useState('')
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    country: '',
-    budget: '',
-    roles: [] as string[]
-  })
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [country, setCountry] = useState('')
+  const [budget, setBudget] = useState('')
+  const [interests, setInterests] = useState<string[]>([])
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserEmail(user.email || '')
+      const { data, error } = await supabase.auth.getUser()
+      if (data?.user) {
+        setUser(data.user)
+      } else {
+        router.push('/signin')
       }
+      setLoading(false)
     }
     getUser()
-  }, [])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = e.target
-    setForm(prev => {
-      const roles = checked
-        ? [...prev.roles, value]
-        : prev.roles.filter(role => role !== value)
-      return { ...prev, roles }
-    })
-  }
+  }, [router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return alert('Please sign in.')
+
+    if (!user) {
+      alert('Please sign in to continue.')
+      return
+    }
 
     const { error } = await supabase.from('profiles').upsert({
       id: user.id,
-      email: user.email,
-      full_name: `${form.firstName} ${form.lastName}`,
-      phone: form.phone,
-      country: form.country,
-      budget: form.budget,
-      roles: form.roles,
-      user_type: 'customer'
+      first_name: firstName,
+      last_name: lastName,
+      phone: phone,
+      country: country,
+      budget: budget,
+      interests: interests.join(','),
+      updated_at: new Date().toISOString()
     })
 
     if (error) {
+      alert('Error saving profile info.')
       console.error(error)
-      alert('Failed to save profile.')
     } else {
-      window.location.href = '/browse'
+      router.push('/properties/buy') // or dashboard if you prefer
     }
   }
 
+  const handleInterestChange = (value: string) => {
+    setInterests((prev) =>
+      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
+    )
+  }
+
+  if (loading) return <p className="text-center p-8">Loading...</p>
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gray-50">
-      <div className="w-full max-w-md bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold text-green-700 mb-4">Welcome to Guyana Home Hub</h2>
-        <p className="mb-6 text-gray-600">
-          You're signed in as <strong>{userEmail}</strong>. Just one more step to complete your profile.
-        </p>
+      <h1 className="text-3xl font-bold mb-4 text-green-700">Complete Your Profile</h1>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow max-w-md w-full space-y-4">
+        <div className="flex space-x-4">
+          <input
+            type="text"
+            placeholder="First Name *"
+            required
+            className="w-1/2 border border-gray-300 rounded px-3 py-2"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Last Name *"
+            required
+            className="w-1/2 border border-gray-300 rounded px-3 py-2"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex space-x-2">
-            <div className="w-1/2">
-              <label className="block text-sm font-medium mb-1">First Name <span className="text-red-500">*</span></label>
-              <input
-                name="firstName"
-                required
-                className="w-full border p-2 rounded"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="block text-sm font-medium mb-1">Last Name <span className="text-red-500">*</span></label>
-              <input
-                name="lastName"
-                required
-                className="w-full border p-2 rounded"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+        <input
+          type="tel"
+          placeholder="WhatsApp Phone Number *"
+          required
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Phone Number (WhatsApp OK) <span className="text-red-500">*</span></label>
-            <input
-              name="phone"
-              required
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
-            />
-          </div>
+        <input
+          type="text"
+          placeholder="Country You Currently Live In *"
+          required
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+        />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Country <span className="text-red-500">*</span></label>
-            <select
-              name="country"
-              required
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
-            >
-              <option value="">Select Country</option>
-              <option value="Guyana">Guyana</option>
-              <option value="United States">United States</option>
-              <option value="Canada">Canada</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+        <input
+          type="text"
+          placeholder="Your Budget (If Buying or Renting – Optional)"
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+        />
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Your Budget <span className="text-gray-500 text-xs">(if buying or renting)</span></label>
-            <input
-              name="budget"
-              placeholder="Optional"
-              className="w-full border p-2 rounded"
-              onChange={handleChange}
-            />
-          </div>
-
-          <fieldset className="border p-2 rounded">
-            <legend className="text-sm font-semibold mb-1">What best describes you?</legend>
-            {['Buyer', 'Seller', 'Renter', 'Agent', 'Just Looking'].map(role => (
-              <label key={role} className="block">
+        <div className="space-y-2">
+          <p className="text-sm font-medium">I’m interested in (select all that apply):</p>
+          <div className="flex flex-wrap gap-2">
+            {['Buying', 'Selling', 'Renting', 'Listing Rental', 'I’m an Agent', 'Just Looking'].map((item) => (
+              <label key={item} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  value={role.toLowerCase()}
-                  onChange={handleCheckbox}
-                  className="mr-2"
+                  value={item}
+                  checked={interests.includes(item)}
+                  onChange={() => handleInterestChange(item)}
                 />
-                {role}
+                <span>{item}</span>
               </label>
             ))}
-          </fieldset>
+          </div>
+        </div>
 
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"
-          >
-            Save My Info & Continue
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800"
+        >
+          Save My Info & Continue
+        </button>
+      </form>
     </div>
   )
 }
