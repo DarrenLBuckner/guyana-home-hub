@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  other: {
+    "facebook-domain-verification": "f6dqrciz798c8xtuauxdmdquuq1g0y",
+  },
 };
 
 export default function RootLayout({
@@ -33,9 +36,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />          {/* top navigation (optional) */}
-        {children}          {/* page content */}
-        <Footer />          {/* Agent Login link lives here */}
+        <Navbar />
+        {children}
+        <Footer />
       </body>
     </html>
   );

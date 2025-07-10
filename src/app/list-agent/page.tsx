@@ -10,7 +10,7 @@ import Navbar from '../../components/Navbar';
 export default function ListAgentPage() {
   return (
     <div>
-      <Navbar />
+      
       <main className="min-h-screen bg-white py-20 px-4">
         <h1 className="text-4xl font-bold text-center text-green-700 mb-10">
           Join Our Premier Agent Network

@@ -7,7 +7,7 @@ import Navbar from '../../components/Navbar';
 export default function ListRentalPage() {
   return (
     <div>
-      <Navbar />
+      
       <main className="min-h-screen bg-white py-20 px-4">
         <h1 className="text-4xl font-bold text-center text-green-700 mb-8">
           List Your Rental Property
