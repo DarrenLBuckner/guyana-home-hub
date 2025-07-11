@@ -1,4 +1,4 @@
-'use client';  // ← this must be the very first line
+'use client';
 export const dynamic = 'force-dynamic';
 
 import { useSearchParams } from 'next/navigation';
@@ -19,6 +19,7 @@ export default function BrowsePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [filtered, setFiltered] = useState<Listing[]>([]);
 
+  // load data once
   useEffect(() => {
     fetch('/data/listings.json')
       .then((res) => res.json())
@@ -26,6 +27,7 @@ export default function BrowsePage() {
       .catch(console.error);
   }, []);
 
+  // filter when data or URL param changes
   useEffect(() => {
     setFiltered(
       listings.filter((item) =>
