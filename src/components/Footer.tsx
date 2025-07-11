@@ -52,37 +52,37 @@ export default function Footer() {
                 Contact&nbsp;Us
               </Link>
             </li>
-           <li className="mt-2">
-  <Link
-    href="/agent-login"
-    className="text-sm text-gray-400 hover:text-green-700"
-  >
-    Agent&nbsp;Login
-  </Link>
-</li>
-<li>
-  <Link href="/privacy" className="hover:text-green-700">
-    Privacy Policy
-  </Link>
-</li>
-<li>
-  <Link href="/terms" className="hover:text-green-700">
-    Terms of Service
-  </Link>
-</li>
-
+            <li className="mt-2">
+              <Link
+                href="/agent-login"
+                className="text-sm text-gray-400 hover:text-green-700"
+              >
+                Agent&nbsp;Login
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="hover:text-green-700">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-green-700">
+                Terms of Service
+              </Link>
+            </li>
             <li>
               <Link href="/register" className="hover:text-green-700">
                 Register
               </Link>
             </li>
-            
           </ul>
         </div>
       </div>
 
       <div className="text-center text-sm text-gray-500 mt-8">
         © {new Date().getFullYear()} Guyana Home Hub. All rights reserved.
+        <br />
+        A subsidiary of <strong>Caribbean Home Hub LLC</strong>, a registered company in Missouri, USA.
       </div>
     </footer>
   );
