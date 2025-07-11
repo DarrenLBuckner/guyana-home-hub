@@ -18,22 +18,22 @@ export default function BrowsePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [filtered, setFiltered] = useState<Listing[]>([]);
 
+  // Load listings once on mount
   useEffect(() => {
-    // Load JSON file from /public/data/listings.json
-    const fetchListings = async () => {
-      const res = await fetch('/data/listings.json');
-      const data: Listing[] = await res.json();
-      setListings(data);
-    };
-    fetchListings();
+    fetch('/data/listings.json')
+      .then((res) => res.json())
+      .then((data: Listing[]) => setListings(data))
+      .catch(console.error);
   }, []);
 
+  // Re-filter whenever listings or searchLocation change
   useEffect(() => {
-    const results = listings.filter((item) =>
-      item.location.toLowerCase().includes(searchLocation)
+    setFiltered(
+      listings.filter((item) =>
+        item.location.toLowerCase().includes(searchLocation)
+      )
     );
-    setFiltered(results);
-  }, [searchLocation, listings]);
+  }, [listings, searchLocation]);
 
   return (
     <main className="min-h-screen bg-white py-12 px-4">
