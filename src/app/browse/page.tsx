@@ -1,3 +1,5 @@
+'use client';
+
 // Tell Next.js to render this page entirely on the client
 export const dynamic = 'force-dynamic';
 
