@@ -1,8 +1,11 @@
-import dynamic from 'next/dynamic';
+// Tell Next.js to render this page entirely on the client
+export const dynamic = 'force-dynamic';
 
-const BrowseClient = dynamic(
+import dynamicImport from 'next/dynamic';  // ← renamed
+
+const BrowseClient = dynamicImport(
   () => import('@/components/BrowseClient'),
-  { ssr: false }  // ← ensures this component only renders on the client
+  { ssr: false }
 );
 
 export default function BrowsePage() {
