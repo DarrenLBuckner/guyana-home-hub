@@ -1,4 +1,4 @@
-'use client';  // ← this must be line 1
+'use client';  // ← this must be the very first line
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
