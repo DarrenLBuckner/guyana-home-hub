@@ -1,12 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import BrowsePropertiesCards from "./BrowsePropertiesCards";
-import ListYourPropertyCards from "./ListYourPropertyCards";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function HeroWithSearch() {
-  const [showBrowseCards, setShowBrowseCards] = useState(false);
-  const [showListCards, setShowListCards] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      router.push(`/browse?location=${encodeURIComponent(searchTerm.trim())}`);
+    }
+  };
 
   return (
     <div>
@@ -72,12 +77,8 @@ export default function HeroWithSearch() {
             Find Your Dream Property in Guyana
           </h1>
           
-          {/* Search Bar Container */}
-          <div style={{
-            width: '100%',
-            maxWidth: '600px',
-            position: 'relative'
-          }}>
+          {/* Search Bar */}
+          <div style={{ width: '100%', maxWidth: '600px', position: 'relative' }}>
             <div style={{
               display: 'flex',
               backgroundColor: 'white',
@@ -97,26 +98,17 @@ export default function HeroWithSearch() {
                   backgroundColor: 'white',
                   color: '#333'
                 }}
-                onKeyPress={(e) => {
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    const target = e.target as HTMLInputElement;
-                    const searchTerm = target.value;
-                    if (searchTerm.trim()) {
-                      // For now, navigate to Buy page with search term
-                      window.location.href = `/buy?search=${encodeURIComponent(searchTerm)}`;
-                    }
+                    e.preventDefault();
+                    handleSearch();
                   }
                 }}
               />
               <button
-                onClick={() => {
-                  const input = document.querySelector('input[placeholder*="Enter area"]') as HTMLInputElement;
-                  const searchTerm = input?.value;
-                  if (searchTerm?.trim()) {
-                    // For now, navigate to Buy page with search term
-                    window.location.href = `/buy?search=${encodeURIComponent(searchTerm)}`;
-                  }
-                }}
+                onClick={handleSearch}
                 style={{
                   backgroundColor: '#16a34a',
                   color: 'white',
@@ -124,8 +116,7 @@ export default function HeroWithSearch() {
                   padding: '16px 24px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s'
+                  cursor: 'pointer'
                 }}
                 onMouseOver={(e) => {
                   const target = e.target as HTMLButtonElement;
@@ -139,12 +130,9 @@ export default function HeroWithSearch() {
                 Search
               </button>
             </div>
-            
+
             {/* Popular Searches */}
-            <div style={{
-              marginTop: '16px',
-              textAlign: 'center'
-            }}>
+            <div style={{ marginTop: '16px', textAlign: 'center' }}>
               <p style={{
                 color: 'white',
                 fontSize: '14px',
@@ -162,7 +150,9 @@ export default function HeroWithSearch() {
                 {['Georgetown', 'New Amsterdam', 'Linden', 'Anna Regina'].map(area => (
                   <button
                     key={area}
-                    onClick={() => window.location.href = `/buy?search=${encodeURIComponent(area)}`}
+                    onClick={() =>
+                      router.push(`/browse?location=${encodeURIComponent(area)}`)
+                    }
                     style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
                       color: 'white',
@@ -171,7 +161,6 @@ export default function HeroWithSearch() {
                       padding: '6px 16px',
                       fontSize: '12px',
                       cursor: 'pointer',
-                      transition: 'all 0.2s',
                       textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
                     }}
                     onMouseOver={(e) => {
@@ -193,37 +182,6 @@ export default function HeroWithSearch() {
           </div>
         </div>
       </div>
-
-      <main className="min-h-screen bg-white flex flex-col items-center justify-start pt-12 pb-24 px-4">
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <button
-            onClick={() => {
-              setShowBrowseCards(true);
-              setShowListCards(false);
-            }}
-            className="bg-green-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-800 transition"
-          >
-            Browse Properties
-          </button>
-          
-          <button
-            onClick={() => {
-              setShowListCards(true);
-              setShowBrowseCards(false);
-            }}
-            className="border-2 border-green-700 text-green-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-700 hover:text-white transition"
-          >
-            List Your Property
-          </button>
-        </div>
-
-                {/* Card Sections */}
-        <section className="w-full max-w-6xl">
-          {showBrowseCards && <BrowsePropertiesCards />}
-          {showListCards && <ListYourPropertyCards />}
-        </section>
-      </main>
     </div>
   );
 }
