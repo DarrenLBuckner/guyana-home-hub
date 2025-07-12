@@ -1,6 +1,3 @@
-// ─────────────────────────────────────────────
-// ▶ THIS MUST BE THE VERY FIRST LINE! ◀
-// ─────────────────────────────────────────────
 'use client';
 
 import { useSearchParams } from 'next/navigation';
