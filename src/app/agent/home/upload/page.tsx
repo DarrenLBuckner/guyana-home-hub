@@ -101,14 +101,53 @@ export default function UploadPropertyForm() {
           className="w-full border border-gray-300 rounded px-3 py-2"
         />
 
-        <input
-          type="file"
-          name="images"
-          multiple
-          accept="image/*"
-          onChange={handleImageChange}
-          className="w-full"
-        />
+       <div className="mb-6">
+  <label className="block text-gray-700 font-medium mb-2">Upload Photos</label>
+
+  <div
+    className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-green-500 transition"
+    onClick={() => document.getElementById('fileInput')?.click()}
+    onDragOver={(e) => e.preventDefault()}
+    onDrop={(e) => {
+      e.preventDefault();
+      const files = Array.from(e.dataTransfer.files);
+      setForm((prev) => ({ ...prev, images: files as File[] }));
+    }}
+  >
+    <p className="text-gray-500">📸 Drag & drop photos here, or click to upload</p>
+    <p className="text-sm text-gray-400 mt-1">Up to 16 images. JPG/PNG only.</p>
+  </div>
+
+  <input
+    id="fileInput"
+    type="file"
+    accept="image/*"
+    multiple
+    className="hidden"
+    onChange={(e) => {
+      if (e.target.files) {
+        const files = Array.from(e.target.files).slice(0, 16);
+        setForm((prev) => ({ ...prev, images: files }));
+      }
+    }}
+  />
+
+  {/* Thumbnails */}
+  {form.images.length > 0 && (
+    <div className="mt-4 flex flex-wrap gap-2">
+      {form.images.map((file, idx) => (
+        <div key={idx} className="w-20 h-20 relative border rounded overflow-hidden">
+          <img
+            src={URL.createObjectURL(file)}
+            alt={`Preview ${idx}`}
+            className="object-cover w-full h-full"
+          />
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
 
         <button
           type="submit"
