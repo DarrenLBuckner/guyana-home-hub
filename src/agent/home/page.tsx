@@ -1,35 +1,55 @@
-'use client'
-import { useState } from 'react'
+'use client';
+
+import { useState } from 'react';
 
 export default function UploadPropertyForm() {
   const [form, setForm] = useState({
     title: '',
     description: '',
-    location: '',
     price: '',
+    location: '',
     bedrooms: '',
     bathrooms: '',
-    features: [],
     video_url: '',
-    images: [] as File[]
-  })
+    images: [] as File[],
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setForm(prev => ({ ...prev, images: Array.from(e.target.files) }))
+      setForm(prev => ({ ...prev, images: Array.from(e.target.files) }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // Placeholder: upload logic to Supabase Storage + insert into DB
-    console.log('Submitting:', form)
-  }
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) => {
+        if (key === 'images' && Array.isArray(value)) {
+          value.forEach((file) => formData.append('images', file));
+        } else {
+          formData.append(key, value as string);
+        }
+      });
+
+      const response = await fetch('/api/properties/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+      alert('Property uploaded!');
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Try again.');
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow">
@@ -46,5 +66,5 @@ export default function UploadPropertyForm() {
         <button type="submit" className="bg-green-700 text-white px-4 py-2 rounded">Submit Property</button>
       </form>
     </div>
-  )
+  );
 }
