@@ -98,15 +98,19 @@ export default function UploadPropertyForm() {
 
   const featureList = [
     'Swimming Pool',
-    'Air Conditioning',
-    'Garage',
-    'Fenced Yard',
-    'Wi-Fi Ready',
-    'Pet Friendly',
-    'Washer/Dryer Hookup',
-    'Backyard',
     'Balcony/Patio',
+    'Garden Area',
+    'Fenced Yard',
+    'Fruit Trees',
+    'Air Conditioning',
+    'Paved Roads',
+    'Garage',
+    'Internet Ready',
     'Security System',
+    'Washer/Dryer Hookup',
+    'Appliances Included',
+    'Pet Friendly',
+            
   ]
 
   return (
