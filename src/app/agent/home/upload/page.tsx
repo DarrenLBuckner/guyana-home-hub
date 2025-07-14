@@ -1,5 +1,6 @@
 'use client'
 
+import UploadPhotos from '@/components/UploadPhotos'
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
@@ -14,8 +15,9 @@ export default function UploadPropertyForm() {
     homeSize: '',
     lotSize: '',
     description: '',
-    features: [] as string[],
     images: [] as File[],
+    features: [] as string[],
+    heroIndex: 0,
   })
 
   const [isLoading, setIsLoading] = useState(false)
@@ -34,11 +36,6 @@ export default function UploadPropertyForm() {
         ? prev.features.filter(f => f !== feature)
         : [...prev.features, feature],
     }))
-  }
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []).slice(0, 16)
-    setForm(prev => ({ ...prev, images: files }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,6 +76,7 @@ export default function UploadPropertyForm() {
           home_size: form.homeSize,
           features: form.features,
           image_urls: uploadedImageUrls,
+          hero_image: uploadedImageUrls[form.heroIndex] || uploadedImageUrls[0],
         }
       ])
 
@@ -110,7 +108,7 @@ export default function UploadPropertyForm() {
     'Washer/Dryer Hookup',
     'Appliances Included',
     'Pet Friendly',
-            
+    'Gated Community',
   ]
 
   return (
@@ -156,24 +154,17 @@ export default function UploadPropertyForm() {
           </div>
         </div>
 
-        {/* Upload Photos */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Upload Photos</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-md p-4 text-center relative">
-            <p className="text-sm text-gray-500">
-              📸 <span className="underline cursor-pointer">Drag & drop or click to upload</span>
-            </p>
-            <p className="text-xs text-gray-400 mt-1">Up to 16 images. JPG/PNG only.</p>
-            <input
-              type="file"
-              name="images"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
-              style={{ position: 'relative', zIndex: 1 }}
-            />
-          </div>
+        {/* Upload Photos Section */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Upload Photos
+          </label>
+          <UploadPhotos
+            images={form.images}
+            setImages={(newImages: File[]) => setForm({ ...form, images: newImages })}
+            heroIndex={form.heroIndex || 0}
+            setHeroIndex={(index: number) => setForm({ ...form, heroIndex: index })}
+          />
         </div>
 
         <button
