@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   // query Supabase for approved listings that match title or description
   const { data, error } = await supabase
     .from('properties')
-    .select('id, title, price, status, property_images (url)')
+    .select('id, title, price, status, property-images (url)')
     .eq('status', 'approved')
     .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
 

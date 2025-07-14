@@ -1,0 +1,18 @@
+# Query: property-uploads
+# ContextLines: 1
+
+3 results - 2 files
+
+src\app\agent\home\upload\page.tsx:
+  72          const { error: uploadError } = await supabase.storage
+  73:           .from('property-images')
+  74            .upload(filename, file)
+
+  82          // build the public URL
+  83:         const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/property-images/${filename}`
+  84          uploadedImageUrls.push(url)
+
+src\app\api\properties\search\route.ts:
+  12      .from('properties')
+  13:     .select('id, title, price, status, property-images (url)')
+  14      .eq('status', 'approved')

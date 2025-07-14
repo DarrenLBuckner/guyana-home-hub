@@ -1,11 +1,26 @@
 'use client'
 
-import UploadPhotos from '@/components/UploadPhotos'
 import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import UploadPhotos from '@/components/UploadPhotos'
+
+type FormState = {
+  title: string
+  price: string
+  location: string
+  bedrooms: string
+  bathrooms: string
+  video: string
+  homeSize: string
+  lotSize: string
+  description: string
+  images: File[]
+  features: string[]
+  heroIndex: number
+}
 
 export default function UploadPropertyForm() {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormState>({
     title: '',
     price: '',
     location: '',
@@ -15,11 +30,10 @@ export default function UploadPropertyForm() {
     homeSize: '',
     lotSize: '',
     description: '',
-    images: [] as File[],
-    features: [] as string[],
+    images: [],
+    features: [],
     heroIndex: 0,
   })
-
   const [isLoading, setIsLoading] = useState(false)
   const supabase = createClientComponentClient()
 
@@ -30,10 +44,10 @@ export default function UploadPropertyForm() {
   }
 
   const handleFeatureToggle = (feature: string) => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
       features: prev.features.includes(feature)
-        ? prev.features.filter(f => f !== feature)
+        ? prev.features.filter((f) => f !== feature)
         : [...prev.features, feature],
     }))
   }
@@ -43,52 +57,65 @@ export default function UploadPropertyForm() {
     setIsLoading(true)
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      // 1) get the current user
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser()
+      if (userError || !user) throw userError || new Error('No user')
 
+      // 2) upload each image, collect its public URL
       const uploadedImageUrls: string[] = []
       for (const file of form.images) {
         const filename = `${Date.now()}_${file.name}`
+
         const { error: uploadError } = await supabase.storage
-          .from('property_images')
+          .from('property-images')
           .upload(filename, file)
 
         if (uploadError) {
-          alert('Failed to upload images.')
+          console.error('Upload to storage failed:', uploadError)
+          alert('Failed to upload one or more images.')
           return
         }
 
-        const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/property_images/${filename}`
+        // build the public URL
+        const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/property-images/${filename}`
         uploadedImageUrls.push(url)
       }
 
-      const { error } = await supabase.from('properties').insert([
-        {
-          user_id: user?.id,
-          title: form.title,
-          description: form.description,
-          price: parseFloat(form.price),
-          status: 'pending',
-          location: form.location,
-          bedrooms: parseInt(form.bedrooms),
-          bathrooms: parseInt(form.bathrooms),
-          video_url: form.video,
-          lot_size: form.lotSize,
-          home_size: form.homeSize,
-          features: form.features,
-          image_urls: uploadedImageUrls,
-          hero_image: uploadedImageUrls[form.heroIndex] || uploadedImageUrls[0],
-        }
-      ])
+      // 3) insert into properties table
+      const { error: insertError } = await supabase
+        .from('properties')
+        .insert([
+          {
+            user_id: user.id,
+            title: form.title,
+            description: form.description,
+            price: parseFloat(form.price),
+            status: 'pending',
+            location: form.location,
+            bedrooms: parseInt(form.bedrooms, 10),
+            bathrooms: parseInt(form.bathrooms, 10),
+            video_url: form.video,
+            lot_size: form.lotSize,
+            home_size: form.homeSize,
+            features: form.features,
+            image_urls: uploadedImageUrls,
+            hero_index: form.heroIndex,
+          },
+        ])
 
-      if (error) {
-        console.error('Upload failed:', error)
-        alert('Property upload failed.')
+      if (insertError) {
+        console.error('Insert into properties failed:', insertError)
+        alert('Failed to save property.')
       } else {
         alert('Property submitted successfully!')
+        // optional: reset form or redirect…
       }
     } catch (err) {
-      console.error('Error:', err)
-      alert('Something went wrong.')
+      console.error('Unexpected error:', err)
+      alert('Something went wrong. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -113,32 +140,96 @@ export default function UploadPropertyForm() {
 
   return (
     <div className="min-h-screen p-8 bg-gray-50">
-      <h1 className="text-2xl font-bold text-green-700 mb-6">Upload New Property</h1>
+      <h1 className="text-2xl font-bold text-green-700 mb-6">
+        Upload New Property
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Property Title" className="w-full border border-gray-300 rounded p-2" />
-        <input name="price" value={form.price} onChange={handleChange} placeholder="Price (G$)" className="w-full border border-gray-300 rounded p-2" />
-        <input name="location" value={form.location} onChange={handleChange} placeholder="Location" className="w-full border border-gray-300 rounded p-2" />
+        {/* Basic fields */}
+        <input
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          placeholder="Property Title"
+          className="w-full border border-gray-300 rounded p-2"
+        />
+        <input
+          name="price"
+          value={form.price}
+          onChange={handleChange}
+          placeholder="Price (G$)"
+          className="w-full border border-gray-300 rounded p-2"
+        />
+        <input
+          name="location"
+          value={form.location}
+          onChange={handleChange}
+          placeholder="Location"
+          className="w-full border border-gray-300 rounded p-2"
+        />
 
+        {/* Bedrooms / bathrooms */}
         <div className="flex gap-4">
-          <input name="bedrooms" value={form.bedrooms} onChange={handleChange} placeholder="Bedrooms" className="w-full border border-gray-300 rounded p-2" />
-          <input name="bathrooms" value={form.bathrooms} onChange={handleChange} placeholder="Bathrooms" className="w-full border border-gray-300 rounded p-2" />
+          <input
+            name="bedrooms"
+            value={form.bedrooms}
+            onChange={handleChange}
+            placeholder="Bedrooms"
+            className="w-full border border-gray-300 rounded p-2"
+          />
+          <input
+            name="bathrooms"
+            value={form.bathrooms}
+            onChange={handleChange}
+            placeholder="Bathrooms"
+            className="w-full border border-gray-300 rounded p-2"
+          />
         </div>
 
-        <input name="video" value={form.video} onChange={handleChange} placeholder="YouTube Video URL (optional)" className="w-full border border-gray-300 rounded p-2" />
-
+        {/* Video / sizes */}
+        <input
+          name="video"
+          value={form.video}
+          onChange={handleChange}
+          placeholder="YouTube Video URL (optional)"
+          className="w-full border border-gray-300 rounded p-2"
+        />
         <div className="flex gap-4">
-          <input name="homeSize" value={form.homeSize} onChange={handleChange} placeholder="Home Size (sq ft)" className="w-full border border-gray-300 rounded p-2" />
-          <input name="lotSize" value={form.lotSize} onChange={handleChange} placeholder="Lot Size (sq ft)" className="w-full border border-gray-300 rounded p-2" />
+          <input
+            name="homeSize"
+            value={form.homeSize}
+            onChange={handleChange}
+            placeholder="Home Size (sq ft)"
+            className="w-full border border-gray-300 rounded p-2"
+          />
+          <input
+            name="lotSize"
+            value={form.lotSize}
+            onChange={handleChange}
+            placeholder="Lot Size (sq ft)"
+            className="w-full border border-gray-300 rounded p-2"
+          />
         </div>
 
+        {/* Description */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-700">Property Description</label>
-          <textarea name="description" value={form.description} onChange={handleChange} rows={4} placeholder="Describe the property..." className="w-full border border-gray-300 rounded p-2" />
+          <label className="block mb-1 text-sm font-medium text-gray-700">
+            Property Description
+          </label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Describe the property..."
+            className="w-full border border-gray-300 rounded p-2"
+          />
         </div>
 
-        {/* Property Features */}
+        {/* Features */}
         <div>
-          <label className="block mb-2 text-sm font-medium text-gray-700">Property Features</label>
+          <label className="block mb-2 text-sm font-medium text-gray-700">
+            Property Features
+          </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {featureList.map((feature) => (
               <label key={feature} className="flex items-center space-x-2">
@@ -154,16 +245,16 @@ export default function UploadPropertyForm() {
           </div>
         </div>
 
-        {/* Upload Photos Section */}
+        {/* Photo uploader */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Upload Photos
           </label>
           <UploadPhotos
             images={form.images}
-            setImages={(newImages: File[]) => setForm({ ...form, images: newImages })}
-            heroIndex={form.heroIndex || 0}
-            setHeroIndex={(index: number) => setForm({ ...form, heroIndex: index })}
+            setImages={(imgs) => setForm((f) => ({ ...f, images: imgs }))}
+            heroIndex={form.heroIndex}
+            setHeroIndex={(i) => setForm((f) => ({ ...f, heroIndex: i }))}
           />
         </div>
 
@@ -172,7 +263,7 @@ export default function UploadPropertyForm() {
           disabled={isLoading}
           className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 disabled:opacity-50"
         >
-          {isLoading ? 'Submitting...' : 'Submit Listing'}
+          {isLoading ? 'Submitting…' : 'Submit Listing'}
         </button>
       </form>
     </div>
