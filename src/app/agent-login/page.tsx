@@ -26,40 +26,60 @@ export default function AgentLogin() {
   })
 
   // FIXED: Better auth state management
-  useEffect(() => {
-    console.log('USEEFFECT STARTING - Setting up auth handlers')
+ useEffect(() => {
+  console.log('USEEFFECT STARTING - Setting up auth handlers')
+  
+  // MANUALLY CHECK FOR AUTH CODE IN URL FIRST
+  const urlParams = new URLSearchParams(window.location.search)
+  const authCode = urlParams.get('code')
+  if (authCode) {
+    console.log('AUTH CODE FOUND IN URL:', authCode)
+    console.log('PROCESSING AUTH CODE...')
     
-    // Check if already logged in
-    const checkAuth = async () => {
-      console.log('CHECKING EXISTING AUTH')
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('EXISTING SESSION:', session ? 'EXISTS' : 'NONE')
-      if (session) {
-        console.log('ALREADY LOGGED IN, REDIRECTING TO /agent/home')
-        router.push('/agent/home')
-      }
-    }
-    
-    checkAuth()
-
-    // Listen for auth changes
-    console.log('SETTING UP AUTH STATE LISTENER')
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('AUTH STATE CHANGE EVENT:', event)
-      console.log('AUTH STATE CHANGE SESSION:', session ? 'EXISTS' : 'NONE')
-      
-      if (event === 'SIGNED_IN' && session) {
-        console.log('Agent signed in:', session.user.email)
-        console.log('REDIRECTING TO /agent/home')
+    // Let Supabase process the auth code
+    supabase.auth.exchangeCodeForSession(authCode).then(({ data, error }) => {
+      console.log('CODE EXCHANGE RESULT:', data ? 'SUCCESS' : 'FAILED')
+      if (error) {
+        console.error('CODE EXCHANGE ERROR:', error)
+      } else {
+        console.log('SESSION CREATED, REDIRECTING...')
         router.push('/agent/home')
       }
     })
-
-    return () => {
-      console.log('CLEANING UP AUTH LISTENER')
-      subscription.unsubscribe()
+    return // Exit early if processing auth code
+  }
+  
+  // Check if already logged in (only if no auth code)
+  const checkAuth = async () => {
+    console.log('CHECKING EXISTING AUTH')
+    const { data: { session } } = await supabase.auth.getSession()
+    console.log('EXISTING SESSION:', session ? 'EXISTS' : 'NONE')
+    if (session) {
+      console.log('ALREADY LOGGED IN, REDIRECTING TO /agent/home')
+      router.push('/agent/home')
     }
-  }, [supabase, router])
+  }
+  
+  checkAuth()
+
+  // Listen for auth changes
+  console.log('SETTING UP AUTH STATE LISTENER')
+  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    console.log('AUTH STATE CHANGE EVENT:', event)
+    console.log('AUTH STATE CHANGE SESSION:', session ? 'EXISTS' : 'NONE')
+    
+    if (event === 'SIGNED_IN' && session) {
+      console.log('Agent signed in:', session.user.email)
+      console.log('REDIRECTING TO /agent/home')
+      router.push('/agent/home')
+    }
+  })
+
+  return () => {
+    console.log('CLEANING UP AUTH LISTENER')
+    subscription.unsubscribe()
+  }
+}, [supabase, router])
 
   // ... rest of your component code
 
