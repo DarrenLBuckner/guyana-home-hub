@@ -1,6 +1,6 @@
 'use client'
 
-console.log('AGENT LOGIN PAGE LOADED - REACT COMPONENT EXECUTING') // ADD THIS
+console.log('AGENT LOGIN PAGE LOADED - REACT COMPONENT EXECUTING')
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -9,26 +9,33 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AgentLogin() {
-  console.log('INSIDE AGENT LOGIN COMPONENT') // ADD THIS TOO
+  console.log('INSIDE AGENT LOGIN COMPONENT')
   
   const router = useRouter()
   
-  // ... rest of your existing code
-  
   // FIXED: Use same client creation method as upload page
-  const [supabase] = useState(() =>
-    createBrowserClient(
+  const [supabase] = useState(() => {
+    console.log('CREATING SUPABASE CLIENT')
+    console.log('SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'EXISTS' : 'MISSING')
+    
+    return createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
-  )
+  })
 
   // FIXED: Better auth state management
   useEffect(() => {
+    console.log('USEEFFECT STARTING - Setting up auth handlers')
+    
     // Check if already logged in
     const checkAuth = async () => {
+      console.log('CHECKING EXISTING AUTH')
       const { data: { session } } = await supabase.auth.getSession()
+      console.log('EXISTING SESSION:', session ? 'EXISTS' : 'NONE')
       if (session) {
+        console.log('ALREADY LOGGED IN, REDIRECTING TO /agent/home')
         router.push('/agent/home')
       }
     }
@@ -36,15 +43,25 @@ export default function AgentLogin() {
     checkAuth()
 
     // Listen for auth changes
+    console.log('SETTING UP AUTH STATE LISTENER')
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('AUTH STATE CHANGE EVENT:', event)
+      console.log('AUTH STATE CHANGE SESSION:', session ? 'EXISTS' : 'NONE')
+      
       if (event === 'SIGNED_IN' && session) {
         console.log('Agent signed in:', session.user.email)
+        console.log('REDIRECTING TO /agent/home')
         router.push('/agent/home')
       }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      console.log('CLEANING UP AUTH LISTENER')
+      subscription.unsubscribe()
+    }
   }, [supabase, router])
+
+  // ... rest of your component code
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
