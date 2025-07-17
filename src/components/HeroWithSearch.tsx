@@ -74,7 +74,7 @@ export default function HeroWithSearch() {
             marginBottom: '2rem',
             textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
           }}>
-            Testing Deployment Find Your Dream Property in Guyana
+            Find Your Dream Property in Guyana
           </h1>
           
           {/* Search Bar */}
