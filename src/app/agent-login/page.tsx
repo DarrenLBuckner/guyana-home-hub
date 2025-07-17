@@ -1,5 +1,7 @@
 'use client'
 
+console.log('AGENT LOGIN PAGE LOADED - REACT COMPONENT EXECUTING') // ADD THIS
+
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { createBrowserClient } from '@supabase/ssr'
@@ -7,7 +9,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AgentLogin() {
+  console.log('INSIDE AGENT LOGIN COMPONENT') // ADD THIS TOO
+  
   const router = useRouter()
+  
+  // ... rest of your existing code
   
   // FIXED: Use same client creation method as upload page
   const [supabase] = useState(() =>
