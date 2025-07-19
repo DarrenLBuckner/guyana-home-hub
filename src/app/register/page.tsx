@@ -2,10 +2,26 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Navbar from "@/components/Navbar";
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const supabase = createClientComponentClient();
+  
   const [userType, setUserType] = useState<string[]>([]);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    mobile: "",
+    company: "",
+    buyingBudget: "",
+    rentalBudget: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleUserTypeChange = (value: string) => {
     setUserType((prev) =>
@@ -13,6 +29,47 @@ export default function RegisterPage() {
         ? prev.filter((item) => item !== value)
         : [...prev, value]
     );
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      // Register with Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+            user_types: userType.join(", "),
+            mobile: formData.mobile,
+            company: formData.company,
+          },
+        },
+      });
+
+      if (error) {
+        setError(error.message);
+      } else if (data.user) {
+        // Success - redirect to signin or show success message
+        alert("Registration successful! Please check your email to verify your account.");
+        router.push("/signin");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred during registration.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,31 +81,60 @@ export default function RegisterPage() {
             Register with Email
           </h1>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+
             <input
               type="text"
+              name="fullName"
               placeholder="Full Name"
+              value={formData.fullName}
+              onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
               required
             />
 
             <input
               type="email"
+              name="email"
               placeholder="Email Address"
+              value={formData.email}
+              onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
               required
             />
 
             <input
+              type="password"
+              name="password"
+              placeholder="Password (min 6 characters)"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="w-full border border-gray-300 rounded-md px-4 py-2"
+              required
+              minLength={6}
+            />
+
+            <input
               type="tel"
+              name="mobile"
               placeholder="Mobile Number"
+              value={formData.mobile}
+              onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
               required
             />
 
             <input
               type="text"
+              name="company"
               placeholder="Company Name (Optional)"
+              value={formData.company}
+              onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
             />
 
@@ -83,7 +169,10 @@ export default function RegisterPage() {
             {userType.includes("Buyer") && (
               <input
                 type="text"
+                name="buyingBudget"
                 placeholder="Your buying budget (GYD)"
+                value={formData.buyingBudget}
+                onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md px-4 py-2"
               />
             )}
@@ -91,16 +180,20 @@ export default function RegisterPage() {
             {userType.includes("Renter") && (
               <input
                 type="text"
+                name="rentalBudget"
                 placeholder="Your rental budget (GYD)"
+                value={formData.rentalBudget}
+                onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md px-4 py-2"
               />
             )}
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white font-semibold py-2 rounded-md hover:bg-green-700 transition"
+              disabled={loading}
+              className="w-full bg-green-600 text-white font-semibold py-2 rounded-md hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Complete Registration
+              {loading ? "Creating Account..." : "Complete Registration"}
             </button>
           </form>
         </div>

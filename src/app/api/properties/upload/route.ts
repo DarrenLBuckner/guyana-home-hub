@@ -17,6 +17,10 @@ export async function POST(req: Request) {
     const bedrooms = parseInt(formData.get('bedrooms') as string);
     const bathrooms = parseInt(formData.get('bathrooms') as string);
     const video_url = formData.get('video_url') as string;
+    const home_size = formData.get('home_size') as string;
+    const lot_size = formData.get('lot_size') as string;
+    const features = JSON.parse(formData.get('features') as string || '[]');
+    const hero_index = parseInt(formData.get('hero_index') as string || '0');
     const user_id = formData.get('user_id') as string;
     const files = formData.getAll('images') as File[];
 
@@ -49,12 +53,16 @@ export async function POST(req: Request) {
         {
           title,
           description,
-          price,
+          price: parseInt(price),
           location,
           bedrooms,
           bathrooms,
           video_url,
+          home_size,
+          lot_size,
+          features,
           image_urls,
+          hero_index,
           user_id,
           status: 'pending'
         }

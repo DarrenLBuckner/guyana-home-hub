@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import HeroWithSearch from "../components/HeroWithSearch";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
@@ -8,6 +9,20 @@ import ListYourPropertyCards from "../components/ListYourPropertyCards";
 export default function HomePage() {
   const [showBrowseCards, setShowBrowseCards] = useState(false);
   const [showListCards, setShowListCards] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Super secret admin access: Ctrl + Shift + A
+      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+        event.preventDefault();
+        router.push('/admin-login');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [router]);
 
   return (
     <div>

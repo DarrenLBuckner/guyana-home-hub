@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import UploadPhotos from '@/components/UploadPhotos'
 import { useRouter } from 'next/navigation'
 
@@ -39,50 +39,31 @@ export default function UploadPropertyForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [authChecked, setAuthChecked] = useState(false)
+  const [generatingDescription, setGeneratingDescription] = useState(false)
 
-  // FIXED: Use consistent client creation
-  const [supabase] = useState(() =>
-    createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-  )
+  // FIXED: Use same client as agent login
+  const supabase = createClientComponentClient()
 
-  // FIXED: Proper auth state management
+  // FIXED: Simple auth check using same client as login
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser()
-        
-        if (error || !user) {
-          console.log('No authenticated user, redirecting to login')
-          router.push('/agent-login')
-          return
-        }
-        
-        setUser(user)
-        setAuthChecked(true)
-        console.log('User authenticated:', user.email)
-      } catch (error) {
-        console.error('Auth check error:', error)
-        router.push('/agent-login')
-      }
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      setAuthChecked(true)
+      console.log('Upload page - User authenticated:', user?.email)
     }
 
     checkAuth()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || !session) {
-        router.push('/agent-login')
-      } else if (session?.user) {
-        setUser(session.user)
-        setAuthChecked(true)
-      }
+      console.log('Upload page - Auth state changed:', event, session?.user?.email)
+      setUser(session?.user || null)
+      setAuthChecked(true)
     })
 
     return () => subscription.unsubscribe()
-  }, [supabase, router])
+  }, [supabase])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,6 +78,53 @@ export default function UploadPropertyForm() {
         ? prev.features.filter((f) => f !== feature)
         : [...prev.features, feature],
     }))
+  }
+
+  const generateDescription = async () => {
+    if (!form.title || !form.location || !form.bedrooms || !form.price) {
+      alert('Please fill in title, location, bedrooms, and price first')
+      return
+    }
+
+    setGeneratingDescription(true)
+    try {
+      const prompt = `Write a compelling property description for a real estate listing in Guyana. Here are the details:
+
+Title: ${form.title}
+Location: ${form.location}
+Bedrooms: ${form.bedrooms}
+Bathrooms: ${form.bathrooms}
+Price: $${form.price}
+${form.homeSize ? `Home Size: ${form.homeSize}` : ''}
+${form.lotSize ? `Lot Size: ${form.lotSize}` : ''}
+${form.features.length > 0 ? `Features: ${form.features.join(', ')}` : ''}
+
+Write a professional, engaging description that highlights the property's best features and appeals to potential buyers. Keep it under 150 words and focus on the location benefits and unique selling points.`
+
+      const response = await fetch('/api/generate-description', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      })
+
+      const data = await response.json()
+      
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        setForm(prev => ({
+          ...prev,
+          description: data.choices[0].message.content.trim()
+        }))
+      } else {
+        alert('Failed to generate description. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error generating description:', error)
+      alert('Error generating description. Please try again.')
+    } finally {
+      setGeneratingDescription(false)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -165,9 +193,7 @@ export default function UploadPropertyForm() {
         home_size: form.homeSize.trim() || null,
         features: form.features,
         image_urls: uploadedImageUrls,
-        hero_index: form.heroIndex,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        hero_index: form.heroIndex
       }
 
       const { data: insertData, error: insertError } = await supabase
@@ -385,9 +411,19 @@ export default function UploadPropertyForm() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Property Description *
-            </label>
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Property Description *
+              </label>
+              <button
+                type="button"
+                onClick={generateDescription}
+                disabled={generatingDescription}
+                className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 disabled:opacity-50"
+              >
+                {generatingDescription ? '✨ Generating...' : '🤖 Generate with AI'}
+              </button>
+            </div>
             <textarea
               name="description"
               value={form.description}

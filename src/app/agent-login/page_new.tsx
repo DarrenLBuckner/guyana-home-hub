@@ -26,45 +26,7 @@ export default function AgentLogin() {
       if (error) {
         setError(error.message)
       } else if (data.user) {
-        // Check agent vetting status before redirecting
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('vetting_status, user_type, roles')
-          .eq('id', data.user.id)
-          .single()
-
-        if (profileError || !profile) {
-          setError('Unable to verify account status')
-          return
-        }
-
-        // Ensure user is marked as agent
-        const isAgent = profile.user_type === 'agent' || profile.roles === 'agent'
-        if (!isAgent) {
-          setError('This login is for registered agents only')
-          return
-        }
-
-        // Redirect based on vetting status
-        switch (profile.vetting_status) {
-          case 'not_submitted':
-            router.push('/agent/vetting')
-            break
-          case 'pending_review':
-            router.push('/agent/pending')
-            break
-          case 'needs_revision':
-            router.push('/agent/vetting')
-            break
-          case 'approved':
-            router.push('/agent/home')
-            break
-          case 'rejected':
-            router.push('/agent/rejected')
-            break
-          default:
-            router.push('/agent/vetting')
-        }
+        router.push('/agent/home')
       }
     } catch (err) {
       setError('An unexpected error occurred')
