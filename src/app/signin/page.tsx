@@ -4,11 +4,11 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { createBrowserSupabaseClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 
 export default function CustomerSignIn() {
   const router = useRouter()
-  const supabase = createBrowserSupabaseClient()
+  const supabase = createClient()
 
   useEffect(() => {
     // Listen for all auth events (including OAuth)

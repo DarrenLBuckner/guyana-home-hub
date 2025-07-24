@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react'
 import { PromoCodeInput } from '@/components/PromoCodeInput'
 import { PromoCodeValidationResult } from '@/types/promo-code'
@@ -16,7 +16,7 @@ interface PasswordRequirement {
 
 export default function AgentRegistration() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
   const [formData, setFormData] = useState({
     email: '',
     password: '',

@@ -1,7 +1,7 @@
 // Modern Data Layer - Repository Pattern with React Query
 // src/lib/repositories/propertyRepository.ts
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { 
   Property, 
   PropertyListResponse, 
@@ -12,7 +12,7 @@ import {
 } from '@/types/property'
 
 export class PropertyRepository {
-  private supabase = createClientComponentClient()
+  private supabase = createClient()
 
   // Get properties with advanced filtering and pagination
   async getProperties(
@@ -594,3 +594,4 @@ export class PropertyRepository {
 
 // Export singleton instance
 export const propertyRepository = new PropertyRepository()
+

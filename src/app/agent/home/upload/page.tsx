@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import UploadPhotos from '@/components/UploadPhotos'
 import { useRouter } from 'next/navigation'
 
@@ -42,7 +42,7 @@ export default function UploadPropertyForm() {
   const [generatingDescription, setGeneratingDescription] = useState(false)
 
   // FIXED: Use same client as agent login
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   // FIXED: Simple auth check using same client as login
   useEffect(() => {

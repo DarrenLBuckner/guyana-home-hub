@@ -1,5 +1,5 @@
 // Automated Follow-up System
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { Resend } from 'resend'
 
 interface FollowUpRule {
@@ -37,7 +37,7 @@ interface FollowUpTask {
 }
 
 export class FollowUpAutomation {
-  private supabase = createClientComponentClient()
+  private supabase = createClient()
   private resend = new Resend(process.env.RESEND_API_KEY)
 
   // Default follow-up rules
@@ -551,3 +551,4 @@ export class FollowUpAutomation {
 
 // Export singleton instance
 export const followUpAutomation = new FollowUpAutomation()
+

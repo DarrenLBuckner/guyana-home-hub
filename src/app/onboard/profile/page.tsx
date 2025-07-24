@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@/lib/supabase/client'
 import { CountryDropdown } from 'react-country-region-selector'
 
 export default function OnboardProfile() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -58,9 +58,10 @@ export default function OnboardProfile() {
     })
 
     if (error) {
-      console.error(error)
-      alert('Error saving profile info.')
+      console.error('Profile save error:', error)
+      alert(`Error saving profile info: ${error.message}`)
     } else {
+      alert('Profile saved successfully!')
       router.push('/properties/buy')
     }
   }
