@@ -1,12 +1,57 @@
 // src/components/layout/Navbar.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+  const router = useRouter();
+
+  // Check authentication status
+  useEffect(() => {
+    const getUser = async () => {
+      console.log('Navbar: Checking user authentication...')
+      const { data, error } = await supabase.auth.getUser();
+      console.log('Navbar: User data:', data?.user ? 'User found' : 'No user', error)
+      if (data?.user) {
+        setUser(data.user);
+        console.log('Navbar: User set:', data.user.email)
+      }
+      setLoading(false);
+    };
+
+    getUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        console.log('Navbar: Auth state changed:', event, session?.user ? 'User present' : 'No user')
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  // Handle sign out
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/');
+    closeMenu();
+  };
 
   // Function to close mobile menu when a link is clicked
   const closeMenu = () => {
@@ -44,9 +89,25 @@ export default function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/signin" className="hover:text-green-600">
-            Sign In
-          </Link>
+          {loading ? (
+            <div className="text-gray-500">Loading...</div>
+          ) : user ? (
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-600">
+                Welcome, {user.email?.split('@')[0]}
+              </span>
+              <button 
+                onClick={handleSignOut}
+                className="hover:text-green-600"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link href="/signin" className="hover:text-green-600">
+              Sign In
+            </Link>
+          )}
           <Link
             href="/advertise"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
@@ -96,13 +157,30 @@ export default function Navbar() {
             Developments
           </Link>
 
-          <Link
-            href="/signin"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Sign In
-          </Link>
+          {/* Mobile Auth Section */}
+          {loading ? (
+            <div className="text-gray-500">Loading...</div>
+          ) : user ? (
+            <div className="pt-2 border-t border-gray-200 mt-2">
+              <div className="text-sm text-gray-600 mb-2">
+                Welcome, {user.email?.split('@')[0]}
+              </div>
+              <button 
+                onClick={handleSignOut}
+                className="block text-green-700 hover:text-green-800"
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/signin"
+              className="block text-green-700 hover:text-green-800"
+              onClick={closeMenu}
+            >
+              Sign In
+            </Link>
+          )}
           
           {/* Agent Section in Mobile */}
           <div className="pt-2 border-t border-gray-200 mt-2">

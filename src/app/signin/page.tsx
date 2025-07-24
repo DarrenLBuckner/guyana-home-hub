@@ -12,10 +12,12 @@ export default function CustomerSignIn() {
 
   useEffect(() => {
     // Listen for all auth events (including OAuth)
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth event:', event, 'Session exists:', !!session)
+      
       if (event === 'SIGNED_IN' && session) {
-        // whenever someone signs in (email, magic link or OAuth),
-        // immediately redirect them to the onboarding/profile page
+        console.log('User signed in, redirecting to profile page')
+        // Always redirect to profile page - let the profile page handle the redirect logic
         router.push('/onboard/profile')
       }
     })

@@ -23,8 +23,40 @@ export default function OnboardProfile() {
       const { data, error } = await supabase.auth.getUser()
       if (data?.user) {
         setUser(data.user)
+        
+        // Check if user already has a complete profile
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .single()
+        
+        console.log('Profile data:', profile)
+        console.log('Profile error:', profileError)
+        
+        if (profile && profile.first_name && profile.last_name && profile.phone) {
+          // User already has a complete profile, redirect to homepage
+          console.log('Complete profile found, redirecting to homepage')
+          router.push('/')
+          return
+        }
+        
+        // Pre-fill form if partial profile exists
+        if (profile) {
+          console.log('Pre-filling form with existing profile data')
+          setFirstName(profile.first_name || '')
+          setLastName(profile.last_name || '')
+          setPhone(profile.phone || '')
+          setCountry(profile.country || '')
+          setBudget(profile.budget || '')
+          if (profile.roles) {
+            setRoles(profile.roles.split(', ').filter(Boolean))
+          }
+        }
+        
         setLoading(false)
       } else {
+        console.log('No user found, redirecting to signin')
         router.push('/signin')
       }
     }
@@ -54,7 +86,7 @@ export default function OnboardProfile() {
       country,
       budget,
       roles: roles.join(', '),
-      user_type: 'client',
+      user_type: 'customer',
       updated_at: new Date().toISOString()
     })
 
