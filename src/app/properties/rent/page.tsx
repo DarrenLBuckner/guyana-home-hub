@@ -5,7 +5,7 @@ import PropertiesListingFixed from '@/components/PropertiesListingFixed'
 export default function RentPage() {
   return (
     <PropertiesListingFixed 
-      title="Properties for Rent"
+      title="Find Your Rental Property"
       filterType="rent"
       showFilters={true}
     />

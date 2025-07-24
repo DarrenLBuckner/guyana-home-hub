@@ -5,7 +5,7 @@ import PropertiesListingFixed from '@/components/PropertiesListingFixed'
 export default function BuyPage() {
   return (
     <PropertiesListingFixed 
-      title="Properties for Sale"
+      title="Find Your Dream Home to Buy"
       filterType="sale"
       showFilters={true}
     />
