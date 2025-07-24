@@ -117,10 +117,26 @@ export default function AdminDashboard() {
           setProperties(simpleData || [])
         }
       } else {
-        const propertiesWithAgent = data?.map(property => ({
-          ...property,
-          agent_email: property.profiles?.email || 'Unknown'
-        })) || []
+        const propertiesWithAgent = data?.map(property => {
+          // Ensure image_urls is always an array
+          let imageUrls = property.image_urls;
+          if (typeof imageUrls === 'string') {
+            try {
+              imageUrls = JSON.parse(imageUrls);
+            } catch {
+              imageUrls = [imageUrls]; // If it's a single URL string
+            }
+          }
+          if (!Array.isArray(imageUrls)) {
+            imageUrls = [];
+          }
+          
+          return {
+            ...property,
+            image_urls: imageUrls,
+            agent_email: property.profiles?.email || 'Unknown'
+          };
+        }) || []
         setProperties(propertiesWithAgent)
       }
     } catch (error) {
@@ -241,7 +257,7 @@ export default function AdminDashboard() {
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Property Images */}
                   <div className="lg:w-1/3">
-                    {property.image_urls && property.image_urls.length > 0 ? (
+                    {property.image_urls && Array.isArray(property.image_urls) && property.image_urls.length > 0 ? (
                       <div className="space-y-2">
                         <img
                           src={property.image_urls[property.hero_index] || property.image_urls[0]}
