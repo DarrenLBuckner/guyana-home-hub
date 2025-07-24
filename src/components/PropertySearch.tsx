@@ -297,9 +297,9 @@ export function PropertySearch({
                   variant={viewMode}
                   showStats={true}
                   showContactButtons={true}
-                  onFavorite={handlePropertyFavorite}
-                  onShare={handlePropertyShare}
-                  onContact={handlePropertyContact}
+                  favoriteAction={handlePropertyFavorite}
+                  shareAction={handlePropertyShare}
+                  contactAction={handlePropertyContact}
                 />
               ))}
             </div>

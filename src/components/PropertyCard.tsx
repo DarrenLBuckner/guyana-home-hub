@@ -34,9 +34,9 @@ interface PropertyCardProps {
   variant?: 'grid' | 'list' | 'featured'
   showStats?: boolean
   showContactButtons?: boolean
-  onFavorite?: (propertyId: string) => void
-  onShare?: (property: Property) => void
-  onContact?: (property: Property) => void
+  favoriteAction?: (propertyId: string) => void
+  shareAction?: (property: Property) => void
+  contactAction?: (property: Property) => void
   className?: string
 }
 
@@ -45,9 +45,9 @@ export function PropertyCard({
   variant = 'grid',
   showStats = true,
   showContactButtons = false,
-  onFavorite,
-  onShare,
-  onContact,
+  favoriteAction,
+  shareAction,
+  contactAction,
   className 
 }: PropertyCardProps) {
   const [imageLoading, setImageLoading] = useState(true)
@@ -88,19 +88,19 @@ export function PropertyCard({
     e.preventDefault()
     e.stopPropagation()
     setIsFavorited(!isFavorited)
-    onFavorite?.(property.id)
+    favoriteAction?.(property.id)
   }
 
   const handleShare = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    onShare?.(property)
+    shareAction?.(property)
   }
 
   const handleContact = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    onContact?.(property)
+    contactAction?.(property)
   }
 
   const PropertyTypeIcon = getPropertyTypeIcon(property.property_type)
