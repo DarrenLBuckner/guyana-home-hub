@@ -48,7 +48,8 @@ export default function OnboardProfile() {
     const { error } = await supabase.from('profiles').upsert({
       id: user.id,
       email: user.email,
-      full_name: `${firstName} ${lastName}`,
+      first_name: firstName,
+      last_name: lastName,
       phone,
       country,
       budget,
