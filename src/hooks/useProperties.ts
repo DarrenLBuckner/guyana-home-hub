@@ -4,7 +4,7 @@
 // src/hooks/useProperties.ts
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useUser } from '@supabase/auth-helpers-react'
+import { useUser } from '@/hooks/useUser'
 import { propertyRepository } from '@/lib/repositories/propertyRepository'
 import { 
   PropertyFilters, 

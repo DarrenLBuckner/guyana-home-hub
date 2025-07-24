@@ -1,10 +1,9 @@
-import { createRouteHandlerClient } from '@/lib/supabase/client'
-import { cookies } from 'next/headers'
+import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = await createClient()
     const body = await request.json()
 
     const {
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies })
+    const supabase = await createClient()
     const { searchParams } = new URL(request.url)
     const agentId = searchParams.get('agent_id')
     const status = searchParams.get('status')
