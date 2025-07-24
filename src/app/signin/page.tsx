@@ -44,6 +44,21 @@ export default function CustomerSignIn() {
           // note: redirectTo only works for magic links; our listener will handle OAuth
         />
       </div>
+
+      {/* Agent Login Link */}
+      <div className="mt-6 text-center">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md">
+          <p className="text-sm text-green-800 mb-2">
+            <strong>Are you a Property Agent?</strong>
+          </p>
+          <a 
+            href="/agent-login" 
+            className="text-green-700 hover:text-green-800 font-medium underline"
+          >
+            Click here for Agent Login
+          </a>
+        </div>
+      </div>
     </div>
   )
 }

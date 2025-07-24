@@ -22,7 +22,7 @@ export default function ListYourPropertyCards() {
     {
       title: "Submit My Development – Email us your project",
       image: "/images/submit-development.jpg",
-      link: "mailto:submit@guyanahomehub.com?subject=Development%20Submission&body=Please%20include%20project%20details%20and%20images.",
+      link: "mailto:info@guyanahomehub.com?subject=Development%20Submission&body=Please%20include%20project%20details%20and%20images.",
     },
   ];
 

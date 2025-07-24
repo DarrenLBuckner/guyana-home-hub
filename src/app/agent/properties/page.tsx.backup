@@ -1,0 +1,469 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { 
+  Building,
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  Camera,
+  MapPin,
+  DollarSign,
+  Bed,
+  Bath,
+  Square,
+  Calendar,
+  User,
+  Phone,
+  Mail,
+  Star,
+  TrendingUp,
+  Home,
+  CheckCircle,
+  AlertCircle,
+  Clock,
+  MoreVertical
+} from 'lucide-react'
+
+interface Property {
+  id: string
+  title: string
+  description: string
+  location: string
+  price: number
+  property_type: string
+  bedrooms: number
+  bathrooms: number
+  square_footage: number
+  status: 'available' | 'pending' | 'sold' | 'rented' | 'off_market'
+  listing_type: 'sale' | 'rent'
+  images: string[]
+  amenities: string[]
+  features: string[]
+  agent_id: string
+  created_at: string
+  updated_at: string
+  views: number
+  inquiries: number
+  favorites: number
+}
+
+export default function PropertyManagement() {
+  const router = useRouter()
+  const supabase = createClientComponentClient()
+  const [properties, setProperties] = useState<Property[]>([])
+  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<any>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [filterType, setFilterType] = useState('all')
+  const [sortBy, setSortBy] = useState('newest')
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  const [showAddProperty, setShowAddProperty] = useState(false)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/agent-login')
+        return
+      }
+      setUser(user)
+    }
+    checkAuth()
+  }, [supabase, router])
+
+  useEffect(() => {
+    if (user) {
+      fetchProperties()
+    }
+  }, [user])
+
+  const fetchProperties = async () => {
+    try {
+      // Mock data for demonstration (replace with real API)
+      const mockProperties: Property[] = [
+        {
+          id: '1',
+          title: 'Modern Family Home in Georgetown',
+          description: 'Beautiful 3-bedroom family home with modern amenities and spacious yard.',
+          location: 'Georgetown, Demerara-Mahaica',
+          price: 25000000,
+          property_type: 'house',
+          bedrooms: 3,
+          bathrooms: 2,
+          square_footage: 1800,
+          status: 'available',
+          listing_type: 'sale',
+          images: ['/images/house-georgetown.jpg'],
+          amenities: ['parking', 'garden', 'security'],
+          features: ['modern_kitchen', 'air_conditioning', 'tiled_floors'],
+          agent_id: user?.id || 'agent1',
+          created_at: '2025-07-15T10:00:00Z',
+          updated_at: '2025-07-20T14:30:00Z',
+          views: 245,
+          inquiries: 8,
+          favorites: 12
+        },
+        {
+          id: '2',
+          title: 'Commercial Office Building',
+          description: 'Prime commercial property in the heart of Georgetown business district.',
+          location: 'Georgetown Business District',
+          price: 45000000,
+          property_type: 'commercial',
+          bedrooms: 0,
+          bathrooms: 4,
+          square_footage: 3500,
+          status: 'pending',
+          listing_type: 'sale',
+          images: ['/images/office-building.jpg'],
+          amenities: ['elevator', 'parking', 'security', 'conference_rooms'],
+          features: ['central_air', 'fiber_internet', 'backup_generator'],
+          agent_id: user?.id || 'agent1',
+          created_at: '2025-07-10T09:00:00Z',
+          updated_at: '2025-07-21T11:15:00Z',
+          views: 156,
+          inquiries: 15,
+          favorites: 7
+        },
+        {
+          id: '3',
+          title: 'Luxury Apartment for Rent',
+          description: 'Modern 2-bedroom apartment with city views and premium amenities.',
+          location: 'Kingston, Georgetown',
+          price: 180000,
+          property_type: 'apartment',
+          bedrooms: 2,
+          bathrooms: 2,
+          square_footage: 1200,
+          status: 'available',
+          listing_type: 'rent',
+          images: ['/images/apartment-luxury.jpg'],
+          amenities: ['pool', 'gym', 'concierge', 'parking'],
+          features: ['city_views', 'modern_appliances', 'balcony'],
+          agent_id: user?.id || 'agent1',
+          created_at: '2025-07-18T15:00:00Z',
+          updated_at: '2025-07-21T09:45:00Z',
+          views: 89,
+          inquiries: 5,
+          favorites: 8
+        }
+      ]
+
+      setProperties(mockProperties)
+    } catch (error) {
+      console.error('Error fetching properties:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updatePropertyStatus = async (propertyId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .update({ status: newStatus })
+        .eq('id', propertyId)
+
+      if (error) {
+        alert('Error updating property status')
+        console.error(error)
+      } else {
+        alert(`Property ${newStatus} successfully!`)
+        fetchProperties() // Refresh the list
+      }
+    } catch (error) {
+      alert('Error updating property')
+      console.error(error)
+    }
+  }
+
+  const deleteProperty = async (propertyId: string) => {
+    if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+      try {
+        const { error } = await supabase
+          .from('properties')
+          .delete()
+          .eq('id', propertyId)
+
+        if (error) {
+          alert('Error deleting property')
+          console.error(error)
+        } else {
+          alert('Property deleted successfully!')
+          fetchProperties() // Refresh the list
+        }
+      } catch (error) {
+        alert('Error deleting property')
+        console.error(error)
+      }
+    }
+  }
+
+  const filteredProperties = properties.filter(property => {
+    const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.location.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = filterStatus === 'all' || property.status === filterStatus
+    return matchesSearch && matchesFilter
+  })
+
+  const formatPrice = (price: number, type?: string) => {
+    const formatted = price.toLocaleString()
+    return type === 'rent' ? `GYD ${formatted}/month` : `GYD ${formatted}`
+  }
+
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'active': return 'text-green-600 bg-green-100'
+      case 'approved': return 'text-green-600 bg-green-100'
+      case 'pending': return 'text-yellow-600 bg-yellow-100'
+      case 'rejected': return 'text-red-600 bg-red-100'
+      case 'inactive': return 'text-gray-600 bg-gray-100'
+      default: return 'text-gray-600 bg-gray-100'
+    }
+  }
+
+  const getStatusText = (status: string) => {
+    switch(status) {
+      case 'approved': return 'Active'
+      case 'pending': return 'Under Review'
+      case 'rejected': return 'Rejected'
+      case 'inactive': return 'Inactive'
+      default: return status.charAt(0).toUpperCase() + status.slice(1)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading your properties...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">My Properties</h1>
+              <p className="text-sm text-gray-600">{filteredProperties.length} properties</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/agent/home"
+                className="text-gray-600 hover:text-gray-900 flex items-center space-x-2"
+              >
+                <Home className="h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
+              <Link 
+                href="/agent/home/upload"
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center space-x-2"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add Property</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Filters and Search */}
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <input
+                type="text"
+                placeholder="Search properties..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Status Filter */}
+            <select 
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+              <option value="all">All Status</option>
+              <option value="approved">Active</option>
+              <option value="pending">Under Review</option>
+              <option value="rejected">Rejected</option>
+              <option value="inactive">Inactive</option>
+            </select>
+
+            {/* Sort */}
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="price-low">Price: Low to High</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Properties Grid */}
+        {filteredProperties.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <div className="mb-4">
+                {properties.length === 0 ? (
+                  <Home className="h-16 w-16 text-gray-300 mx-auto" />
+                ) : (
+                  <Search className="h-16 w-16 text-gray-300 mx-auto" />
+                )}
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">
+                {properties.length === 0 ? 'No properties yet' : 'No properties found'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {properties.length === 0 
+                  ? 'Get started by adding your first property listing'
+                  : 'Try adjusting your search or filters'
+                }
+              </p>
+              <Link 
+                href="/agent/home/upload"
+                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 inline-flex items-center space-x-2"
+              >
+                <Plus className="h-5 w-5" />
+                <span>{properties.length === 0 ? 'Add Your First Property' : 'Add New Property'}</span>
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredProperties.map((property) => (
+              <div key={property.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
+                {/* Property Image */}
+                <div className="relative">
+                  {property.image_urls && property.image_urls.length > 0 ? (
+                    <img 
+                      src={property.image_urls[property.hero_index] || property.image_urls[0]} 
+                      alt={property.title}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
+                      <Home className="h-12 w-12 text-gray-400" />
+                    </div>
+                  )}
+                  <div className="absolute top-4 left-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(property.status)}`}>
+                      {getStatusText(property.status)}
+                    </span>
+                  </div>
+                  {property.price_type && (
+                    <div className="absolute top-4 right-4">
+                      <span className="bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs font-medium">
+                        {property.price_type === 'rent' ? 'FOR RENT' : 'FOR SALE'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Property Details */}
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                    {property.title}
+                  </h3>
+                  
+                  <div className="flex items-center text-gray-600 mb-3">
+                    <MapPin className="h-4 w-4 mr-1" />
+                    <span className="text-sm">{property.location}</span>
+                  </div>
+
+                  <div className="text-2xl font-bold text-green-600 mb-4">
+                    {formatPrice(property.price, property.price_type)}
+                  </div>
+
+                  {/* Property Features */}
+                  <div className="flex items-center space-x-4 text-gray-600 mb-4">
+                    {property.bedrooms > 0 && (
+                      <div className="flex items-center">
+                        <Bed className="h-4 w-4 mr-1" />
+                        <span className="text-sm">{property.bedrooms}</span>
+                      </div>
+                    )}
+                    {property.bathrooms > 0 && (
+                      <div className="flex items-center">
+                        <Bath className="h-4 w-4 mr-1" />
+                        <span className="text-sm">{property.bathrooms}</span>
+                      </div>
+                    )}
+                    {(property.home_size || property.lot_size) && (
+                      <div className="flex items-center">
+                        <Square className="h-4 w-4 mr-1" />
+                        <span className="text-sm">{property.home_size || property.lot_size}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex items-center text-sm text-gray-500 mb-4">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span>Added {new Date(property.created_at).toLocaleDateString()}</span>
+                  </div>
+
+                  {/* Status Message */}
+                  {property.status === 'pending' && (
+                    <div className="text-sm text-yellow-600 mb-4 flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      Awaiting admin approval
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-2">
+                    <button 
+                      onClick={() => router.push(`/properties/${property.id}`)}
+                      className="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded-lg hover:bg-gray-200 flex items-center justify-center"
+                    >
+                      <Eye className="h-4 w-4 mr-1" />
+                      View
+                    </button>
+                    <button 
+                      onClick={() => router.push(`/agent/properties/edit/${property.id}`)}
+                      className="flex-1 bg-green-100 text-green-700 py-2 px-3 rounded-lg hover:bg-green-200 flex items-center justify-center"
+                    >
+                      <Edit3 className="h-4 w-4 mr-1" />
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => deleteProperty(property.id)}
+                      className="bg-red-100 text-red-700 py-2 px-3 rounded-lg hover:bg-red-200"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

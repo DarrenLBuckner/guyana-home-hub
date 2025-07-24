@@ -292,7 +292,8 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                       <div>
                         <span className="text-sm text-gray-500">Price</span>
-                        <p className="font-semibold">${property.price.toLocaleString()}</p>
+                        <p className="font-semibold">G${property.price.toLocaleString()}</p>
+                        <p className="text-xs text-gray-400">~${Math.round(property.price / 210).toLocaleString()} USD</p>
                       </div>
                       <div>
                         <span className="text-sm text-gray-500">Location</span>

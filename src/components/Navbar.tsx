@@ -8,6 +8,11 @@ import { Menu, X } from "lucide-react";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Function to close mobile menu when a link is clicked
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
@@ -35,34 +40,6 @@ export default function Navbar() {
           >
             Developments
           </Link>
-
-          {/* Desktop "List Property" Dropdown */}
-          <div className="relative group">
-            <button className="hover:text-green-600 font-medium">
-              List Property ▼
-            </button>
-            <div className="absolute left-0 mt-2 w-40 bg-white border border-gray-200 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-              <Link
-                href="/list-owner"
-                className="block px-4 py-2 hover:bg-gray-50"
-              >
-                List My Home
-              </Link>
-              <Link
-                href="/list-agent"
-                className="block px-4 py-2 hover:bg-gray-50"
-              >
-                Agents Only
-              </Link>
-              <Link
-                href="/list-rental"
-                className="block px-4 py-2 hover:bg-gray-50"
-              >
-                List My Rental
-              </Link>
-            </div>
-          </div>
-          
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -93,64 +70,69 @@ export default function Navbar() {
           <Link
             href="/"
             className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
           >
             Home
           </Link>
           <Link
             href="/properties/buy"
             className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
           >
             Buy
           </Link>
           <Link
             href="/properties/rent"
             className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
           >
             Rent
           </Link>
           <Link
             href="/properties/developments"
             className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
           >
             Developments
           </Link>
 
-          <div className="pt-2 border-t border-gray-200">
-            <span className="block font-semibold text-green-700">
-              List Property
-            </span>
-            <Link
-              href="/list-owner"
-              className="block pl-4 text-green-700 hover:text-green-800"
-            >
-              List My Home
-            </Link>
-            <Link
-              href="/list-agent"
-              className="block pl-4 text-green-700 hover:text-green-800"
-            >
-              Agents Only
-            </Link>
-            <Link
-              href="/list-rental"
-              className="block pl-4 text-green-700 hover:text-green-800"
-            >
-              List My Rental
-            </Link>
-          </div>
-
           <Link
             href="/signin"
             className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
           >
             Sign In
           </Link>
+          
+          {/* Agent Section in Mobile */}
+          <div className="pt-2 border-t border-gray-200 mt-2">
+            <div className="text-xs font-semibold text-green-700 mb-1">
+              For Agents
+            </div>
+            <Link
+              href="/agent-register"
+              className="block text-sm text-green-700 hover:text-green-800 pl-2"
+              onClick={closeMenu}
+            >
+              Agent Registration
+            </Link>
+            <Link
+              href="/agent-login"
+              className="block text-sm text-gray-500 hover:text-green-800 pl-2 mt-1"
+              onClick={closeMenu}
+            >
+              Agent Login
+            </Link>
+          </div>
+          
           <Link
-  href="/contact"
-  className="block text-green-700 hover:text-green-800"
->  Contact Us
-</Link>
-          <Link href="/advertise" className="block">
+            href="/contact"
+            className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
+          >
+            Contact Us
+          </Link>
+          <Link href="/advertise" className="block" onClick={closeMenu}>
             <button className="w-full bg-green-600 text-white py-2 rounded-md">
               Advertise
             </button>

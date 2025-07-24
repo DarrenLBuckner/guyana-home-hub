@@ -52,15 +52,29 @@ export default function Footer() {
                 Contact&nbsp;Us
               </Link>
             </li>
-            <li className="mt-2">
-              <Link
-                href="/agent-login"
-                className="text-sm text-gray-400 hover:text-green-700"
-              >
-                Agent&nbsp;Login
+            <li>
+              <Link href="/register" className="hover:text-green-700">
+                Register
               </Link>
             </li>
-            <li>
+            <li className="mt-2 pt-2 border-t border-gray-300">
+              <div className="text-xs font-semibold text-green-700 mb-1">
+                For Agents
+              </div>
+              <Link
+                href="/agent-register"
+                className="text-sm hover:text-green-700 block"
+              >
+                Agent Registration
+              </Link>
+              <Link
+                href="/agent-login"
+                className="text-sm text-gray-500 hover:text-green-700 block mt-1"
+              >
+                Agent Login
+              </Link>
+            </li>
+            <li className="mt-4">
               <Link href="/privacy" className="hover:text-green-700">
                 Privacy Policy
               </Link>
@@ -68,11 +82,6 @@ export default function Footer() {
             <li>
               <Link href="/terms" className="hover:text-green-700">
                 Terms of Service
-              </Link>
-            </li>
-            <li>
-              <Link href="/register" className="hover:text-green-700">
-                Register
               </Link>
             </li>
           </ul>

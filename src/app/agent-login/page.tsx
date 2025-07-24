@@ -130,7 +130,7 @@ export default function AgentLogin() {
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
             Don't have an agent account?{' '}
-            <a href="/register" className="text-green-600 hover:text-green-800 font-medium">
+            <a href="/agent-register" className="text-green-600 hover:text-green-800 font-medium">
               Register here
             </a>
           </p>

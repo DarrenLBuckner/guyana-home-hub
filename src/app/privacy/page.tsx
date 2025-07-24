@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
       <h2 className="text-xl font-semibold mt-6 mb-2">11. Contact</h2>
       <p>
         If you have any questions or concerns about this policy, please contact us at: <br />
-        <strong>info@caribbeanhomehub.com</strong>
+        <strong>info@guyanahomehub.com</strong>
       </p>
     </main>
   );

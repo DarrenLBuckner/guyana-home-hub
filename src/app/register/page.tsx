@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Navbar from "@/components/Navbar";
 
 export default function RegisterPage() {
   const router = useRouter();

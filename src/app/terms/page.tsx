@@ -57,7 +57,7 @@ export default function TermsOfServicePage() {
 
       <h2 className="text-xl font-semibold mt-6 mb-2">11. EU GDPR Compliance</h2>
       <p className="mb-4">
-        For users in the European Union, we adhere to GDPR principles. You may request to access, rectify, or delete your data. Contact us at <strong>info@caribbeanhomehub.com</strong> for inquiries.
+        For users in the European Union, we adhere to GDPR principles. You may request to access, rectify, or delete your data. Contact us at <strong>info@guyanahomehub.com</strong> for inquiries.
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">12. Updates</h2>
@@ -68,7 +68,7 @@ export default function TermsOfServicePage() {
       <h2 className="text-xl font-semibold mt-6 mb-2">13. Contact</h2>
       <p>
         For questions or concerns, email us at: <br />
-        <strong>info@caribbeanhomehub.com</strong>
+        <strong>info@guyanahomehub.com</strong>
       </p>
     </main>
   );

@@ -1,13 +1,77 @@
 // src/app/list-rental/page.tsx
 "use client";
 
-import Navbar from '../../components/Navbar';
-
+import { useState } from 'react';
+import { Upload, X, Image as ImageIcon } from 'lucide-react';
 
 export default function ListRentalPage() {
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [dragOver, setDragOver] = useState(false);
+  const [formData, setFormData] = useState({
+    propertyTitle: '',
+    description: '',
+    location: '',
+    monthlyRent: '',
+    securityDeposit: '',
+    leaseTerms: '',
+    petPolicy: '',
+    // Landlord verification fields
+    landlordName: '',
+    landlordEmail: '',
+    landlordPhone: '',
+    landlordType: '',
+    // Property management verification
+    managementType: '',
+    propertyCount: '',
+    rentedBefore: '',
+    currentOccupancy: '',
+    // Property details
+    propertyAge: '',
+    lastRenovated: '',
+    // Verification documents
+    ownershipDocument: null as File | null,
+    idDocument: null as File | null,
+    tenancyAgreement: null as File | null,
+    insuranceDocument: null as File | null,
+    // Selected features
+    features: [] as string[]
+  });
+
+  const handleFeatureToggle = (feature: string) => {
+    const current = formData.features || []
+    if (current.includes(feature)) {
+      setFormData({...formData, features: current.filter(f => f !== feature)})
+    } else {
+      setFormData({...formData, features: [...current, feature]})
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleFileSelect = (files: FileList | null) => {
+    if (files) {
+      const newFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+      setUploadedImages(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    handleFileSelect(e.dataTransfer.files);
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div>
-      
       <main className="min-h-screen bg-white py-20 px-4">
         <h1 className="text-4xl font-bold text-center text-green-700 mb-8">
           List Your Rental Property
@@ -30,48 +94,128 @@ export default function ListRentalPage() {
           </div>
 
           <form className="space-y-6">
-            <input type="text" placeholder="Property Title" className="w-full px-4 py-2 border border-gray-300 rounded" />
-            <textarea placeholder="Property Description (Powered by AI)" className="w-full px-4 py-2 border border-gray-300 rounded" rows={4}></textarea>
-            <input type="text" placeholder="Location / Region" className="w-full px-4 py-2 border border-gray-300 rounded" />
-            <input type="number" placeholder="Monthly Rent (GYD)" className="w-full px-4 py-2 border border-gray-300 rounded" />
-            <input type="number" placeholder="Security Deposit (GYD)" className="w-full px-4 py-2 border border-gray-300 rounded" />
+            <input 
+              type="text" 
+              name="propertyTitle"
+              value={formData.propertyTitle}
+              onChange={handleChange}
+              placeholder="Property Title" 
+              className="w-full px-4 py-2 border border-gray-300 rounded" 
+            />
+            <textarea 
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Property Description (Powered by AI)" 
+              className="w-full px-4 py-2 border border-gray-300 rounded" 
+              rows={4}
+            />
+            <input 
+              type="text" 
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="Location / Region" 
+              className="w-full px-4 py-2 border border-gray-300 rounded" 
+            />
+            <input 
+              type="number" 
+              name="monthlyRent"
+              value={formData.monthlyRent}
+              onChange={handleChange}
+              placeholder="Monthly Rent (GYD)" 
+              className="w-full px-4 py-2 border border-gray-300 rounded" 
+            />
+            <input 
+              type="number" 
+              name="securityDeposit"
+              value={formData.securityDeposit}
+              onChange={handleChange}
+              placeholder="Security Deposit (GYD)" 
+              className="w-full px-4 py-2 border border-gray-300 rounded" 
+            />
 
             <div>
               <label className="block mb-1 font-medium">Lease Terms</label>
-              <select className="w-full px-4 py-2 border border-gray-300 rounded">
-                <option>Month-to-Month</option>
-                <option>6 Months</option>
-                <option>1 Year</option>
+              <select 
+                name="leaseTerms"
+                value={formData.leaseTerms}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded"
+              >
+                <option value="">Select lease terms</option>
+                <option value="month-to-month">Month-to-Month</option>
+                <option value="6-months">6 Months</option>
+                <option value="1-year">1 Year</option>
+                <option value="2-years">2 Years</option>
+                <option value="flexible">Flexible Terms</option>
               </select>
             </div>
 
             <div>
               <label className="block mb-1 font-medium">Pet Policy</label>
-              <select className="w-full px-4 py-2 border border-gray-300 rounded">
-                <option>No Pets</option>
-                <option>Cats Only</option>
-                <option>Small Dogs Only</option>
-                <option>All Pets Allowed</option>
+              <select 
+                name="petPolicy"
+                value={formData.petPolicy}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-gray-300 rounded"
+              >
+                <option value="">Select pet policy</option>
+                <option value="no-pets">No Pets</option>
+                <option value="cats-only">Cats Only</option>
+                <option value="dogs-only">Dogs Only</option>
+                <option value="pets-allowed">Pets Allowed</option>
+                <option value="negotiable">Negotiable</option>
               </select>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {["Garden", "Security", "Fruit Trees", "Swimming Pool", "Air Conditioning", "Garage / Parking"].map((feature) => (
-                <label key={feature} className="flex items-center space-x-2">
-                  <input type="checkbox" className="form-checkbox" />
-                  <span>{feature}</span>
-                </label>
-              ))}
+            {/* Property Features Section */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-gray-900">Property Features</h4>
+              
+              {/* Features Section */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h5 className="font-medium text-gray-700 mb-3">Features</h5>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {["Pet Friendly", "Garden", "Pool", "Security Estate", "AC", "Security System", "Fenced", "Backup Generator", "Garage", "Furnished"].map((feature) => (
+                    <label key={feature} className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        className="form-checkbox"
+                        checked={formData.features.includes(feature)}
+                        onChange={() => handleFeatureToggle(feature)}
+                      />
+                      <span className="text-sm">{feature}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Other Section */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h5 className="font-medium text-gray-700 mb-3">Other</h5>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {["WiFi", "Cable TV", "Kitchen Appliances", "Washing Machine"].map((feature) => (
+                    <label key={feature} className="flex items-center space-x-2">
+                      <input 
+                        type="checkbox" 
+                        className="form-checkbox"
+                        checked={formData.features.includes(feature)}
+                        onChange={() => handleFeatureToggle(feature)}
+                      />
+                      <span className="text-sm">{feature}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label className="block mb-1 font-medium">Upload Property Images</label>
-              <input type="file" accept="image/*" multiple className="w-full" />
-            </div>
-
-            <div className="text-center pt-4">
-              <button type="submit" className="bg-green-700 text-white font-semibold px-8 py-3 rounded hover:bg-green-800 transition">
-                Submit Listing
+            <div className="text-center">
+              <button 
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded"
+              >
+                List My Property
               </button>
             </div>
           </form>
