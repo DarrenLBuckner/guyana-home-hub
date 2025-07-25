@@ -171,7 +171,12 @@ export class PropertyRepository {
 
       // Upload and associate images
       if (propertyData.image_files.length > 0) {
-        await this.uploadPropertyImages(property.id, propertyData.image_files, propertyData.hero_image_index)
+        await this.uploadPropertyImages(
+          property.id,
+          propertyData.image_files,
+          propertyData.hero_image_index,
+          propertyData.agent_id || propertyData.owner_id || '' // fallback to owner if agent missing
+        )
       }
 
       // Initialize metadata
@@ -219,7 +224,12 @@ export class PropertyRepository {
 
       // Handle image updates if provided
       if (updates.image_files && updates.image_files.length > 0) {
-        await this.uploadPropertyImages(id, updates.image_files, updates.hero_image_index)
+        await this.uploadPropertyImages(
+          id,
+          updates.image_files,
+          updates.hero_image_index,
+          updates.agent_id || updates.owner_id || ''
+        )
       }
 
       // Fetch updated property
