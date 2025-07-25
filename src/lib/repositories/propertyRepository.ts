@@ -339,7 +339,8 @@ export class PropertyRepository {
   private async uploadPropertyImages(
     propertyId: string, 
     files: File[], 
-    heroIndex: number = 0
+    heroIndex: number = 0,
+    uploadedBy: string // agent profile id
   ): Promise<void> {
     try {
       const imageRecords = []
@@ -367,7 +368,8 @@ export class PropertyRepository {
           url: publicUrl,
           alt_text: `${propertyId} image ${i + 1}`,
           is_hero: i === heroIndex,
-          sort_order: i
+          sort_order: i,
+          uploaded_by: uploadedBy
         })
       }
 
@@ -446,7 +448,8 @@ export class PropertyRepository {
             url: '/images/house-linden.jpg',
             alt_text: 'Modern Villa Georgetown',
             is_hero: true,
-            sort_order: 1
+            sort_order: 1,
+            uploaded_by: 'agent1'
           }
         ],
         amenities: ['Swimming Pool', 'Garden', 'Security System'],
@@ -489,7 +492,8 @@ export class PropertyRepository {
             url: '/images/apt-georgetown.jpg',
             alt_text: 'Luxury Apartment New Amsterdam',
             is_hero: true,
-            sort_order: 1
+            sort_order: 1,
+            uploaded_by: 'agent1'
           }
         ],
         amenities: ['River View', 'Balcony', 'Elevator'],
@@ -530,7 +534,8 @@ export class PropertyRepository {
             url: '/images/local-business.jpg',
             alt_text: 'Commercial Space Linden',
             is_hero: true,
-            sort_order: 1
+            sort_order: 1,
+            uploaded_by: 'agent1'
           }
         ],
         amenities: ['High Traffic Area', 'Parking', 'Security'],

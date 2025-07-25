@@ -18,6 +18,7 @@ export interface PropertyImages {
   alt_text: string
   is_hero: boolean
   sort_order: number
+  uploaded_by: string // Supabase profile id of uploader
 }
 
 export interface PropertyFeatures {
