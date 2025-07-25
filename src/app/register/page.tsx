@@ -18,6 +18,7 @@ export default function RegisterPage() {
     company: "",
     buyingBudget: "",
     rentalBudget: "",
+    promoCode: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -43,6 +44,15 @@ export default function RegisterPage() {
     setError("");
 
     try {
+      // Check for elite promo code
+      const ELITE_PROMO_CODE = "ELITE-ADMIN-2025-XYZ!@#";
+      let agentTier = "basic";
+      let promoCodeUsed = null;
+      if (formData.promoCode.trim() === ELITE_PROMO_CODE) {
+        agentTier = "elite";
+        promoCodeUsed = ELITE_PROMO_CODE;
+      }
+
       // Register with Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -53,6 +63,8 @@ export default function RegisterPage() {
             user_types: userType.join(", "),
             mobile: formData.mobile,
             company: formData.company,
+            agent_tier: agentTier,
+            promo_code_used: promoCodeUsed,
           },
         },
       });
@@ -89,13 +101,15 @@ export default function RegisterPage() {
 
             <input
               type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
+              name="promoCode"
+              placeholder="Promo Code (optional)"
+              value={formData.promoCode}
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
-              required
             />
+            <p className="text-xs text-gray-500 mt-1 mb-2">
+              <span className="font-semibold text-green-700">Note:</span> If you have a special promo code, enter it here for instant access to premium features.
+            </p>
 
             <input
               type="email"
@@ -136,6 +150,9 @@ export default function RegisterPage() {
               onChange={handleInputChange}
               className="w-full border border-gray-300 rounded-md px-4 py-2"
             />
+            <p className="text-xs text-gray-500 mt-1 mb-2">
+              <span className="font-semibold text-green-700">Note:</span> Providing a business or company name and company email is optional, but applicants with business/company details may receive priority approval.
+            </p>
 
             <div>
               <p className="font-medium mb-2 text-green-700">What best describes you?</p>

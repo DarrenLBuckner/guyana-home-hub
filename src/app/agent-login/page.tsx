@@ -34,14 +34,42 @@ export default function AgentLogin() {
           .single()
 
         if (profileError || !profile) {
-          setError('Unable to verify account status')
-          return
+          console.log('PROFILE FETCH ERROR:', profileError, profile);
+          setError('Unable to verify account status');
+          return;
         }
 
-        // Ensure user is marked as agent
-        const isAgent = profile.user_type === 'agent' || profile.roles === 'agent'
+        // Ensure user is marked as agent (handle both single and multiple roles)
+        // Debug: log the profile object
+        console.log('AGENT LOGIN PROFILE:', profile);
+
+        // Robust agent role check
+        let rolesArr = [];
+        if (typeof profile.roles === 'string') {
+          rolesArr = profile.roles.split(',').map(r => r.trim().toLowerCase());
+        } else if (Array.isArray(profile.roles)) {
+          rolesArr = profile.roles.map(r => r.trim().toLowerCase());
+        }
+        const isAgent = profile.user_type === 'agent' || rolesArr.includes('agent');
+
         if (!isAgent) {
-          setError('This login is for registered agents only')
+          setError('This login is for registered agents only');
+          return;
+        }
+
+        // Check for dual admin+agent roles - only allowed for Qumar
+        const hasAdminRole = profile.user_type === 'admin' || 
+                           profile.roles === 'admin' ||
+                           (typeof profile.roles === 'string' && profile.roles.includes('admin')) ||
+                           (Array.isArray(profile.roles) && profile.roles.includes('admin'))
+        
+        if (hasAdminRole && data.user.email !== 'qumar.torrington@gmail.com') {
+          setError('Dual admin/agent access is restricted')
+          return
+        }
+        // Only Qumar can have dual admin+agent roles
+        if (hasAdminRole && data.user.email !== 'qumartorrington@caribbeanhomehub.com') {
+          setError('Dual admin/agent access is restricted')
           return
         }
 
