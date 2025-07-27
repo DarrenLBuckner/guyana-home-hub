@@ -1,12 +1,26 @@
 -- EMAIL NOTIFICATION WEBHOOK SETUP
 -- This creates a webhook function that sends emails when notifications are created
 
+-- Enable the HTTP extension for making webhook requests
+CREATE EXTENSION IF NOT EXISTS http;
+
+-- First, create the admin_notifications table if it doesn't exist
+CREATE TABLE IF NOT EXISTS admin_notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_email TEXT NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  data JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create a function to send email notifications via HTTP request
 CREATE OR REPLACE FUNCTION send_admin_email_notification()
 RETURNS TRIGGER AS $$
 DECLARE
-  webhook_url TEXT := 'https://your-webhook-url.com/admin-notifications'; -- Replace with actual webhook
+  webhook_url TEXT := 'https://guyanahomehub.com/api/admin-notifications'; -- Replace with your actual domain
   payload JSONB;
+  http_response RECORD;
 BEGIN
   -- Build the email payload
   payload := jsonb_build_object(
@@ -17,20 +31,49 @@ BEGIN
     'data', NEW.data
   );
   
-  -- Log the notification (for now, until webhook is set up)
-  INSERT INTO admin_email_log (
-    notification_id,
-    admin_email,
-    email_payload,
-    status,
-    created_at
-  ) VALUES (
-    NEW.id,
-    NEW.admin_email,
-    payload,
-    'pending',
-    NOW()
-  );
+  -- Make HTTP request to send email (requires http extension)
+  BEGIN
+    SELECT * INTO http_response FROM extensions.http_post(
+      webhook_url,
+      payload::text,
+      'application/json'
+    );
+    
+    -- Log successful email attempt
+    INSERT INTO admin_email_log (
+      notification_id,
+      admin_email,
+      email_payload,
+      status,
+      sent_at,
+      created_at
+    ) VALUES (
+      NEW.id,
+      NEW.admin_email,
+      payload,
+      CASE WHEN http_response.status_code = 200 THEN 'sent' ELSE 'failed' END,
+      NOW(),
+      NOW()
+    );
+    
+  EXCEPTION WHEN OTHERS THEN
+    -- Log failed email attempt
+    INSERT INTO admin_email_log (
+      notification_id,
+      admin_email,
+      email_payload,
+      status,
+      error_message,
+      created_at
+    ) VALUES (
+      NEW.id,
+      NEW.admin_email,
+      payload,
+      'failed',
+      SQLERRM,
+      NOW()
+    );
+  END;
   
   RETURN NEW;
 END;
