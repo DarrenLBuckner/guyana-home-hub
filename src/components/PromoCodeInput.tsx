@@ -44,26 +44,27 @@ export function PromoCodeInput({
   }, [selectedTier])
 
   const handleValidatePromoCode = async () => {
-    if (!promoCode.trim() || !userId) return
+    if (!promoCode.trim()) return
 
     const trimmedCode = promoCode.trim().toUpperCase()
-    
+
     if (!PromoCodeService.isValidPromoCodeFormat(trimmedCode)) {
       setValidationResult({ valid: false, error: 'Invalid promo code format' })
       return
     }
 
     setIsValidating(true)
-    
+
     try {
+      // Pass undefined for userId if not present
       const result = await PromoCodeService.validatePromoCode(
         trimmedCode,
         userEmail,
-        userId
+        userId || undefined
       )
-      
+
       setValidationResult(result)
-      
+
       if (result.valid) {
         // Check if code applies to selected tier
         if (result.applies_to !== 'all' && result.applies_to !== selectedTier) {
@@ -183,7 +184,7 @@ export function PromoCodeInput({
             </div>
             <Button
               onClick={handleValidatePromoCode}
-              disabled={!promoCode.trim() || isValidating || !userId}
+              disabled={!promoCode.trim() || isValidating}
               className="px-4"
             >
               {isValidating ? (

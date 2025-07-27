@@ -43,7 +43,8 @@ export default function AgentLogin() {
         // Debug: log the profile object
         console.log('AGENT LOGIN PROFILE:', profile);
 
-        // Robust agent role check
+
+        // Only allow agent role or user_type
         let rolesArr = [];
         if (typeof profile.roles === 'string') {
           rolesArr = profile.roles.split(',').map(r => r.trim().toLowerCase());
@@ -55,22 +56,6 @@ export default function AgentLogin() {
         if (!isAgent) {
           setError('This login is for registered agents only');
           return;
-        }
-
-        // Check for dual admin+agent roles - only allowed for Qumar
-        const hasAdminRole = profile.user_type === 'admin' || 
-                           profile.roles === 'admin' ||
-                           (typeof profile.roles === 'string' && profile.roles.includes('admin')) ||
-                           (Array.isArray(profile.roles) && profile.roles.includes('admin'))
-        
-        if (hasAdminRole && data.user.email !== 'qumar.torrington@gmail.com') {
-          setError('Dual admin/agent access is restricted')
-          return
-        }
-        // Only Qumar can have dual admin+agent roles
-        if (hasAdminRole && data.user.email !== 'qumartorrington@caribbeanhomehub.com') {
-          setError('Dual admin/agent access is restricted')
-          return
         }
 
         // Redirect based on vetting status
