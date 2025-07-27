@@ -182,6 +182,23 @@ export default function AgentRegistration() {
               interest: 'Just Looking'
             }
           ])
+// Notify admin of new agent registration
+await supabase
+  .from('admin_notifications')
+  .insert([
+    {
+      admin_email: 'info@guyanahomehub.com',
+      title: 'New Agent Registration',
+      message: `${formData.firstName} ${formData.lastName} (${formData.email}) registered as an agent.`,
+      data: {
+        agentId: data.user.id,
+        agentEmail: formData.email,
+        agentName: `${formData.firstName} ${formData.lastName}`,
+        agentTier: formData.selectedTier
+      },
+      created_at: new Date().toISOString()
+    }
+  ])
 
         if (profileError) {
           console.error('Profile creation error:', profileError)
