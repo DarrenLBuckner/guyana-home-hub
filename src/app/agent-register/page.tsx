@@ -179,7 +179,8 @@ export default function AgentRegistration() {
               country: formData.country,
               user_type: 'agent',
               roles: 'agent',
-              interest: 'Just Looking'
+              interest: 'Just Looking',
+              vetting_status: 'pending_review' // Default status for new agents
             }
           ])
 // Notify admin of new agent registration
