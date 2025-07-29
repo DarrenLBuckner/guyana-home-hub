@@ -50,10 +50,26 @@ export default function AgentPending() {
     const interval = setInterval(checkStatus, 30000)
     return () => clearInterval(interval)
   }, [supabase, router])
+  const [user, setUser] = useState<any>(null)
+  const [status, setStatus] = useState<string>('pending')
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.push('/')
+    router.push('/agent-login')
+  }
+
+  const checkStatusUpdate = async () => {
+    if (!user) return
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('vetting_status')
+      .eq('id', user.id)
+      .single()
+    if (profile?.vetting_status === 'approved') {
+      router.push('/agent/home')
+    } else {
+      window.location.reload()
+    }
   }
 
   if (loading) {

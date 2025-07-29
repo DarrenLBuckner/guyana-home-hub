@@ -166,7 +166,7 @@ export default function AgentRegistration() {
       } else if (data.user) {
         setCurrentUserId(data.user.id)
         
-        // Create profile record
+        // Create profile record with pending status
         const { error: profileError } = await supabase
           .from('profiles')
           .insert([
@@ -180,7 +180,40 @@ export default function AgentRegistration() {
               user_type: 'agent',
               roles: 'agent',
               interest: 'Just Looking',
-              vetting_status: 'pending_review' // Default status for new agents
+              vetting_status: 'pending' // Set to pending for admin approval
+            }
+          ])
+
+        // Create agent vetting record with all application details
+        const { error: vettingError } = await supabase
+          .from('agent_vetting')
+          .insert([
+            {
+              agent_id: data.user.id,
+              agent_email: formData.email,
+              agent_name: `${formData.firstName} ${formData.lastName}`,
+              agent_tier: formData.selectedTier,
+              status: 'pending',
+              application_data: {
+                agentLicense: formData.agentLicense,
+                businessName: formData.businessName,
+                businessEmail: formData.businessEmail,
+                yearsExperience: formData.yearsExperience,
+                propertiesSold: formData.propertiesSold,
+                averagePropertyValue: formData.averagePropertyValue,
+                specializations: formData.specializations,
+                reference1: {
+                  name: formData.reference1Name,
+                  email: formData.reference1Email,
+                  phone: formData.reference1Phone
+                },
+                reference2: {
+                  name: formData.reference2Name,
+                  email: formData.reference2Email,
+                  phone: formData.reference2Phone
+                }
+              },
+              created_at: new Date().toISOString()
             }
           ])
 // Notify admin of new agent registration
@@ -203,6 +236,25 @@ await supabase
 
         if (profileError) {
           console.error('Profile creation error:', profileError)
+        }
+
+        if (vettingError) {
+          console.error('Agent vetting record error:', vettingError)
+        }
+
+        // Send welcome email with verification link
+        try {
+          await fetch('/api/send-welcome-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: formData.email,
+              name: `${formData.firstName} ${formData.lastName}`,
+              userId: data.user.id
+            })
+          })
+        } catch (emailError) {
+          console.error('Welcome email error:', emailError)
         }
 
         // Apply promo code if one was selected

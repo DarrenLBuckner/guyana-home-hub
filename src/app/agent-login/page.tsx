@@ -61,22 +61,25 @@ export default function AgentLogin() {
         // Redirect based on vetting status
         switch (profile.vetting_status) {
           case 'not_submitted':
-            router.push('/agent/vetting')
+            router.push('/agent/pending?status=not_submitted')
             break
+          case 'pending':
           case 'pending_review':
-            router.push('/agent/pending')
+            router.push('/agent/pending?status=pending')
             break
           case 'needs_revision':
-            router.push('/agent/vetting')
+          case 'needs_more_info':
+            router.push('/agent/pending?status=needs_more_info')
             break
           case 'approved':
             router.push('/agent/home')
             break
           case 'rejected':
-            router.push('/agent/rejected')
+          case 'denied':
+            router.push('/agent/pending?status=denied')
             break
           default:
-            router.push('/agent/vetting')
+            router.push('/agent/pending?status=pending')
         }
       }
     } catch (err) {

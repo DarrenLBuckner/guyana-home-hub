@@ -20,14 +20,28 @@ interface Property {
   agent_email?: string
 }
 
+interface AgentApplication {
+  id: string
+  agent_id: string
+  agent_email: string
+  agent_name: string
+  agent_tier: string
+  status: 'pending' | 'approved' | 'denied' | 'needs_more_info'
+  application_data: any
+  created_at: string
+  updated_at?: string
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const supabase = createClient()
   const [properties, setProperties] = useState<Property[]>([])
+  const [agentApplications, setAgentApplications] = useState<AgentApplication[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [userRole, setUserRole] = useState<string>('')
   const [showUserManagement, setShowUserManagement] = useState(false)
+  const [showAgentManagement, setShowAgentManagement] = useState(false)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
@@ -68,6 +82,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (user) {
       fetchProperties()
+      fetchAgentApplications()
     }
   }, [user])
 
@@ -148,6 +163,76 @@ export default function AdminDashboard() {
     }
   }
 
+  const fetchAgentApplications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('agent_vetting')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Error fetching agent applications:', error)
+        setAgentApplications([])
+      } else {
+        setAgentApplications(data || [])
+      }
+    } catch (error) {
+      console.error('Unexpected error fetching agent applications:', error)
+      setAgentApplications([])
+    }
+  }
+
+  const updateAgentStatus = async (agentId: string, newStatus: 'approved' | 'denied' | 'needs_more_info', message?: string) => {
+    try {
+      // Update agent_vetting table
+      const { error: vettingError } = await supabase
+        .from('agent_vetting')
+        .update({ 
+          status: newStatus, 
+          updated_at: new Date().toISOString(),
+          admin_notes: message || null
+        })
+        .eq('agent_id', agentId)
+
+      if (vettingError) {
+        console.error('Error updating agent vetting status:', vettingError)
+        return
+      }
+
+      // Update profiles table vetting_status
+      const profileStatus = newStatus === 'approved' ? 'approved' : 'pending'
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ vetting_status: profileStatus })
+        .eq('id', agentId)
+
+      if (profileError) {
+        console.error('Error updating profile vetting status:', profileError)
+        return
+      }
+
+      // Send notification email
+      const agent = agentApplications.find(app => app.agent_id === agentId)
+      if (agent) {
+        await fetch('/api/send-agent-status-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: agent.agent_email,
+            name: agent.agent_name,
+            status: newStatus,
+            message: message || ''
+          })
+        })
+      }
+
+      // Refresh agent applications
+      fetchAgentApplications()
+    } catch (error) {
+      console.error('Error updating agent status:', error)
+    }
+  }
+
   const updatePropertyStatus = async (propertyId: string, newStatus: string) => {
     try {
       const { error } = await supabase
@@ -184,6 +269,10 @@ export default function AdminDashboard() {
   const pendingCount = properties.filter(p => p.status === 'pending').length
   const approvedCount = properties.filter(p => p.status === 'approved').length
   const rejectedCount = properties.filter(p => p.status === 'rejected').length
+  
+  const pendingAgents = agentApplications.filter(a => a.status === 'pending').length
+  const approvedAgents = agentApplications.filter(a => a.status === 'approved').length
+  const deniedAgents = agentApplications.filter(a => a.status === 'denied').length
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-12">
@@ -206,6 +295,12 @@ export default function AdminDashboard() {
               </button>
             )}
             <button
+              onClick={() => setShowAgentManagement(!showAgentManagement)}
+              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            >
+              {showAgentManagement ? 'Hide' : 'Show'} Agent Management
+            </button>
+            <button
               onClick={handleSignOut}
               className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
             >
@@ -217,16 +312,32 @@ export default function AdminDashboard() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-yellow-100 p-6 rounded-lg border-l-4 border-yellow-500">
-            <h3 className="text-lg font-semibold text-yellow-800">Pending Review</h3>
+            <h3 className="text-lg font-semibold text-yellow-800">Properties Pending</h3>
             <p className="text-3xl font-bold text-yellow-900">{pendingCount}</p>
           </div>
           <div className="bg-green-100 p-6 rounded-lg border-l-4 border-green-500">
-            <h3 className="text-lg font-semibold text-green-800">Approved</h3>
+            <h3 className="text-lg font-semibold text-green-800">Properties Approved</h3>
             <p className="text-3xl font-bold text-green-900">{approvedCount}</p>
           </div>
           <div className="bg-red-100 p-6 rounded-lg border-l-4 border-red-500">
-            <h3 className="text-lg font-semibold text-red-800">Rejected</h3>
+            <h3 className="text-lg font-semibold text-red-800">Properties Rejected</h3>
             <p className="text-3xl font-bold text-red-900">{rejectedCount}</p>
+          </div>
+        </div>
+
+        {/* Agent Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-blue-100 p-6 rounded-lg border-l-4 border-blue-500">
+            <h3 className="text-lg font-semibold text-blue-800">Agents Pending</h3>
+            <p className="text-3xl font-bold text-blue-900">{pendingAgents}</p>
+          </div>
+          <div className="bg-emerald-100 p-6 rounded-lg border-l-4 border-emerald-500">
+            <h3 className="text-lg font-semibold text-emerald-800">Agents Approved</h3>
+            <p className="text-3xl font-bold text-emerald-900">{approvedAgents}</p>
+          </div>
+          <div className="bg-gray-100 p-6 rounded-lg border-l-4 border-gray-500">
+            <h3 className="text-lg font-semibold text-gray-800">Agents Denied</h3>
+            <p className="text-3xl font-bold text-gray-900">{deniedAgents}</p>
           </div>
         </div>
 
@@ -247,7 +358,126 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Agent Management Section */}
+        {showAgentManagement && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Agent Applications</h2>
+            {agentApplications.length === 0 ? (
+              <p className="text-gray-600">No agent applications found.</p>
+            ) : (
+              <div className="grid gap-6">
+                {agentApplications.map((agent) => (
+                  <div key={agent.id} className="bg-white p-6 rounded-lg shadow border">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{agent.agent_name}</h3>
+                        <p className="text-gray-600">{agent.agent_email}</p>
+                        <p className="text-sm text-gray-500">
+                          Applied: {new Date(agent.created_at).toLocaleDateString()}
+                        </p>
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${
+                          agent.status === 'pending' 
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : agent.status === 'approved'
+                            ? 'bg-green-100 text-green-800'
+                            : agent.status === 'denied'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {agent.status.charAt(0).toUpperCase() + agent.status.slice(1).replace('_', ' ')}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-semibold text-green-600">{agent.agent_tier} Plan</p>
+                      </div>
+                    </div>
+
+                    {/* Application Details */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded">
+                      <div>
+                        <h4 className="font-medium text-gray-700">Experience</h4>
+                        <p className="text-sm text-gray-600">
+                          {agent.application_data.yearsExperience} years • {agent.application_data.propertiesSold} properties sold
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Avg. value: {agent.application_data.averagePropertyValue}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-700">Business Info</h4>
+                        <p className="text-sm text-gray-600">
+                          {agent.application_data.businessName || 'Independent Agent'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {agent.application_data.businessEmail || 'No business email'}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-700">Specializations</h4>
+                        <p className="text-sm text-gray-600">
+                          {agent.application_data.specializations?.join(', ') || 'None listed'}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-700">License</h4>
+                        <p className="text-sm text-gray-600">
+                          {agent.application_data.agentLicense || 'No license provided'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* References */}
+                    <div className="mb-4">
+                      <h4 className="font-medium text-gray-700 mb-2">References</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="text-sm">
+                          <p className="font-medium">{agent.application_data.reference1?.name}</p>
+                          <p className="text-gray-600">{agent.application_data.reference1?.email}</p>
+                          <p className="text-gray-600">{agent.application_data.reference1?.phone}</p>
+                        </div>
+                        <div className="text-sm">
+                          <p className="font-medium">{agent.application_data.reference2?.name}</p>
+                          <p className="text-gray-600">{agent.application_data.reference2?.email}</p>
+                          <p className="text-gray-600">{agent.application_data.reference2?.phone}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    {agent.status === 'pending' && (
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => updateAgentStatus(agent.agent_id, 'approved')}
+                          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                        >
+                          ✅ Approve Agent
+                        </button>
+                        <button
+                          onClick={() => updateAgentStatus(agent.agent_id, 'denied')}
+                          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                        >
+                          ❌ Deny Agent
+                        </button>
+                        <button
+                          onClick={() => {
+                            const message = prompt('What additional information do you need?')
+                            if (message) updateAgentStatus(agent.agent_id, 'needs_more_info', message)
+                          }}
+                          className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                        >
+                          📝 Request More Info
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Properties List */}
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Property Listings</h2>
         {properties.length === 0 ? (
           <p className="text-gray-600">No properties found.</p>
         ) : (
