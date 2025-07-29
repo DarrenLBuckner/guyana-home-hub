@@ -234,6 +234,20 @@ await supabase
     }
   ])
 
+        // Send branded welcome email to agent
+        await fetch('/api/send-welcome-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            tier: formData.selectedTier
+          })
+        })
+
         if (profileError) {
           console.error('Profile creation error:', profileError)
         }
