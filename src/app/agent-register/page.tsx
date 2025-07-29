@@ -242,21 +242,7 @@ await supabase
           console.error('Agent vetting record error:', vettingError)
         }
 
-        // Send welcome email with verification link
-        try {
-          await fetch('/api/send-welcome-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: formData.email,
-              name: `${formData.firstName} ${formData.lastName}`,
-              userId: data.user.id
-            })
-          })
-        } catch (emailError) {
-          console.error('Welcome email error:', emailError)
-        }
-
+        
         // Apply promo code if one was selected
         if (appliedPromoCode?.valid) {
           try {
