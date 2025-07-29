@@ -163,126 +163,144 @@ export default function AgentRegistration() {
 
       if (error) {
         setError(error.message)
-      } else if (data.user) {
-        setCurrentUserId(data.user.id)
-        
-        // Create profile record with pending status
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: formData.email,
-              first_name: formData.firstName,
-              last_name: formData.lastName,
-              phone: formData.phone,
-              country: formData.country,
-              user_type: 'agent',
-              roles: 'agent',
-              interest: 'Just Looking',
-              vetting_status: 'pending' // Set to pending for admin approval
-            }
-          ])
+        setLoading(false)
+        return
+      }
 
-        // Create agent vetting record with all application details
-        const { error: vettingError } = await supabase
-          .from('agent_vetting')
-          .insert([
-            {
-              agent_id: data.user.id,
-              agent_email: formData.email,
-              agent_name: `${formData.firstName} ${formData.lastName}`,
-              agent_tier: formData.selectedTier,
-              status: 'pending',
-              application_data: {
-                agentLicense: formData.agentLicense,
-                businessName: formData.businessName,
-                businessEmail: formData.businessEmail,
-                yearsExperience: formData.yearsExperience,
-                propertiesSold: formData.propertiesSold,
-                averagePropertyValue: formData.averagePropertyValue,
-                specializations: formData.specializations,
-                reference1: {
-                  name: formData.reference1Name,
-                  email: formData.reference1Email,
-                  phone: formData.reference1Phone
-                },
-                reference2: {
-                  name: formData.reference2Name,
-                  email: formData.reference2Email,
-                  phone: formData.reference2Phone
-                }
-              },
-              created_at: new Date().toISOString()
-            }
-          ])
-// Notify admin of new agent registration
-await supabase
-  .from('admin_notifications')
-  .insert([
-    {
-      admin_email: 'info@guyanahomehub.com',
-      title: 'New Agent Registration',
-      message: `${formData.firstName} ${formData.lastName} (${formData.email}) registered as an agent.`,
-      data: {
-        agentId: data.user.id,
-        agentEmail: formData.email,
-        agentName: `${formData.firstName} ${formData.lastName}`,
-        agentTier: formData.selectedTier
-      },
-      created_at: new Date().toISOString()
-    }
-  ])
+      if (!data.user) {
+        setError('Registration failed: No user returned.')
+        setLoading(false)
+        return
+      }
 
-        // Send branded welcome email to agent
-        await fetch('/api/send-welcome-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+      setCurrentUserId(data.user.id)
+
+      // Create profile record with pending status
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: data.user.id,
             email: formData.email,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            tier: formData.selectedTier
-          })
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            country: formData.country,
+            user_type: 'agent',
+            roles: 'agent',
+            interest: 'Just Looking',
+            vetting_status: 'pending' // Set to pending for admin approval
+          }
+        ])
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError)
+        setError('Profile creation failed. Please contact support.')
+        setLoading(false)
+        return
+      }
+
+      // Create agent vetting record with all application details
+      const { error: vettingError } = await supabase
+        .from('agent_vetting')
+        .insert([
+          {
+            agent_id: data.user.id,
+            agent_email: formData.email,
+            agent_name: `${formData.firstName} ${formData.lastName}`,
+            agent_tier: formData.selectedTier,
+            status: 'pending',
+            application_data: {
+              agentLicense: formData.agentLicense,
+              businessName: formData.businessName,
+              businessEmail: formData.businessEmail,
+              yearsExperience: formData.yearsExperience,
+              propertiesSold: formData.propertiesSold,
+              averagePropertyValue: formData.averagePropertyValue,
+              specializations: formData.specializations,
+              reference1: {
+                name: formData.reference1Name,
+                email: formData.reference1Email,
+                phone: formData.reference1Phone
+              },
+              reference2: {
+                name: formData.reference2Name,
+                email: formData.reference2Email,
+                phone: formData.reference2Phone
+              }
+            },
+            created_at: new Date().toISOString()
+          }
+        ])
+
+      if (vettingError) {
+        console.error('Agent vetting record error:', vettingError)
+        setError('Agent vetting record creation failed. Please contact support.')
+        setLoading(false)
+        return
+      }
+
+      // Notify admin of new agent registration
+      const { error: adminNotifyError } = await supabase
+        .from('admin_notifications')
+        .insert([
+          {
+            admin_email: 'info@guyanahomehub.com',
+            title: 'New Agent Registration',
+            message: `${formData.firstName} ${formData.lastName} (${formData.email}) registered as an agent.`,
+            data: {
+              agentId: data.user.id,
+              agentEmail: formData.email,
+              agentName: `${formData.firstName} ${formData.lastName}`,
+              agentTier: formData.selectedTier
+            },
+            created_at: new Date().toISOString()
+          }
+        ])
+      if (adminNotifyError) {
+        console.error('Admin notification error:', adminNotifyError)
+      }
+
+      // Send branded welcome email to agent
+      await fetch('/api/send-welcome-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          tier: formData.selectedTier,
+          message: `Welcome to Guyana Home Hub!\n\nWe're excited to have you join our community of trusted property professionals.\n\nTo keep your account secure and activate your access, you'll receive a second email from our parent company, Caribbean Home Hub, with a confirmation link. Please click that link to verify your email address.\n\nIf you don't see the confirmation email in your inbox within a few minutes, please check your spam or junk folder and mark it as 'Not Spam' so you don't miss important updates.\n\nThank you for joining us – we're here to support your success!`
         })
+      })
 
-        if (profileError) {
-          console.error('Profile creation error:', profileError)
-        }
+      // Apply promo code if one was selected
+      if (appliedPromoCode?.valid) {
+        try {
+          const { PromoCodeService } = await import('@/lib/promo-code-service')
+          const promoResult = await PromoCodeService.applyPromoCode(
+            appliedPromoCode.code!,
+            data.user.id,
+            formData.email,
+            formData.selectedTier
+          )
 
-        if (vettingError) {
-          console.error('Agent vetting record error:', vettingError)
-        }
-
-        
-        // Apply promo code if one was selected
-        if (appliedPromoCode?.valid) {
-          try {
-            const { PromoCodeService } = await import('@/lib/promo-code-service')
-            const promoResult = await PromoCodeService.applyPromoCode(
-              appliedPromoCode.code!,
-              data.user.id,
-              formData.email,
-              formData.selectedTier
-            )
-            
-            if (promoResult.applied) {
-              alert(`Registration successful! Your promo code "${appliedPromoCode.code}" has been applied. Please check your email to verify your account.`)
-            } else {
-              alert('Registration successful! However, there was an issue applying your promo code. Please contact support at info@guyanahomehub.com. Please check your email to verify your account.')
-            }
-          } catch (promoError) {
-            console.error('Promo code application error:', promoError)
+          if (promoResult.applied) {
+            alert(`Registration successful! Your promo code "${appliedPromoCode.code}" has been applied. Please check your email to verify your account.`)
+          } else {
             alert('Registration successful! However, there was an issue applying your promo code. Please contact support at info@guyanahomehub.com. Please check your email to verify your account.')
           }
-        } else {
-          alert('Registration successful! Please check your email to verify your account.')
+        } catch (promoError) {
+          console.error('Promo code application error:', promoError)
+          alert('Registration successful! However, there was an issue applying your promo code. Please contact support at info@guyanahomehub.com. Please check your email to verify your account.')
         }
-        
-        router.push('/agent-login')
+      } else {
+        alert('Registration successful! Please check your email to verify your account.')
       }
+
+      router.push('/agent-login')
     } catch (err) {
       setError('An unexpected error occurred')
       console.error('Registration error:', err)
