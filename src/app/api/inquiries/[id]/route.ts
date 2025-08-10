@@ -1,101 +1,57 @@
-import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const supabase = createClient()
+    const id = params.id
+
+    const { data: inquiry, error } = await supabase
+      .from('inquiries')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 404 })
+    }
+
+    return NextResponse.json(inquiry)
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch inquiry' },
+      { status: 500 }
+    )
+  }
+}
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createClient()
-    const { id: inquiryId } = await params
+    const supabase = createClient()
+    const id = params.id
     const body = await request.json()
 
-    // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const {
-      status,
-      priority,
-      agent_notes,
-      agent_response
-    } = body
-
-    // Verify the inquiry belongs to the authenticated user
-    const { data: inquiry, error: fetchError } = await supabase
+    const { data, error } = await supabase
       .from('inquiries')
-      .select('agent_id')
-      .eq('id', inquiryId)
+      .update(body)
+      .eq('id', id)
+      .select()
       .single()
 
-    if (fetchError || !inquiry) {
-      return NextResponse.json(
-        { error: 'Inquiry not found' },
-        { status: 404 }
-      )
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    if (inquiry.agent_id !== user.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized to update this inquiry' },
-        { status: 403 }
-      )
-    }
-
-    // Prepare update data
-    const updateData: any = {
-      updated_at: new Date().toISOString()
-    }
-
-    if (status) updateData.status = status
-    if (priority) updateData.priority = priority
-    if (agent_notes !== undefined) updateData.agent_notes = agent_notes
-    if (agent_response !== undefined) {
-      updateData.agent_response = agent_response
-      updateData.responded_at = new Date().toISOString()
-    }
-
-    // Update the inquiry
-    const { data: updatedInquiry, error: updateError } = await supabase
-      .from('inquiries')
-      .update(updateData)
-      .eq('id', inquiryId)
-      .select(`
-        *,
-        properties (
-          title,
-          location,
-          price,
-          price_type,
-          image_urls,
-          hero_index
-        )
-      `)
-      .single()
-
-    if (updateError) {
-      console.error('Error updating inquiry:', updateError)
-      return NextResponse.json(
-        { error: 'Failed to update inquiry' },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json({
-      success: true,
-      inquiry: updatedInquiry,
-      message: 'Inquiry updated successfully'
-    })
-
+    return NextResponse.json(data)
   } catch (error) {
-    console.error('API Error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to update inquiry' },
       { status: 500 }
     )
   }
@@ -103,65 +59,25 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createClient()
-    const { id: inquiryId } = await params
+    const supabase = createClient()
+    const id = params.id
 
-    // Check authentication
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    // Verify the inquiry belongs to the authenticated user
-    const { data: inquiry, error: fetchError } = await supabase
-      .from('inquiries')
-      .select('agent_id')
-      .eq('id', inquiryId)
-      .single()
-
-    if (fetchError || !inquiry) {
-      return NextResponse.json(
-        { error: 'Inquiry not found' },
-        { status: 404 }
-      )
-    }
-
-    if (inquiry.agent_id !== user.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized to delete this inquiry' },
-        { status: 403 }
-      )
-    }
-
-    // Delete the inquiry
-    const { error: deleteError } = await supabase
+    const { error } = await supabase
       .from('inquiries')
       .delete()
-      .eq('id', inquiryId)
+      .eq('id', id)
 
-    if (deleteError) {
-      console.error('Error deleting inquiry:', deleteError)
-      return NextResponse.json(
-        { error: 'Failed to delete inquiry' },
-        { status: 500 }
-      )
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Inquiry deleted successfully'
-    })
-
+    return NextResponse.json({ message: 'Inquiry deleted successfully' })
   } catch (error) {
-    console.error('API Error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to delete inquiry' },
       { status: 500 }
     )
   }
