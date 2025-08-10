@@ -6,6 +6,12 @@ const nextConfig = {
   eslint: {
   ignoreDuringBuilds: true,
 },
+  experimental: {
+    typedRoutes: false,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -13,6 +19,10 @@ const nextConfig = {
       '@components': path.resolve(__dirname, 'src/components'),
       '@components/layout': path.resolve(__dirname, 'src/components/layout'),
     };
+    
+    // Exclude backend folder from compilation
+    config.resolve.alias['@backend'] = false;
+    
     return config;
   },
 };
