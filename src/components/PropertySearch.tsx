@@ -1,8 +1,6 @@
 'use client'
-
 // Enhanced Property Search - Zillow-style Search Experience
 // src/components/PropertySearch.tsx
-
 import React, { useState, useCallback, useMemo } from 'react'
 import { Search, MapPin, Filter, Grid, List, SortAsc, Map } from 'lucide-react'
 import { PropertyFilters } from './PropertyFilters'
@@ -11,8 +9,16 @@ import { LoadingSpinner } from './ui/LoadingSpinner'
 import { Property, PropertyFilters as IPropertyFilters, PropertySortOptions } from '@/types/property'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
-import { useProperties } from '@/hooks/useProperties'
 import { useDebounce } from '@/hooks/useDebounce'
+import { PhoneInput } from 'react-international-phone'
+import 'react-international-phone/style.css'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+
+// Elite Promo Code Configuration
+const ELITE_PROMO_CODES = [
+  "GUYANA-AGENT-ELITE-2025-LAUNCH"
+];
 
 interface PropertySearchProps {
   initialFilters?: IPropertyFilters
@@ -25,6 +31,9 @@ export function PropertySearch({
   showMap = false,
   className 
 }: PropertySearchProps) {
+  const supabase = createClient()
+  const router = useRouter()
+
   const [filters, setFilters] = useState<IPropertyFilters>(initialFilters)
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'map'>('grid')
   const [showFilters, setShowFilters] = useState(false)
@@ -33,6 +42,11 @@ export function PropertySearch({
     field: 'created_at', 
     direction: 'desc' 
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [formData, setFormData] = useState<any>({})
+  const [loading, setLoading] = useState(false)
+  const [selectedUserTypes, setSelectedUserTypes] = useState<string[]>([])
+  const [elitePromoCodeValid, setElitePromoCodeValid] = useState(false)
 
   // Debounce search terms to avoid excessive API calls
   const debouncedFilters = useDebounce(filters, 300)
@@ -43,15 +57,91 @@ export function PropertySearch({
     isLoading,
     error,
     refetch
-  } = useProperties(
-    debouncedFilters,
-    sortBy,
-    1,
-    { enabled: true }
-  )
-
+  } = { data: { properties: [], total: 0 }, isLoading: false, error: null, refetch: () => {} }
   const properties = propertiesData?.properties || []
   const totalCount = propertiesData?.total || 0
+
+  const validateForm = () => {
+    // Placeholder for form validation
+    return true;
+  }
+
+  const handlePromoCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const code = e.target.value.toUpperCase();
+    setFormData(prev => ({ ...prev, promoCode: code }));
+    // Validate promo code
+    setElitePromoCodeValid(ELITE_PROMO_CODES.includes(code));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Reset previous errors
+    setErrors({});
+
+    // Validate the entire form
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Validate Promo Code
+      let agentTier = "basic";
+      let promoCodeUsed = null;
+
+      if (ELITE_PROMO_CODES.includes(formData.promoCode)) {
+        agentTier = "elite";
+          promoCodeUsed = formData.promoCode;
+      } else if (formData.promoCode) {
+          setErrors(prev => ({
+            ...prev,
+          promoCode: "Invalid or expired promo code"
+          }));
+          setLoading(false);
+          return;
+    }
+      // Registration with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+            user_types: selectedUserTypes.join(", "),
+            mobile: formData.mobile,
+            whatsapp_number: formData.whatsappNumber || null,
+            company: formData.company || null,
+            agent_tier: agentTier,
+            promo_code_used: promoCodeUsed,
+            buying_budget: formData.buyingBudget || null,
+            rental_budget: formData.rentalBudget || null
+          },
+        },
+      });
+
+      if (error) {
+        // Handle Supabase specific errors
+        setErrors(prev => ({
+          ...prev,
+          submit: error.message || "Registration failed"
+        }));
+      } else if (data.user) {
+        // Successful registration
+        alert("Registration successful! Please check your email to verify your account.");
+        router.push("/signin");
+      }
+    } catch (err) {
+      // Catch any unexpected errors
+      setErrors(prev => ({
+        ...prev,
+        submit: "An unexpected error occurred. Please try again."
+      }));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFiltersChange = useCallback((newFilters: IPropertyFilters) => {
     setFilters(newFilters)
@@ -114,6 +204,12 @@ export function PropertySearch({
 
   return (
     <div className={cn("space-y-6", className)}>
+      {errors.submit && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {errors.submit}
+        </div>
+      )}
+
       {/* Quick Search Bar */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <div className="flex flex-col lg:flex-row gap-4">
@@ -137,7 +233,7 @@ export function PropertySearch({
               className="w-full lg:w-64 pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
             />
           </div>
-          <Button
+          <Button 
             onClick={() => setShowFilters(!showFilters)}
             variant="outline"
             className="px-6 py-3 flex items-center"
@@ -149,9 +245,23 @@ export function PropertySearch({
                 {getActiveFiltersCount}
               </span>
             )}
-          </Button>
-        </div>
-      </div>
+              </Button>
+            </div>
+        <div>
+          <input
+            placeholder="Promo Code (Optional)"
+            type="text"
+            value={formData.promoCode}
+            onChange={handlePromoCodeChange}
+            className="w-full border border-gray-300 rounded-md px-4 py-2 mt-4"
+        />
+          {formData.promoCode && (
+            <p className={`text-xs mt-1 ${elitePromoCodeValid ? 'text-green-600' : 'text-red-600'}`}>
+              {elitePromoCodeValid ? "Valid Elite Promo Code ✓" : "Invalid or Expired Promo Code"}
+            </p>
+      )}
+    </div>
+          </div>
 
       {/* Advanced Filters */}
       {showFilters && (
@@ -160,8 +270,8 @@ export function PropertySearch({
           onFiltersChangeAction={handleFiltersChange}
           showAdvanced={showAdvancedFilters}
           onToggleAdvancedAction={() => setShowAdvancedFilters(!showAdvancedFilters)}
-        />
-      )}
+                />
+          )}
 
       {/* Results Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -187,15 +297,15 @@ export function PropertySearch({
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
             >
               {sortOptions.map((option) => (
-                <option 
-                  key={`${option.field}-${option.direction}`} 
+                <option
+                  key={`${option.field}-${option.direction}`}
                   value={`${option.field}-${option.direction}`}
                 >
                   {option.label}
                 </option>
               ))}
             </select>
-          </div>
+    </div>
 
           {/* View Mode Toggle */}
           <div className="flex border border-gray-300 rounded-lg overflow-hidden">
@@ -203,8 +313,8 @@ export function PropertySearch({
               onClick={() => setViewMode('grid')}
               className={cn(
                 "px-3 py-2 text-sm font-medium transition-colors",
-                viewMode === 'grid' 
-                  ? "bg-green-600 text-white" 
+                viewMode === 'grid'
+                  ? "bg-green-600 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               )}
             >
@@ -214,8 +324,8 @@ export function PropertySearch({
               onClick={() => setViewMode('list')}
               className={cn(
                 "px-3 py-2 text-sm font-medium transition-colors",
-                viewMode === 'list' 
-                  ? "bg-green-600 text-white" 
+                viewMode === 'list'
+                  ? "bg-green-600 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-50"
               )}
             >
@@ -226,8 +336,8 @@ export function PropertySearch({
                 onClick={() => setViewMode('map')}
                 className={cn(
                   "px-3 py-2 text-sm font-medium transition-colors",
-                  viewMode === 'map' 
-                    ? "bg-green-600 text-white" 
+                  viewMode === 'map'
+                    ? "bg-green-600 text-white"
                     : "bg-white text-gray-700 hover:bg-gray-50"
                 )}
               >
@@ -237,7 +347,6 @@ export function PropertySearch({
           </div>
         </div>
       </div>
-
       {/* Results Content */}
       {error ? (
         <div className="text-center py-12">
@@ -261,7 +370,7 @@ export function PropertySearch({
             <h3 className="text-lg font-semibold">No properties found</h3>
             <p className="text-sm">Try adjusting your search criteria or filters</p>
           </div>
-          <Button 
+          <Button
             onClick={() => {
               setFilters({})
               setShowFilters(false)
@@ -286,7 +395,7 @@ export function PropertySearch({
           {/* List/Grid View */}
           {viewMode !== 'map' && (
             <div className={cn(
-              viewMode === 'grid' 
+              viewMode === 'grid'
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 : "space-y-6"
             )}>
