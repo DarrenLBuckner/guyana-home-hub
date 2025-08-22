@@ -1,7 +1,8 @@
-'use client'
+"use client"
 
 import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@/lib/supabase/client'
+import backendSupabase from '@/lib/supabase/backendClient'
 import Link from 'next/link'
 import { 
   MapPin,
@@ -52,95 +53,9 @@ interface PropertiesListingProps {
 export default function PropertiesListing({ 
   title, 
   filterType = 'all', 
-  showFilters = true 
+  showFilters = true
 }: PropertiesListingProps) {
-  const supabase = createClientComponentClient()
-  
-  // Mock data for testing - replace with database when fixed
-  const mockProperties: Property[] = [
-    {
-      id: 'mock-1',
-      title: 'Luxury Villa with Pool and Garden',
-      description: 'Beautiful 4-bedroom villa with swimming pool, garden, and security system',
-      price: 150000000,
-      location: 'Bel Air Park, Georgetown',
-      region: 'Region 4 (Demerara-Mahaica)',
-      property_type: 'house',
-      price_type: 'sale',
-      bedrooms: 4,
-      bathrooms: 3,
-      home_size: '3500',
-      lot_size: '8000',
-      features: ['Pool', 'Garden', 'Security Estate', 'AC', 'Security System', 'Fenced', 'Backup Generator'],
-      image_urls: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
-      hero_index: 0,
-      status: 'approved',
-      user_id: 'test-user-1',
-      created_at: '2024-01-01T00:00:00Z'
-    },
-    {
-      id: 'mock-2',
-      title: 'Pet-Friendly Family Home with Fruit Trees',
-      description: 'Charming 3-bedroom home with mature fruit trees and pet-friendly features',
-      price: 85000000,
-      location: 'Diamond, East Bank Demerara',
-      region: 'Region 4 (Demerara-Mahaica)',
-      property_type: 'house',
-      price_type: 'sale',
-      bedrooms: 3,
-      bathrooms: 2,
-      home_size: '2200',
-      lot_size: '12000',
-      features: ['Pet Friendly', 'Garden', 'AC', 'Fenced', 'Backup Generator'],
-      image_urls: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
-      hero_index: 0,
-      status: 'approved',
-      user_id: 'test-user-2',
-      created_at: '2024-01-01T00:00:00Z'
-    },
-    {
-      id: 'mock-3',
-      title: 'Modern Townhouse in Security Estate',
-      description: 'Brand new 3-bedroom townhouse in gated community with pool and gym',
-      price: 95000000,
-      location: 'Turkeyen, Greater Georgetown',
-      region: 'Region 4 (Demerara-Mahaica)',
-      property_type: 'house',
-      price_type: 'sale',
-      bedrooms: 3,
-      bathrooms: 2,
-      home_size: '1800',
-      lot_size: '2500',
-      features: ['Security Estate', 'AC', 'Pool', 'Garage', 'Security System'],
-      image_urls: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
-      hero_index: 0,
-      status: 'approved',
-      user_id: 'test-user-3',
-      created_at: '2024-01-01T00:00:00Z'
-    },
-    {
-      id: 'mock-4',
-      title: 'Apartment with WiFi and Cable TV',
-      description: 'Modern 1-bedroom apartment with all amenities and balcony',
-      price: 45000000,
-      location: 'Camp Street, Georgetown',
-      region: 'Region 4 (Demerara-Mahaica)',
-      property_type: 'apartment',
-      price_type: 'sale',
-      bedrooms: 1,
-      bathrooms: 1,
-      home_size: '800',
-      lot_size: null,
-      features: ['Furnished', 'WiFi', 'Cable TV', 'AC', 'Backup Generator'],
-      image_urls: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'],
-      hero_index: 0,
-      status: 'approved',
-      user_id: 'test-user-4',
-      created_at: '2024-01-01T00:00:00Z'
-    }
-  ]
-
-  const [properties, setProperties] = useState<Property[]>(mockProperties)
+  const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showContactModal, setShowContactModal] = useState(false)
@@ -155,6 +70,24 @@ export default function PropertiesListing({
   const [bedrooms, setBedrooms] = useState('')
   const [bathrooms, setBathrooms] = useState('')
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+
+  useEffect(() => {
+    async function fetchProperties() {
+      setLoading(true);
+      const { data, error } = await backendSupabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'draft');
+      if (error) {
+        console.error('Error fetching properties:', error);
+        setProperties([]);
+      } else {
+        setProperties(data || []);
+      }
+      setLoading(false);
+    }
+    fetchProperties();
+  }, []);
 
   const regions = [
     'Region 1 (Barima-Waini)',
@@ -478,7 +411,11 @@ export default function PropertiesListing({
                   
                   <div className="flex items-center text-gray-600 mb-2">
                     <MapPin className="h-4 w-4 mr-1" />
-                    <span className="text-sm">{property.location}</span>
+                    <span className="text-sm">{property.location
+                      ? (typeof property.location === 'object'
+                          ? `${property.location.city ?? ''}${property.location.city && property.location.country ? ', ' : ''}${property.location.country ?? ''}`
+                          : property.location)
+                      : 'Location not specified'}</span>
                   </div>
 
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{property.description}</p>

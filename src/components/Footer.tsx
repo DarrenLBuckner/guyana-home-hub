@@ -61,18 +61,22 @@ export default function Footer() {
               <div className="text-xs font-semibold text-green-700 mb-1">
                 For Agents
               </div>
-              <Link
-                href="/agent-register"
+              <a
+                href="https://portal.guyanahomehub.com/agent-register"
                 className="text-sm hover:text-green-700 block"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Agent Registration
-              </Link>
-              <Link
-                href="/agent-login"
+                Agent Registration (Portal)
+              </a>
+              <a
+                href="https://portal.guyanahomehub.com/agent-login"
                 className="text-sm text-gray-500 hover:text-green-700 block mt-1"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                Agent Login
-              </Link>
+                Agent Login (Portal)
+              </a>
             </li>
             <li className="mt-4">
               <Link href="/privacy" className="hover:text-green-700">

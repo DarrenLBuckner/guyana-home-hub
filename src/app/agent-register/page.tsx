@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import backendSupabase from '@/lib/supabase/backendClient'
 import { Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react'
 import { PromoCodeInput } from '@/components/PromoCodeInput'
 import { PromoCodeValidationResult } from '@/types/promo-code'
@@ -16,7 +16,7 @@ interface PasswordRequirement {
 
 export default function AgentRegistration() {
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = backendSupabase
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -300,7 +300,7 @@ export default function AgentRegistration() {
         alert('Registration successful! Please check your email to verify your account.')
       }
 
-      router.push('/agent-login')
+  router.push('/agent-register/success')
     } catch (err) {
       setError('An unexpected error occurred')
       console.error('Registration error:', err)

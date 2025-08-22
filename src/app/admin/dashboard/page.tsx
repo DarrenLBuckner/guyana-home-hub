@@ -1,3 +1,6 @@
+// This file has been removed. The admin dashboard now lives in the portal project.
+// Please refer to the portal project for the updated admin dashboard functionality.
+// Thank you for your understanding.
 'use client'
 
 import { useState, useEffect } from 'react'

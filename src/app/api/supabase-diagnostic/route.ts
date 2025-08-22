@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 export async function GET() {
   try {
     const supabase = createClient()
-    const results = {}
+  const results: any = {}
     
     // Check agent_vetting table
     const { data: agentData, error: agentError, count: agentCount } = await supabase

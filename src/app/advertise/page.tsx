@@ -10,28 +10,31 @@ const industries = [
     title: 'For Sale by Owner (FSBO)',
     subtitle: 'List your home without an agent',
     image: '/images/list-my-home.jpg',
-    href: '/list-owner',
+    href: 'https://portal.guyanahomehub.com/list-home',
     badge: 'Most Popular',
     description: 'Sell your property directly and save on commission fees',
-    isPrimary: true
+    isPrimary: true,
+    external: true
   },
   {
     title: 'List My Rental Property',
     subtitle: 'For landlords and property owners',
     image: '/images/list-my-rental.jpg',
-    href: '/list-rental',
+    href: 'https://portal.guyanahomehub.com/list-rental',
     badge: 'Flat Fee',
     description: 'Advertise your rental property to qualified tenants',
-    isPrimary: true
+    isPrimary: true,
+    external: true
   },
   {
     title: 'Join Our Premier Agent Network',
     subtitle: 'Exclusive agent opportunities',
     image: '/images/agent-list-property.jpg',
-    href: '/list-agent',
+    href: 'https://portal.guyanahomehub.com/agent-register',
     badge: 'Up to 2 Months Free',
     description: 'Professional listing tools and lead generation',
-    isPrimary: true
+    isPrimary: true,
+    external: true
   },
   
   // Professional Services
@@ -39,42 +42,42 @@ const industries = [
     title: 'I am an agent or broker',
     subtitle: 'Real estate professional services',
     image: '/images/agent-broker.jpg',
-    href: '/agent-register',
+    href: '/coming-soon/agent-broker',
     description: 'Connect with buyers and sellers across Guyana'
   },
   {
     title: 'I am a property manager',
     subtitle: 'Property management services',
     image: '/images/property-manager.jpg',
-    href: '/contact',
+    href: '/coming-soon/property-manager',
     description: 'Manage multiple properties and tenant relationships'
   },
   {
     title: 'I am a landlord',
     subtitle: 'Property rental services',
     image: '/images/landlord.jpg',
-    href: '/list-rental',
+    href: '/coming-soon/landlord',
     description: 'Find reliable tenants for your properties'
   },
   {
     title: 'I am a lender or loan officer',
     subtitle: 'Financial services',
     image: '/images/loan-officer.jpg',
-    href: '/contact',
+    href: '/coming-soon/lender',
     description: 'Offer mortgage and financing solutions'
   },
   {
     title: 'I am a builder',
     subtitle: 'Construction and development',
     image: '/images/builder.jpg',
-    href: '/contact',
+    href: '/coming-soon/builder',
     description: 'Showcase new developments and projects'
   },
   {
     title: 'I am a local business',
     subtitle: 'Real estate related services',
     image: '/images/local-business.jpg',
-    href: '/contact',
+    href: '/coming-soon/local-business',
     description: 'Partner with Guyana premier real estate platform'
   },
 ];
@@ -130,11 +133,23 @@ export default function AdvertisePage() {
                 <p className="text-gray-600 mb-4 text-sm">
                   {service.description}
                 </p>
-                <Link href={service.href}>
-                  <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition font-semibold">
-                    Get Started
-                  </button>
-                </Link>
+                {service.external ? (
+                  <a
+                    href={service.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition font-semibold">
+                      Get Started
+                    </button>
+                  </a>
+                ) : (
+                  <Link href={service.href}>
+                    <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition font-semibold">
+                      Get Started
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           ))}

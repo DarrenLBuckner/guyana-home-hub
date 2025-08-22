@@ -85,6 +85,16 @@ export default function Navbar() {
           >
             Developments
           </Link>
+          {/* [CHH-SYS] Admin Login link */}
+          <a
+            href="https://portalghh.com/admin-login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-4 px-3 py-1 rounded bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow border border-red-700"
+            title="Super Admin Portal Login"
+          >
+            [CHH-SYS]
+          </a>
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -215,6 +225,17 @@ export default function Navbar() {
               Advertise
             </button>
           </Link>
+          {/* [CHH-SYS] Admin Login link for mobile */}
+          <a
+            href="https://portalghh.com/admin-login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block mt-2 px-3 py-2 rounded bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow border border-red-700 text-center"
+            title="Super Admin Portal Login"
+            onClick={closeMenu}
+          >
+            [CHH-SYS]
+          </a>
         </div>
       )}
     </header>
