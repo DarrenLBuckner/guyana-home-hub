@@ -142,7 +142,7 @@ export default function PropertiesListing({
     
     // Filter by listing type (sale/rent) based on page
     const matchesListingType = filterType === 'all' || 
-      (filterType === 'sale' && property.listing_type === 'sale') ||
+      (filterType === 'sale' && (property.listing_type === 'sale' || !property.listing_type)) ||
       (filterType === 'rent' && property.listing_type === 'rent')
     
     let matchesPrice = true
