@@ -30,6 +30,7 @@ interface Property {
   location: string
   region?: string
   property_type: string
+  listing_type?: string
   price_type?: string
   bedrooms: number
   bathrooms: number
