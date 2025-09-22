@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 // GET /api/favorites/check?property_id=xxx - Check if property is favorited by user
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()

@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 // GET /api/favorites - Get user's favorites
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
 // POST /api/favorites - Add property to favorites
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -124,7 +124,7 @@ export async function POST(request: NextRequest) {
 // DELETE /api/favorites - Remove property from favorites
 export async function DELETE(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()

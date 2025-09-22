@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 // POST /api/notifications/subscribe - Subscribe to property alerts
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 // GET /api/notifications/subscribe - Get user's notification preferences
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Check authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser()
