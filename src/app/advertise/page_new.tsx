@@ -36,11 +36,11 @@ const industries = [
   
   // Professional Services
   {
-    title: 'I am an agent or broker',
-    subtitle: 'Real estate professional services',
-    image: '/images/agent-broker.jpg',
-    href: '/agent-register',
-    description: 'Connect with buyers and sellers across Guyana'
+  title: 'I am an agent or broker',
+  subtitle: 'Real estate professional services',
+  image: '/images/agent-broker.jpg',
+  href: 'https://portalhomehub.com/register',
+  description: 'Connect with buyers and sellers across Guyana'
   },
   {
     title: 'I am a property manager',

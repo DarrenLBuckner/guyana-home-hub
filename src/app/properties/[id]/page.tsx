@@ -2,16 +2,22 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
+import { ChevronLeft, ChevronRight, Home } from 'lucide-react'
 
 interface Property {
   id: string
   title: string
-  address: string
-  price: number
   description: string
+  price: number
+  location?: string | null
+  city?: string
+  region?: string
   bedrooms?: number
   bathrooms?: number
-  square_feet?: number
+  house_size_value?: number
+  house_size_unit?: string
+  images?: string[]
+  hero_index?: number
 }
 
 export default function PropertyDetailPage() {
@@ -21,6 +27,7 @@ export default function PropertyDetailPage() {
   const [property, setProperty] = useState<Property | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   useEffect(() => {
     if (id) {
@@ -60,10 +67,98 @@ export default function PropertyDetailPage() {
     )
   }
 
+  const nextImage = () => {
+    if (property?.images) {
+      setCurrentImageIndex((prev) => (prev + 1) % property.images!.length)
+    }
+  }
+
+  const prevImage = () => {
+    if (property?.images) {
+      setCurrentImageIndex((prev) => (prev - 1 + property.images!.length) % property.images!.length)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-6">{property.title}</h1>
+        
+        {/* Image Gallery */}
+        {property.images && property.images.length > 0 ? (
+          <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="relative h-96">
+              <img
+                src={property.images[currentImageIndex]}
+                alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center absolute inset-0">
+                <Home className="h-16 w-16 text-gray-400" />
+              </div>
+              
+              {property.images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </button>
+                </>
+              )}
+              
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                {currentImageIndex + 1} / {property.images.length}
+              </div>
+            </div>
+            
+            {property.images.length > 1 && (
+              <div className="p-4 bg-gray-50">
+                <div className="flex space-x-2 overflow-x-auto">
+                  {property.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                        index === currentImageIndex ? 'border-green-600' : 'border-gray-200'
+                      }`}
+                    >
+                      <img
+                        src={image}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                      <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center">
+                        <Home className="h-6 w-6 text-gray-400" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700">
+            No images found or images array is empty
+          </div>
+        )}
         
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-6">
@@ -81,16 +176,19 @@ export default function PropertyDetailPage() {
                   {property.bathrooms} bath
                 </div>
               )}
-              {property.square_feet && (
+              {property.house_size_value && (
                 <div className="text-lg text-gray-600">
-                  {property.square_feet} sq ft
+                  {property.house_size_value} {property.house_size_unit || 'sq ft'}
                 </div>
               )}
             </div>
             
             <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Address</h2>
-              <p className="text-gray-600">{property.address}</p>
+              <h2 className="text-xl font-semibold mb-2">Location</h2>
+              <p className="text-gray-600">
+                {property.city && property.region ? `${property.city}, ${property.region}` : 
+                 property.city || property.region || property.location || 'Location not specified'}
+              </p>
             </div>
             
             {property.description && (

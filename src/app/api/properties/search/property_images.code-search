@@ -1,8 +1,0 @@
-# Query: property_images
-
-3 results - 1 file
-
-src\app\search\SearchClient.tsx:
-  12:   property-images: { url: string }[]
-  50:             {p.property-images?.[0]?.url && (
-  53:                 src={p.property-images[0].url}

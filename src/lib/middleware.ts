@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function middleware(request: NextRequest) {
   try {
     const response = NextResponse.next()
-    const supabase = createClient()
+  const supabase = await createClient()
 
     // Get session
     const {

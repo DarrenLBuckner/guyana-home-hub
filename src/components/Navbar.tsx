@@ -86,15 +86,7 @@ export default function Navbar() {
             Developments
           </Link>
           {/* [CHH-SYS] Admin Login link */}
-          <a
-            href="https://portalghh.com/admin-login"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-4 px-3 py-1 rounded bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow border border-red-700"
-            title="Super Admin Portal Login"
-          >
-            [CHH-SYS]
-          </a>
+          {/* Admin login link removed for production */}
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -198,19 +190,23 @@ export default function Navbar() {
               For Agents
             </div>
             <Link
-              href="/agent-register"
+              href="https://portalhomehub.com/register"
               className="block text-sm text-green-700 hover:text-green-800 pl-2"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={closeMenu}
             >
               Agent Registration
             </Link>
-            <Link
-              href="/agent-login"
+            <a
+              href="https://portalhomehub.com/login"
               className="block text-sm text-gray-500 hover:text-green-800 pl-2 mt-1"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={closeMenu}
             >
               Agent Login
-            </Link>
+            </a>
           </div>
           
           <Link
@@ -226,16 +222,7 @@ export default function Navbar() {
             </button>
           </Link>
           {/* [CHH-SYS] Admin Login link for mobile */}
-          <a
-            href="https://portalghh.com/admin-login"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mt-2 px-3 py-2 rounded bg-red-600 text-white font-bold hover:bg-red-700 transition-colors shadow border border-red-700 text-center"
-            title="Super Admin Portal Login"
-            onClick={closeMenu}
-          >
-            [CHH-SYS]
-          </a>
+          {/* Admin login link removed for production (mobile) */}
         </div>
       )}
     </header>

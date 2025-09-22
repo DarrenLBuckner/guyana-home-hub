@@ -54,15 +54,18 @@ export default function Footer() {
             </li>
             <li>
               <Link href="/register" className="hover:text-green-700">
-                Register
+                Customer Email Registration
               </Link>
+              <div className="text-xs text-gray-500 mt-1">
+                Register your email for a personalized experience.
+              </div>
             </li>
             <li className="mt-2 pt-2 border-t border-gray-300">
               <div className="text-xs font-semibold text-green-700 mb-1">
                 For Agents
               </div>
               <a
-                href="https://portal.guyanahomehub.com/agent-register"
+                href="https://portalhomehub.com/register"
                 className="text-sm hover:text-green-700 block"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -70,7 +73,7 @@ export default function Footer() {
                 Agent Registration (Portal)
               </a>
               <a
-                href="https://portal.guyanahomehub.com/agent-login"
+                href="https://portalhomehub.com/login"
                 className="text-sm text-gray-500 hover:text-green-700 block mt-1"
                 target="_blank"
                 rel="noopener noreferrer"

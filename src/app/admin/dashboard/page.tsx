@@ -269,9 +269,10 @@ export default function AdminDashboard() {
     )
   }
 
+  const offMarketCount = properties.filter(p => p.status === 'off_market').length
+  const availableCount = properties.filter(p => p.status === 'available').length
   const pendingCount = properties.filter(p => p.status === 'pending').length
-  const approvedCount = properties.filter(p => p.status === 'approved').length
-  const rejectedCount = properties.filter(p => p.status === 'rejected').length
+  const soldCount = properties.filter(p => p.status === 'sold' || p.status === 'rented').length
   
   const pendingAgents = agentApplications.filter(a => a.status === 'pending').length
   const approvedAgents = agentApplications.filter(a => a.status === 'approved').length
@@ -315,16 +316,20 @@ export default function AdminDashboard() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-yellow-100 p-6 rounded-lg border-l-4 border-yellow-500">
-            <h3 className="text-lg font-semibold text-yellow-800">Properties Pending</h3>
-            <p className="text-3xl font-bold text-yellow-900">{pendingCount}</p>
+            <h3 className="text-lg font-semibold text-yellow-800">Awaiting Review</h3>
+            <p className="text-3xl font-bold text-yellow-900">{offMarketCount}</p>
           </div>
           <div className="bg-green-100 p-6 rounded-lg border-l-4 border-green-500">
-            <h3 className="text-lg font-semibold text-green-800">Properties Approved</h3>
-            <p className="text-3xl font-bold text-green-900">{approvedCount}</p>
+            <h3 className="text-lg font-semibold text-green-800">Live Properties</h3>
+            <p className="text-3xl font-bold text-green-900">{availableCount}</p>
           </div>
-          <div className="bg-red-100 p-6 rounded-lg border-l-4 border-red-500">
-            <h3 className="text-lg font-semibold text-red-800">Properties Rejected</h3>
-            <p className="text-3xl font-bold text-red-900">{rejectedCount}</p>
+          <div className="bg-blue-100 p-6 rounded-lg border-l-4 border-blue-500">
+            <h3 className="text-lg font-semibold text-blue-800">Under Contract</h3>
+            <p className="text-3xl font-bold text-blue-900">{pendingCount}</p>
+          </div>
+          <div className="bg-purple-100 p-6 rounded-lg border-l-4 border-purple-500">
+            <h3 className="text-lg font-semibold text-purple-800">Sold/Rented</h3>
+            <p className="text-3xl font-bold text-purple-900">{soldCount}</p>
           </div>
         </div>
 
@@ -528,11 +533,13 @@ export default function AdminDashboard() {
                         <p className="text-sm text-gray-500">Agent: {property.agent_email}</p>
                       </div>
                       <span className={`px-3 py-1 rounded text-sm font-medium ${
-                        property.status === 'pending' 
+                        property.status === 'off_market' 
                           ? 'bg-yellow-100 text-yellow-800'
-                          : property.status === 'approved' 
+                          : property.status === 'available' 
                           ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                          : property.status === 'pending'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-purple-100 text-purple-800'
                       }`}>
                         {property.status.toUpperCase()}
                       </span>
@@ -566,52 +573,41 @@ export default function AdminDashboard() {
 
                     {/* Admin Action Buttons */}
                     <div className="flex gap-3">
+                      {property.status === 'off_market' && (
+                        <>
+                          <button
+                            onClick={() => updatePropertyStatus(property.id, 'available')}
+                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                          >
+                            ✅ Go Live
+                          </button>
+                          <button
+                            onClick={() => updatePropertyStatus(property.id, 'off_market')}
+                            className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                          >
+                            📋 Keep Off Market
+                          </button>
+                        </>
+                      )}
+                      {property.status === 'available' && (
+                        <>
+                          <div className="text-green-600 font-semibold">
+                            ✅ Property is LIVE - Property owner manages status changes
+                          </div>
+                        </>
+                      )}
                       {property.status === 'pending' && (
                         <>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'approved')}
-                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                          >
-                            ✅ Approve
-                          </button>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'rejected')}
-                            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                          >
-                            ❌ Reject
-                          </button>
+                          <div className="text-blue-600 font-semibold">
+                            🏠 Under Contract - Managed by property owner
+                          </div>
                         </>
                       )}
-                      {property.status === 'approved' && (
+                      {(property.status === 'sold' || property.status === 'rented') && (
                         <>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'pending')}
-                            className="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
-                          >
-                            📋 Move to Pending
-                          </button>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'rejected')}
-                            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                          >
-                            ❌ Reject
-                          </button>
-                        </>
-                      )}
-                      {property.status === 'rejected' && (
-                        <>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'pending')}
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                          >
-                            🔄 Reopen for Review
-                          </button>
-                          <button
-                            onClick={() => updatePropertyStatus(property.id, 'approved')}
-                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-                          >
-                            ✅ Approve
-                          </button>
+                          <div className="text-purple-600 font-semibold">
+                            🏆 {property.status === 'sold' ? 'SOLD' : 'RENTED'} - Listing Complete
+                          </div>
                         </>
                       )}
                     </div>

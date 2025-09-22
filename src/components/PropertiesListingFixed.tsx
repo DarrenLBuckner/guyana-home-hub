@@ -1,8 +1,6 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { createClientComponentClient } from '@/lib/supabase/client'
-import backendSupabase from '@/lib/supabase/backendClient'
 import Link from 'next/link'
 import { 
   MapPin,
@@ -37,7 +35,7 @@ interface Property {
   home_size?: string
   lot_size?: string | null
   features?: string[]
-  image_urls?: string[]
+  images?: string[]
   hero_index?: number
   status: string
   user_id: string
@@ -74,15 +72,16 @@ export default function PropertiesListing({
   useEffect(() => {
     async function fetchProperties() {
       setLoading(true);
-      const { data, error } = await backendSupabase
-        .from('properties')
-        .select('*')
-        .eq('status', 'draft');
-      if (error) {
+      try {
+        const response = await fetch('/api/properties');
+        if (!response.ok) {
+          throw new Error('Failed to fetch properties');
+        }
+        const result = await response.json();
+        setProperties(result.properties || []);
+      } catch (error) {
         console.error('Error fetching properties:', error);
         setProperties([]);
-      } else {
-        setProperties(data || []);
       }
       setLoading(false);
     }
@@ -136,6 +135,11 @@ export default function PropertiesListing({
     const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms)
     const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
     
+    // Filter by listing type (sale/rent) based on page
+    const matchesListingType = filterType === 'all' || 
+      (filterType === 'sale' && property.listing_type === 'sale') ||
+      (filterType === 'rent' && property.listing_type === 'rent')
+    
     let matchesPrice = true
     if (minPrice && property.price < parseInt(minPrice)) matchesPrice = false
     if (maxPrice && property.price > parseInt(maxPrice)) matchesPrice = false
@@ -145,7 +149,7 @@ export default function PropertiesListing({
         property.features && property.features.includes(feature)
       )
 
-    return matchesSearch && matchesRegion && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesFeatures
+    return matchesSearch && matchesRegion && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesFeatures && matchesListingType
   })
 
   if (loading) {
@@ -382,17 +386,21 @@ export default function PropertiesListing({
               }`}>
                 {/* Property Image */}
                 <div className={`relative ${viewMode === 'list' ? 'w-1/3' : 'h-48'}`}>
-                  {property.image_urls && property.image_urls.length > 0 ? (
+                  {property.images && property.images.length > 0 ? (
                     <img
-                      src={property.image_urls[property.hero_index || 0] || property.image_urls[0]}
+                      src={property.images[property.hero_index || 0] || property.images[0]}
                       alt={property.title}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <Home className="h-12 w-12 text-gray-400" />
-                    </div>
-                  )}
+                  ) : null}
+                  <div className={`w-full h-full bg-gray-200 flex items-center justify-center ${property.images && property.images.length > 0 ? 'hidden' : ''}`}>
+                    <Home className="h-12 w-12 text-gray-400" />
+                  </div>
                   <div className="absolute top-2 left-2">
                     <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-medium">
                       {property.price_type === 'rent' ? 'For Rent' : 'For Sale'}
@@ -411,11 +419,18 @@ export default function PropertiesListing({
                   
                   <div className="flex items-center text-gray-600 mb-2">
                     <MapPin className="h-4 w-4 mr-1" />
-                    <span className="text-sm">{property.location
-                      ? (typeof property.location === 'object'
-                          ? `${property.location.city ?? ''}${property.location.city && property.location.country ? ', ' : ''}${property.location.country ?? ''}`
-                          : property.location)
-                      : 'Location not specified'}</span>
+                    {(() => {
+                      const location = property.location as { city?: string; country?: string } | string | null;
+                      return (
+                        <span className="text-sm">
+                          {location
+                            ? typeof location === 'object'
+                              ? `${location.city ?? ''}${location.city && location.country ? ', ' : ''}${location.country ?? ''}`
+                              : location
+                            : 'Location not specified'}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{property.description}</p>
