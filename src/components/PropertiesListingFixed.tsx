@@ -27,21 +27,28 @@ interface Property {
   title: string
   description: string
   price: number
-  location: string
+  location: string | null
   region?: string
   property_type: string
-  listing_type?: string
+  listing_type: string
   price_type?: string
   bedrooms: number
   bathrooms: number
   home_size?: string
   lot_size?: string | null
-  features?: string[]
+  features?: string[] | null
   images?: string[]
   hero_index?: number
   status: string
   user_id: string
   created_at: string
+  // Additional fields from API
+  city?: string
+  neighborhood?: string
+  year_built?: number
+  amenities?: string[]
+  listed_by_type?: string
+  rental_type?: string | null
 }
 
 interface PropertiesListingProps {
@@ -141,9 +148,10 @@ export default function PropertiesListing({
     const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
     
     // Filter by listing type (sale/rent) based on page
+    const listingType = property.listing_type || 'sale' // Default to sale if missing
     const matchesListingType = filterType === 'all' || 
-      (filterType === 'sale' && (property.listing_type === 'sale' || !property.listing_type)) ||
-      (filterType === 'rent' && property.listing_type === 'rent')
+      (filterType === 'sale' && listingType === 'sale') ||
+      (filterType === 'rent' && listingType === 'rent')
     
     let matchesPrice = true
     if (minPrice && property.price < parseInt(minPrice)) matchesPrice = false
@@ -419,7 +427,7 @@ export default function PropertiesListing({
                         id: property.id,
                         title: property.title,
                         price: property.price,
-                        location: typeof property.location === 'string' ? property.location : '',
+                        location: property.location || '',
                         property_type: property.property_type,
                         listing_type: property.listing_type || 'sale'
                       })
