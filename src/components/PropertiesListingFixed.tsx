@@ -20,6 +20,7 @@ import {
   ChevronDown
 } from 'lucide-react'
 import ContactAgent from '@/components/ContactAgent'
+import { useFavorites } from '@/hooks/useFavorites'
 
 interface Property {
   id: string
@@ -58,6 +59,9 @@ export default function PropertiesListing({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showContactModal, setShowContactModal] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  
+  // Favorites hook
+  const { favoriteStatus, toggleFavorite, user } = useFavorites()
 
   // Filter states
   const [searchTerm, setSearchTerm] = useState('')
@@ -406,8 +410,33 @@ export default function PropertiesListing({
                       {property.price_type === 'rent' ? 'For Rent' : 'For Sale'}
                     </span>
                   </div>
-                  <button className="absolute top-2 right-2 p-1 bg-white rounded-full shadow hover:bg-gray-100">
-                    <Heart className="h-4 w-4 text-gray-600" />
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      toggleFavorite({
+                        id: property.id,
+                        title: property.title,
+                        price: property.price,
+                        location: typeof property.location === 'string' ? property.location : '',
+                        property_type: property.property_type,
+                        listing_type: property.listing_type || 'sale'
+                      })
+                    }}
+                    className={`absolute top-2 right-2 p-1 rounded-full shadow transition-colors ${
+                      favoriteStatus[property.id] 
+                        ? 'bg-red-100 hover:bg-red-200' 
+                        : 'bg-white hover:bg-gray-100'
+                    }`}
+                    title={favoriteStatus[property.id] ? 'Remove from favorites' : 'Add to favorites'}
+                  >
+                    <Heart 
+                      className={`h-4 w-4 transition-colors ${
+                        favoriteStatus[property.id] 
+                          ? 'text-red-500 fill-red-500' 
+                          : 'text-gray-600'
+                      }`} 
+                    />
                   </button>
                 </div>
 

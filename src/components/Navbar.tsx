@@ -3,9 +3,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
   const router = useRouter();
+  const { favoritesCount } = useFavorites();
 
   // Check authentication status
   useEffect(() => {
@@ -95,6 +97,18 @@ export default function Navbar() {
             <div className="text-gray-500">Loading...</div>
           ) : user ? (
             <div className="flex items-center space-x-4">
+              <Link 
+                href="/favorites" 
+                className="flex items-center hover:text-green-600 relative"
+                title="My Favorites"
+              >
+                <Heart className="h-5 w-5" />
+                {favoritesCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {favoritesCount > 9 ? '9+' : favoritesCount}
+                  </span>
+                )}
+              </Link>
               <span className="text-sm text-gray-600">
                 Welcome, {user.email?.split('@')[0]}
               </span>
@@ -167,6 +181,19 @@ export default function Navbar() {
               <div className="text-sm text-gray-600 mb-2">
                 Welcome, {user.email?.split('@')[0]}
               </div>
+              <Link
+                href="/favorites"
+                className="block text-green-700 hover:text-green-800 flex items-center mb-2"
+                onClick={closeMenu}
+              >
+                <Heart className="h-4 w-4 mr-2" />
+                My Favorites
+                {favoritesCount > 0 && (
+                  <span className="ml-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {favoritesCount}
+                  </span>
+                )}
+              </Link>
               <button 
                 onClick={handleSignOut}
                 className="block text-green-700 hover:text-green-800"
