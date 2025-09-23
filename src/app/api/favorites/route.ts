@@ -28,9 +28,13 @@ export async function GET(request: NextRequest) {
     const enrichedFavorites = await Promise.all(
       favorites.map(async (favorite) => {
         try {
-          // Try to get current property data
+          // Try to get current property data with site context
           const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
-          const response = await fetch(`${portalApiUrl}/api/public/properties/${favorite.property_id}`)
+          const response = await fetch(`${portalApiUrl}/api/public/properties/${favorite.property_id}`, {
+            headers: {
+              'x-site-id': 'guyana'
+            }
+          })
           
           if (response.ok) {
             const currentProperty = await response.json()

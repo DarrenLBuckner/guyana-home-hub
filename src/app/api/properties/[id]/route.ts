@@ -7,11 +7,12 @@ export async function GET(
   try {
     const { id } = await params
     
-    // Proxy request to backend portal
+    // Proxy request to backend portal with site context
     const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
     const response = await fetch(`${portalApiUrl}/api/public/properties/${id}`, {
       headers: {
         'Content-Type': 'application/json',
+        'x-site-id': 'guyana',
       },
     })
 

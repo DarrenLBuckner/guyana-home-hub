@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // Proxy request to backend portal
+    // Proxy request to backend portal with site filtering for Guyana
     const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
-    const response = await fetch(`${portalApiUrl}/api/public/properties`, {
+    const response = await fetch(`${portalApiUrl}/api/public/properties?site=guyana`, {
       headers: {
         'Content-Type': 'application/json',
+        'x-site-id': 'guyana',
       },
     })
 
