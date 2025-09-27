@@ -10,12 +10,12 @@
 ### Step 2: Find the Admin Login Link
 1. Scroll down to the very bottom of the page
 2. Look for the word **"USA"** in the footer
-3. Right next to "USA" you'll see **[CHH-SYS]**
+3. Right next to "USA" you'll see **[Staff Access]**
 4. Click on **[CHH-SYS]**
 
 ### Step 3: Enter Your Login Information
 1. You'll see an admin login page
-2. Enter your email: **qumartorrington@caribbeanhomehub.com**
+2. Enter your email: **qumar@portalhomehub.com**
 3. Enter your password (the one you created)
 4. Click **"Sign In as Admin"**
 
@@ -37,9 +37,9 @@
 - Contact Darren if you need help or have questions
 
 ## Quick Reference
-1. Go to **guyanahomehub.com**
-2. Scroll to bottom, click **[CHH-SYS]**
-3. Login: **qumartorrington@caribbeanhomehub.com**
+1. Go to **portalhomehub.com**
+2. Scroll to bottom, click **[Staff Access]**
+3. Login: **qumar@guyanahomehub.com**
 4. Enter your password
 5. Start managing!
 

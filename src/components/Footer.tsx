@@ -99,13 +99,15 @@ export default function Footer() {
         © {new Date().getFullYear()} Guyana Home Hub. All rights reserved.
         <br />
         A subsidiary of <strong>Caribbean Home Hub LLC</strong>, a registered company in Missouri, USA.{" "}
-        <Link 
-          href="/admin-login" 
+        <a 
+          href="https://portalhomehub.com/admin-login" 
           className="text-gray-400 hover:text-gray-500 text-xs"
           title="Corporate Access"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           [CHH-SYS]
-        </Link>
+        </a>
       </div>
     </footer>
   );
