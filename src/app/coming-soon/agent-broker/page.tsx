@@ -11,7 +11,7 @@ export default function ComingSoonAgentBroker() {
       <div className="flex flex-col items-center gap-2">
         <a href="mailto:info@guyanahomehub.com" className="text-green-700 underline font-medium">info@guyanahomehub.com</a>
         <a
-          href="https://wa.me/5920000000?text=Hi%20Guyana%20Home%20Hub%2C%20I'm%20interested%20in%20Agent%20and%20Broker%20services."
+          href="https://wa.me/5927629797?text=Hi%20Guyana%20Home%20Hub%2C%20I'm%20interested%20in%20Agent%20and%20Broker%20services."
           target="_blank"
           rel="noopener noreferrer"
           className="text-green-700 underline font-medium bg-green-50 px-3 py-1 rounded flex items-center gap-2"

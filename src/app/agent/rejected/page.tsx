@@ -143,7 +143,8 @@ export default function AgentRejected() {
           </p>
           <p className="text-sm text-gray-600">
             Email: agents@guyanahomehub.com<br />
-            Phone: +592-XXX-XXXX
+            Phone: <a href="tel:+5927629797" className="text-green-600 hover:text-green-700">+592 762 9797</a><br />
+            WhatsApp: <a href="https://wa.me/5927629797" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-700">+592 762 9797</a>
           </p>
         </div>
       </div>

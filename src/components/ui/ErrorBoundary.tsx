@@ -129,12 +129,18 @@ export class ErrorBoundary extends Component<Props, State> {
             {/* Support Information */}
             <div className="mt-6 pt-6 border-t border-gray-200">
               <p className="text-xs text-gray-500">
-                If this problem persists, please contact our support team at{' '}
-                <a 
+                If this problem persists, please contact our support team:<br />
+                Email: <a 
                   href="mailto:info@guyanahomehub.com" 
                   className="text-green-600 hover:text-green-700"
                 >
                   info@guyanahomehub.com
+                </a><br />
+                Phone/WhatsApp: <a 
+                  href="tel:+5927629797" 
+                  className="text-green-600 hover:text-green-700"
+                >
+                  +592 762 9797
                 </a>
               </p>
             </div>

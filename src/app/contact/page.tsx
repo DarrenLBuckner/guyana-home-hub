@@ -11,8 +11,14 @@ export default function ContactPage() {
             Get in touch with us for all your real estate needs in Guyana
           </p>
           <div className="bg-green-50 p-4 rounded-lg">
-            <p className="text-green-800 font-semibold">
+            <p className="text-green-800 font-semibold mb-2">
               Email us directly: <a href="mailto:info@guyanahomehub.com" className="underline">info@guyanahomehub.com</a>
+            </p>
+            <p className="text-green-800 font-semibold">
+              Call or text us: <a href="tel:+5927629797" className="underline">+592 762 9797</a>
+            </p>
+            <p className="text-green-700 text-sm mt-1">
+              (WhatsApp available for faster response)
             </p>
           </div>
         </div>
@@ -53,7 +59,7 @@ export default function ContactPage() {
 
           <div className="text-center pt-4">
             <a
-              href="https://wa.me/5926231234"
+              href="https://wa.me/5927629797"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600"

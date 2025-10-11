@@ -138,9 +138,9 @@ export default function PropertiesListing({
   }
 
   const filteredProperties = properties.filter(property => {
-    const matchesSearch = property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearch = property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesRegion = !selectedRegion || property.region === selectedRegion
     const matchesType = !selectedType || property.property_type === selectedType

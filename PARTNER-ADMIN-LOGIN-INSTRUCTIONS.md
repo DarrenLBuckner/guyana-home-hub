@@ -2,24 +2,26 @@
 
 ## How to Log Into Your Admin Dashboard
 
-### Step 1: Go to the Guyana Home Hub Website
+Login Option 1: Go to the Guyana Home Hub Website
 1. Open your web browser
-2. Type in: **guyanahomehub.com**
-3. Press Enter and wait for the page to load
+2. Type in: **guyanahomehub.com** 
+3. Go to footer [CHH-SYS]
+4. Press Enter and wait for the page to load
+5. Put in credentials to go to Dashboard
 
-### Step 2: Find the Admin Login Link
+Login Option 2:  Go to Portal Home Hub Website
 1. Scroll down to the very bottom of the page
-2. Look for the word **"USA"** in the footer
-3. Right next to "USA" you'll see **[Staff Access]**
-4. Click on **[CHH-SYS]**
+2. Look for the word **Staff Access"** in the footer
+3. Click on **[Staff Access]**
+4. Put in credentials to go to Dashboard
 
-### Step 3: Enter Your Login Information
+ Your Login Information
 1. You'll see an admin login page
-2. Enter your email: **qumar@portalhomehub.com**
-3. Enter your password (the one you created)
+2. Enter your email: **qumar@guyanahomehub.com**
+3. Enter your password (check your email or whatsapp)
 4. Click **"Sign In as Admin"**
 
-### Step 4: You're Logged In!
+ You're Logged In!
 - You'll automatically go to your admin dashboard
 - You can now manage properties and users
 - The page will show "Admin Dashboard" at the top
@@ -34,7 +36,7 @@
 ## Important Notes
 - Always log out when you're done
 - Don't share your login details with anyone
-- Contact Darren if you need help or have questions
+- Contact Me if you need help or have questions
 
 ## Quick Reference
 1. Go to **portalhomehub.com**
@@ -44,4 +46,4 @@
 5. Start managing!
 
 ---
-*Need help? Contact Darren Buckner*
+*Need help? Contact Qumar
