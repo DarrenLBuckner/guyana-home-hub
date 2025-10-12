@@ -16,6 +16,14 @@ interface Property {
   bathrooms?: number
   house_size_value?: number
   house_size_unit?: string
+  land_size_value?: number
+  land_size_unit?: string
+  year_built?: number
+  amenities?: string[]
+  features?: string[]
+  listed_by_type?: string
+  owner_email?: string
+  owner_whatsapp?: string
   images?: string[]
   hero_index?: number
 }
@@ -181,6 +189,16 @@ export default function PropertyDetailPage() {
                   {property.house_size_value} {property.house_size_unit || 'sq ft'}
                 </div>
               )}
+              {property.land_size_value && (
+                <div className="text-lg text-gray-600">
+                  {property.land_size_value} {property.land_size_unit || 'sq ft'} land
+                </div>
+              )}
+              {property.year_built && (
+                <div className="text-lg text-gray-600">
+                  Built in {property.year_built}
+                </div>
+              )}
             </div>
             
             <div className="mb-6">
@@ -198,13 +216,53 @@ export default function PropertyDetailPage() {
               </div>
             )}
             
-            <div className="flex gap-4">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
-                Contact Agent
-              </button>
-              <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
-                Save Property
-              </button>
+            {(property.amenities || property.features) && (
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Amenities & Features</h2>
+                <div className="flex flex-wrap gap-2">
+                  {(property.amenities || property.features || []).map((amenity, index) => (
+                    <span 
+                      key={index} 
+                      className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="space-y-3">
+              {property.listed_by_type === 'owner' && property.owner_email ? (
+                <div className="space-y-3">
+                  <h3 className="text-xl font-semibold">Contact Property Owner</h3>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <a 
+                      href={`mailto:${property.owner_email}`}
+                      className="flex-1 bg-blue-600 text-white text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      📧 Email Owner
+                    </a>
+                    {property.owner_whatsapp && (
+                      <a 
+                        href={`https://wa.me/${property.owner_whatsapp.replace(/[^0-9]/g, '')}`}
+                        className="flex-1 bg-green-600 text-white text-center py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        💬 WhatsApp Owner
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex gap-4">
+                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    Contact Agent
+                  </button>
+                  <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    Save Property
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
