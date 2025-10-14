@@ -32,10 +32,7 @@ export default function HomePage() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           <button
-            onClick={() => {
-              setShowBrowseCards(true);
-              setShowListCards(false);
-            }}
+            onClick={() => router.push('/properties')}
             className="bg-green-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-800 transition"
           >
             Browse Properties
@@ -174,10 +171,7 @@ export default function HomePage() {
               <p className="text-xl mb-6">Join thousands of satisfied customers who found their homes through Guyana Home Hub</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  onClick={() => {
-                    setShowBrowseCards(true);
-                    setShowListCards(false);
-                  }}
+                  onClick={() => router.push('/properties')}
                   className="bg-white text-green-700 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition"
                 >
                   Start Browsing Now

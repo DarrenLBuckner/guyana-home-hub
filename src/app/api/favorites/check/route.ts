@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic'
+
 // GET /api/favorites/check?property_id=xxx - Check if property is favorited by user
 export async function GET(request: NextRequest) {
   try {
