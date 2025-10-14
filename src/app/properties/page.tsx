@@ -5,6 +5,9 @@ import React from 'react'
 import { Metadata } from 'next'
 import PropertiesListing from '@/components/PropertiesListingFixed'
 
+// Force dynamic rendering - page uses useSearchParams
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Properties for Sale and Rent in Guyana | Real Estate Listings - Guyana Home Hub',
   description: 'Browse all available properties in Guyana. Find houses, apartments, commercial properties, and land for sale or rent in Georgetown, New Amsterdam, Linden, Berbice, Anna Regina and throughout the Caribbean.',

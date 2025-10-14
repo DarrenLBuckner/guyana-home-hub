@@ -2,6 +2,9 @@
 
 import PropertiesListingFixed from '@/components/PropertiesListingFixed'
 
+// Force dynamic rendering - page uses useSearchParams
+export const dynamic = 'force-dynamic'
+
 export default function BuyPage() {
   return (
     <PropertiesListingFixed 
