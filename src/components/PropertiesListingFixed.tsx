@@ -67,6 +67,7 @@ export default function PropertiesListing({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showContactModal, setShowContactModal] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  const [showFiltersModal, setShowFiltersModal] = useState(false)
   
   // Favorites hook
   const { favoriteStatus, toggleFavorite, user } = useFavorites()
@@ -178,18 +179,31 @@ export default function PropertiesListing({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-4xl font-bold text-green-700 mb-2">{title}</h1>
-          <p className="text-gray-600">{filteredProperties.length} properties found</p>
+      {/* Sticky Header - ALWAYS VISIBLE */}
+      <div className="sticky top-0 bg-white z-30 border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-green-700">{title}</h1>
+              <p className="text-gray-600 text-sm">{filteredProperties.length} properties found</p>
+            </div>
+            {showFilters && (
+              <button
+                onClick={() => setShowFiltersModal(true)}
+                className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 flex items-center gap-2 lg:hidden"
+              >
+                <Filter className="w-4 h-4" />
+                Filters
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Property24-style Filters */}
+        {/* Desktop Filters - Hidden on Mobile */}
         {showFilters && (
-          <div className="bg-gradient-to-r from-green-600 to-yellow-500 p-6 shadow-lg rounded-lg mb-8">
+          <div className="hidden lg:block bg-gradient-to-r from-green-600 to-yellow-500 p-6 shadow-lg rounded-lg mb-8">
             {/* Main Search Bar */}
             <div className="mb-6">
               <div className="flex gap-4">
@@ -552,6 +566,185 @@ export default function PropertiesListing({
             setSelectedProperty(null)
           }}
         />
+      )}
+
+      {/* Mobile Filter Drawer */}
+      {showFiltersModal && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setShowFiltersModal(false)}
+          />
+          
+          {/* Drawer */}
+          <div className="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl z-50 max-h-[90vh] overflow-y-auto animate-slide-up">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Filters</h2>
+                <button 
+                  onClick={() => setShowFiltersModal(false)}
+                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {/* Search */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <input
+                    type="text"
+                    placeholder="Search for properties..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+              </div>
+
+              {/* Filter Fields */}
+              <div className="space-y-4">
+                {/* Property Type */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                  <select
+                    value={selectedType}
+                    onChange={(e) => setSelectedType(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  >
+                    <option value="">All Types</option>
+                    <option value="house">House</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="land">Land</option>
+                    <option value="commercial">Commercial</option>
+                  </select>
+                </div>
+                
+                {/* Price Range */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {filterType === 'rent' ? 'Monthly Rent (GYD)' : 'Price (GYD)'}
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <select
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    >
+                      <option value="">Min Price</option>
+                      <option value="5000000">GYD 5M</option>
+                      <option value="10000000">GYD 10M</option>
+                      <option value="25000000">GYD 25M</option>
+                      <option value="50000000">GYD 50M</option>
+                      <option value="100000000">GYD 100M</option>
+                    </select>
+                    <select
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    >
+                      <option value="">Max Price</option>
+                      <option value="25000000">GYD 25M</option>
+                      <option value="50000000">GYD 50M</option>
+                      <option value="100000000">GYD 100M</option>
+                      <option value="200000000">GYD 200M</option>
+                      <option value="500000000">GYD 500M</option>
+                    </select>
+                  </div>
+                </div>
+                
+                {/* Beds/Baths */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
+                    <select
+                      value={bedrooms}
+                      onChange={(e) => setBedrooms(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    >
+                      <option value="">Any</option>
+                      <option value="1">1+</option>
+                      <option value="2">2+</option>
+                      <option value="3">3+</option>
+                      <option value="4">4+</option>
+                      <option value="5">5+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
+                    <select
+                      value={bathrooms}
+                      onChange={(e) => setBathrooms(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    >
+                      <option value="">Any</option>
+                      <option value="1">1+</option>
+                      <option value="2">2+</option>
+                      <option value="3">3+</option>
+                      <option value="4">4+</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Region */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                  <select
+                    value={selectedRegion}
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  >
+                    <option value="">All Regions</option>
+                    {regions.map(region => (
+                      <option key={region} value={region}>{region}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Advanced Filters - Collapsible */}
+                <details className="border-t pt-4">
+                  <summary className="font-medium cursor-pointer text-green-600 hover:text-green-700">
+                    + More Filters
+                  </summary>
+                  <div className="mt-4 space-y-3">
+                    {['Pet Friendly', 'Garden', 'Pool', 'Security Estate', 'AC', 'Security System', 'Fenced', 'Backup Generator', 'Garage', 'Furnished', 'WiFi', 'Cable TV', 'Kitchen Appliances', 'Washing Machine'].map((feature) => (
+                      <label key={feature} className="flex items-center gap-3 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedFeatures.includes(feature)}
+                          onChange={() => handleFeatureToggle(feature)}
+                          className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                        />
+                        <span className="text-gray-700">{feature}</span>
+                      </label>
+                    ))}
+                  </div>
+                </details>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="mt-8 flex gap-3">
+                {(selectedFeatures.length > 0 || searchTerm || selectedRegion || selectedType || minPrice || maxPrice || bedrooms || bathrooms) && (
+                  <button 
+                    onClick={clearAllFilters}
+                    className="flex-1 border-2 border-gray-300 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50"
+                  >
+                    Reset
+                  </button>
+                )}
+                <button 
+                  onClick={() => setShowFiltersModal(false)}
+                  className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500"
+                >
+                  Show {filteredProperties.length} Properties
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   )

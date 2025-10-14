@@ -27,3 +27,17 @@ body {
   background: var(--background);
   font-family: var(--font-sans);
 }
+
+/* Filter drawer slide-up animation */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
