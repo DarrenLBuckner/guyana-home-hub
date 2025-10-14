@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { 
   MapPin,
   Bed,
@@ -62,6 +63,7 @@ export default function PropertiesListing({
   filterType = 'all', 
   showFilters = true
 }: PropertiesListingProps) {
+  const searchParams = useSearchParams()
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -72,8 +74,8 @@ export default function PropertiesListing({
   // Favorites hook
   const { favoriteStatus, toggleFavorite, user } = useFavorites()
 
-  // Filter states
-  const [searchTerm, setSearchTerm] = useState('')
+  // Filter states - Initialize with URL parameters
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('location') || '')
   const [selectedRegion, setSelectedRegion] = useState('')
   const [selectedType, setSelectedType] = useState('')
   const [minPrice, setMinPrice] = useState('')

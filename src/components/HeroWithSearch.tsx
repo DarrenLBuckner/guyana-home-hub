@@ -9,7 +9,7 @@ export default function HeroWithSearch() {
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
-      router.push(`/browse?location=${encodeURIComponent(searchTerm.trim())}`);
+      router.push(`/properties?location=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
@@ -151,7 +151,7 @@ export default function HeroWithSearch() {
                   <button
                     key={area}
                     onClick={() =>
-                      router.push(`/browse?location=${encodeURIComponent(area)}`)
+                      router.push(`/properties?location=${encodeURIComponent(area)}`)
                     }
                     style={{
                       backgroundColor: 'rgba(255,255,255,0.2)',
