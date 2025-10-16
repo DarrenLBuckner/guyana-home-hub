@@ -1,8 +1,9 @@
-import { cookies } from 'next/headers';
 import { CountryCode } from './country-theme';
 
 export async function getCountryFromHeaders(): Promise<CountryCode> {
   try {
+    // This will be called server-side only, dynamic import to avoid client issues
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     const countryCookie = cookieStore.get('country-code');
     
