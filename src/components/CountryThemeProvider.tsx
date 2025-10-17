@@ -66,7 +66,12 @@ export function CountryThemeProvider({
 export const useCountryTheme = () => {
   const context = useContext(CountryThemeContext);
   if (!context) {
-    throw new Error('useCountryTheme must be used within CountryThemeProvider');
+    // Return fallback during SSR or when provider not available
+    return {
+      country: 'GY' as CountryCode,
+      theme: countryThemes.GY,
+      setCountry: () => {}
+    };
   }
   return context;
 };

@@ -7,21 +7,10 @@ import { useCountryTheme } from '@/components/CountryThemeProvider';
 export default function HeroWithSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
+  const { theme, country } = useCountryTheme();
   
-  // Safe hook usage with fallback
-  let theme, country;
-  try {
-    const themeData = useCountryTheme();
-    theme = themeData.theme;
-    country = themeData.country;
-  } catch (error) {
-    // Fallback for SSR or when provider not available
-    theme = { name: 'Guyana Home Hub' };
-    country = 'GY';
-  }
-  
-  // Get country name without "Home Hub"
-  const countryName = theme.name.replace(' Home Hub', '');
+  // Get country name without "Home Hub" with safe fallback
+  const countryName = theme?.name ? theme.name.replace(' Home Hub', '') : 'Guyana';
   
   // Popular locations by country
   const popularLocations = {
