@@ -41,11 +41,11 @@ export const countryThemes: Record<CountryCode, CountryTheme> = {
     name: 'Jamaica Home Hub',
     currency: 'JMD',
     colors: {
-      primary: '#009639',      // Jamaica Green
-      secondary: '#FFD700',    // Jamaica Gold
-      accent: '#0077BE',       // Jamaica Blue
-      background: '#ffffff',
-      text: '#000000'
+      primary: '#009B3A',      // Jamaica Flag Green (vibrant, proud)
+      secondary: '#FDB913',    // Jamaica Flag Gold (bright, sunny)
+      accent: '#000000',       // Jamaica Flag Black (strong, bold)
+      background: '#FFFFFF',   // Clean white
+      text: '#1A1A1A'         // Dark text
     },
     assets: {
       logo: '/logos/jamaica-logo.png',

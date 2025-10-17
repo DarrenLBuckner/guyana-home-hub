@@ -12,6 +12,10 @@ export default function HomePage() {
   const [showListCards, setShowListCards] = useState(false);
   const router = useRouter();
   const { theme, country } = useCountryTheme();
+  
+  // Dynamic country values for authentic branding
+  const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
+  const countryAdjective = country === 'JM' ? 'Jamaican' : 'Guyanese';
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -73,7 +77,7 @@ export default function HomePage() {
             
             {/* Featured Properties Showcase */}
             <section className="text-center">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8">Discover Beautiful Properties Across Guyana</h2>
+              <h2 className="text-3xl font-bold text-gray-800 mb-8">Discover Beautiful Properties Across {countryName}</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                   <img 
@@ -82,8 +86,15 @@ export default function HomePage() {
                     className="w-full h-48 object-cover"
                   />
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">Georgetown Luxury Homes</h3>
-                    <p className="text-gray-600">Prime locations in the capital city</p>
+                    <h3 className="font-semibold text-lg text-gray-800">
+                      {country === 'JM' ? 'Kingston Properties' : 'Georgetown Luxury Homes'}
+                    </h3>
+                    <p className="text-gray-600">
+                      {country === 'JM' 
+                        ? 'Capital city homes and apartments for locals'
+                        : 'Prime locations in the capital city'
+                      }
+                    </p>
                   </div>
                 </div>
                 
@@ -94,8 +105,15 @@ export default function HomePage() {
                     className="w-full h-48 object-cover"
                   />
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">Coastal Properties</h3>
-                    <p className="text-gray-600">Stunning beachfront and waterfront homes</p>
+                    <h3 className="font-semibold text-lg text-gray-800">
+                      {country === 'JM' ? 'Family Homes' : 'Coastal Properties'}
+                    </h3>
+                    <p className="text-gray-600">
+                      {country === 'JM' 
+                        ? 'Quality homes for Jamaican families'
+                        : 'Stunning beachfront and waterfront homes'
+                      }
+                    </p>
                   </div>
                 </div>
                 
@@ -106,8 +124,15 @@ export default function HomePage() {
                     className="w-full h-48 object-cover"
                   />
                   <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">Investment Opportunities</h3>
-                    <p className="text-gray-600">Prime land for development projects</p>
+                    <h3 className="font-semibold text-lg text-gray-800">
+                      {country === 'JM' ? 'Affordable Housing' : 'Investment Opportunities'}
+                    </h3>
+                    <p className="text-gray-600">
+                      {country === 'JM'
+                        ? 'Budget-friendly options for first-time buyers'
+                        : 'Prime land for development projects'
+                      }
+                    </p>
                   </div>
                 </div>
               </div>
@@ -138,7 +163,12 @@ export default function HomePage() {
                     <span className="text-2xl">📍</span>
                   </div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Local Expertise</h3>
-                  <p className="text-gray-600">Deep knowledge of Guyanese property markets</p>
+                  <p className="text-gray-600">
+                    {country === 'JM' 
+                      ? 'Born and raised agents who understand Jamaican communities'
+                      : 'Deep knowledge of Guyanese property markets and local neighborhoods'
+                    }
+                  </p>
                 </div>
                 
                 <div className="text-center">
@@ -204,7 +234,7 @@ export default function HomePage() {
             Need Help? Get in Touch!
           </h2>
           <p className="text-gray-700 mb-6">
-            Have questions about buying, selling, or renting property in Guyana? Our team is here to help you every step of the way.
+            Have questions about buying, selling, or renting property in {countryName}? Our team is here to help you every step of the way.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
@@ -228,7 +258,7 @@ export default function HomePage() {
               WhatsApp Us (Faster)
             </a>
             <a
-              href="mailto:info@guyanahomehub.com"
+              href="mailto:info@caribbeanhomehub.com"
               className="border-2 border-green-600 text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-green-600 hover:text-white transition flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -12,10 +12,10 @@ export default function HeroWithSearch() {
   // Get country name without "Home Hub" with safe fallback
   const countryName = theme?.name ? theme.name.replace(' Home Hub', '') : 'Guyana';
   
-  // Popular locations by country
+  // Popular locations by country (locals-first approach)
   const popularLocations = {
     'Guyana': ['Georgetown', 'New Amsterdam', 'Linden', 'Anna Regina'],
-    'Jamaica': ['Kingston', 'Montego Bay', 'Spanish Town', 'Portmore']
+    'Jamaica': ['Kingston', 'Spanish Town', 'Portmore', 'May Pen']
   };
   
   const currentPopularLocations = popularLocations[countryName] || popularLocations['Guyana'];
@@ -87,7 +87,10 @@ export default function HeroWithSearch() {
             marginBottom: '2rem',
             textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
           }}>
-            Find Your Dream Property in {countryName}
+            {country === 'JM' 
+              ? 'Find Your Perfect Home in Jamaica'
+              : 'Find Your Dream Property in Guyana'
+            }
           </h1>
           
           {/* Search Bar */}
