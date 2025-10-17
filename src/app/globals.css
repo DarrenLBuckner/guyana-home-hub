@@ -8,6 +8,11 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
+  
+  /* Theme colors - defaults to Guyana, will be overridden by JS */
+  --primary: #2563eb;
+  --secondary: #059669;
+  --accent: #dc2626;
 }
 
 * {
