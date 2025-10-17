@@ -29,6 +29,50 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
+## 🎨 Country Theme System
+
+This project uses a multi-country theme system that automatically adjusts branding and styling based on the target country (Jamaica vs Guyana).
+
+### Using Themes in Components
+
+Components that display country-specific content must use the theme hook:
+
+```typescript
+'use client';
+import { useCountryTheme } from '@/components/CountryThemeProvider';
+
+export default function MyComponent() {
+  const { theme, country } = useCountryTheme();
+  return <h1 style={{ color: theme.colors.primary }}>{theme.name}</h1>;
+}
+```
+
+### Available Theme Properties
+- `theme.name` - "Jamaica Home Hub" or "Guyana Home Hub"
+- `theme.colors.primary` - Main brand color
+- `theme.colors.secondary` - Secondary brand color  
+- `theme.currency` - "JMD" or "GYD"
+- `country` - Current country code ("JM" or "GY")
+
+### Quick Reference
+- **Jamaica**: Green (#10b981) / Gold (#fbbf24)
+- **Guyana**: Blue (#3b82f6) / Green (#10b981)
+
+### Development Commands
+```bash
+# Check theme usage for errors
+npm run check-theme
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+### Documentation
+See `docs/patterns/theme-usage.md` for complete usage patterns and examples.
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
