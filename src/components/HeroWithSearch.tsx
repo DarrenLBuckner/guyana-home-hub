@@ -2,10 +2,23 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCountryTheme } from '@/components/CountryThemeProvider';
 
 export default function HeroWithSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
+  const { theme, country } = useCountryTheme();
+  
+  // Get country name without "Home Hub"
+  const countryName = theme.name.replace(' Home Hub', '');
+  
+  // Popular locations by country
+  const popularLocations = {
+    'Guyana': ['Georgetown', 'New Amsterdam', 'Linden', 'Anna Regina'],
+    'Jamaica': ['Kingston', 'Montego Bay', 'Spanish Town', 'Portmore']
+  };
+  
+  const currentPopularLocations = popularLocations[countryName] || popularLocations['Guyana'];
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
@@ -74,7 +87,7 @@ export default function HeroWithSearch() {
             marginBottom: '2rem',
             textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
           }}>
-            Find Your Dream Property in Guyana
+            Find Your Dream Property in {countryName}
           </h1>
           
           {/* Search Bar */}
@@ -88,7 +101,7 @@ export default function HeroWithSearch() {
             }}>
               <input
                 type="text"
-                placeholder="Enter area, neighborhood, or city in Guyana..."
+                placeholder={`Enter area, neighborhood, or city in ${countryName}...`}
                 style={{
                   flex: 1,
                   padding: '16px 20px',
@@ -147,7 +160,7 @@ export default function HeroWithSearch() {
                 gap: '8px',
                 justifyContent: 'center'
               }}>
-                {['Georgetown', 'New Amsterdam', 'Linden', 'Anna Regina'].map(area => (
+                {currentPopularLocations.map(area => (
                   <button
                     key={area}
                     onClick={() =>
