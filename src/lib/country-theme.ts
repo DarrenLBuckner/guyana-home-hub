@@ -56,6 +56,11 @@ export const countryThemes: Record<CountryCode, CountryTheme> = {
 };
 
 export function getCountryFromDomain(hostname: string): CountryCode {
-  if (hostname.includes('jamaica')) return 'JM';
+  // Check for Jamaica domains
+  if (hostname.includes('jamaicahomehub') || 
+      hostname.includes('jamaica') || 
+      hostname.startsWith('jamaicahomehub')) {
+    return 'JM';
+  }
   return 'GY'; // Default to Guyana
 }

@@ -4,9 +4,16 @@ import { NextResponse, type NextRequest } from 'next/server'
 function getCountryFromHost(hostname: string): 'GY' | 'JM' {
   console.log(`🌍 MIDDLEWARE: Checking hostname: ${hostname}`);
   
-  if (hostname.includes('jamaica') || hostname.includes('jm')) {
+  // Check for Jamaica domains
+  if (hostname.includes('jamaicahomehub') || 
+      hostname.includes('jamaica') || 
+      hostname.includes('jm') ||
+      hostname.startsWith('jamaicahomehub')) {
+    console.log(`🇯🇲 MIDDLEWARE: Jamaica domain detected!`);
     return 'JM';
   }
+  
+  console.log(`🇬🇾 MIDDLEWARE: Defaulting to Guyana`);
   return 'GY'; // Default to Guyana
 }
 
