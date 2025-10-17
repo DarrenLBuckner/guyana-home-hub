@@ -1,12 +1,14 @@
 import Link from "next/link";
+import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function Footer() {
+  const { theme } = useCountryTheme();
   return (
     <footer className="bg-gray-100 text-gray-700 py-8 mt-12">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* ───────── Column 1 – About ───────── */}
         <div>
-          <h4 className="font-bold mb-2 text-green-700">Guyana Home Hub</h4>
+          <h4 className="font-bold mb-2 text-green-700">{theme.name}</h4>
           <p className="mb-3">
             Your trusted platform for buying, selling, and renting property in
             Guyana.
@@ -123,7 +125,7 @@ export default function Footer() {
       </div>
 
       <div className="text-center text-sm text-gray-500 mt-8">
-        © {new Date().getFullYear()} Guyana Home Hub. All rights reserved.
+        © {new Date().getFullYear()} {theme.name}. All rights reserved.
         <br />
         A subsidiary of <strong>Caribbean Home Hub LLC</strong>, a registered company in Missouri, USA.{" "}
         <a 

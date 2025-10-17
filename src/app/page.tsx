@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import HeroWithSearch from "../components/HeroWithSearch";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
+import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function HomePage() {
   const [showBrowseCards, setShowBrowseCards] = useState(false);
   const [showListCards, setShowListCards] = useState(false);
   const router = useRouter();
+  const { theme, country } = useCountryTheme();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -113,7 +115,7 @@ export default function HomePage() {
 
             {/* Why Choose Us Section */}
             <section className="bg-gray-50 rounded-lg p-8">
-              <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Why Choose Guyana Home Hub?</h2>
+              <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Why Choose {theme.name}?</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center">
                   <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -154,7 +156,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold text-gray-800 mb-8">What Our Clients Say</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <p className="text-gray-600 italic mb-4">"Found my dream home in Georgetown through Guyana Home Hub. The agent was professional and the process was seamless!"</p>
+                  <p className="text-gray-600 italic mb-4">"Found my dream home in {country === 'JM' ? 'Kingston' : 'Georgetown'} through {theme.name}. The agent was professional and the process was seamless!"</p>
                   <div className="font-semibold text-gray-800">- Sarah M., Georgetown</div>
                 </div>
                 
@@ -168,7 +170,7 @@ export default function HomePage() {
             {/* Call to Action */}
             <section className="bg-green-700 text-white rounded-lg p-8 text-center">
               <h2 className="text-3xl font-bold mb-4">Ready to Find Your Perfect Property?</h2>
-              <p className="text-xl mb-6">Join thousands of satisfied customers who found their homes through Guyana Home Hub</p>
+              <p className="text-xl mb-6">Join thousands of satisfied customers who found their homes through {theme.name}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => router.push('/properties')}

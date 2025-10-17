@@ -7,6 +7,7 @@ import { Menu, X, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function Navbar() {
   const supabase = createClient();
   const router = useRouter();
   const { favoritesCount } = useFavorites();
+  const { theme } = useCountryTheme();
 
   // Check authentication status
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-green-600">
-            Guyana Home Hub
+            {theme.name}
           </span>
         </Link>
 
