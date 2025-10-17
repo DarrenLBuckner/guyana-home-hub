@@ -44,6 +44,7 @@ export default async function RootLayout({
       >
         <CountryThemeProvider initialCountry={country}>
           <AppProviders>
+            {/* TEMPORARILY COMMENTED TO FIND ERROR */}
             {/* <Navbar /> */}
             {children}
             {/* <Footer /> */}

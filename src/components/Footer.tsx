@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 
