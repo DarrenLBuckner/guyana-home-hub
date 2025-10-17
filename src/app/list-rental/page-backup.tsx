@@ -186,7 +186,7 @@ export default function ListRentalPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Landlord/Property Manager Verification</h3>
               
               {/* Basic Landlord Information */}
-              <div className="bg-blue-50 border border-blue-200 rounded p-4">
+              <div className="bg-primary/10 border border-primary/20 rounded p-4">
                 <h4 className="font-medium text-blue-800 mb-3">👤 Landlord Information</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -461,7 +461,7 @@ export default function ListRentalPage() {
               </div>
 
               {/* Property Management Company Notice */}
-              <div className="bg-blue-50 border border-blue-400 rounded p-4">
+              <div className="bg-primary/10 border border-blue-400 rounded p-4">
                 <h4 className="font-medium text-blue-800 mb-2">🏢 Property Management Companies</h4>
                 <div className="text-sm text-blue-700 space-y-2">
                   <p>

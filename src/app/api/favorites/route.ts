@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic'
@@ -31,11 +32,17 @@ export async function GET(request: NextRequest) {
     const enrichedFavorites = await Promise.all(
       favorites.map(async (favorite) => {
         try {
+          // Get country for site context
+          const cookieStore = await cookies()
+          const countryCode = cookieStore.get('country-code')?.value || 'GY'
+          const siteMapping = { 'GY': 'guyana', 'JM': 'jamaica' }
+          const siteName = siteMapping[countryCode as keyof typeof siteMapping] || 'guyana'
+          
           // Try to get current property data with site context
           const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
           const response = await fetch(`${portalApiUrl}/api/public/properties/${favorite.property_id}`, {
             headers: {
-              'x-site-id': 'guyana'
+              'x-site-id': siteName
             }
           })
           

@@ -250,7 +250,7 @@ export default function AgentCRM() {
                 <p className="text-sm font-medium text-gray-600">Total Customers</p>
                 <p className="text-2xl font-bold text-gray-900">{customers.length}</p>
               </div>
-              <Users className="h-8 w-8 text-blue-600" />
+              <Users className="h-8 w-8 text-primary" />
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
@@ -394,7 +394,7 @@ export default function AgentCRM() {
                         <div className="flex items-center space-x-2">
                           <button 
                             onClick={() => setSelectedCustomer(customer)}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-primary hover:text-blue-900"
                             title="View Details"
                           >
                             <Eye className="h-4 w-4" />
@@ -500,7 +500,7 @@ export default function AgentCRM() {
                     {selectedCustomer.phone && (
                       <a 
                         href={`tel:${selectedCustomer.phone}`}
-                        className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+                        className="flex-1 bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary/90 flex items-center justify-center"
                       >
                         <Phone className="h-4 w-4 mr-2" />
                         Call Now

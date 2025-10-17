@@ -67,7 +67,7 @@ export default function UploadPhotos({ images, setImages, heroIndex, setHeroInde
       >
         <input {...getInputProps()} />
         <p className="text-gray-600">📸 Drag & drop up to 16 images here</p>
-        <p className="text-sm text-blue-600 underline">or click to upload</p>
+        <p className="text-sm text-primary underline">or click to upload</p>
       </div>
 
       {images.length > 0 && (

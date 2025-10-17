@@ -254,7 +254,7 @@ export default function ContactAgent({ property, isModal = false, onCloseAction 
 
           {/* Agent Contact Info */}
           {(property.contact_name || property.contact_phone || property.contact_email) && (
-            <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="bg-primary/10 p-4 rounded-lg">
               <h5 className="font-medium text-blue-900 mb-2">Agent Contact Information</h5>
               <div className="space-y-1 text-sm text-blue-800">
                 {property.contact_name && (

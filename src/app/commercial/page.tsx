@@ -28,8 +28,8 @@ export default function CommercialPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {/* Coming Soon Notice */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-12 text-center">
-          <Building className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-8 mb-12 text-center">
+          <Building className="h-16 w-16 text-primary mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Commercial Listings Coming Soon!</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             We're building partnerships with commercial property owners and brokers to bring you the best 
@@ -70,7 +70,7 @@ export default function CommercialPage() {
                 </div>
                 
                 <div className="border border-gray-200 rounded-lg p-6">
-                  <MapPin className="h-8 w-8 text-blue-600 mb-3" />
+                  <MapPin className="h-8 w-8 text-primary mb-3" />
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">Retail Spaces</h3>
                   <p className="text-gray-600">
                     Storefronts, shopping centers, and standalone retail buildings in high-traffic areas.
@@ -113,7 +113,7 @@ export default function CommercialPage() {
                 
                 <div className="flex items-start">
                   <div className="bg-blue-100 rounded-full p-3 mr-4 mt-1">
-                    <Building className="h-6 w-6 text-blue-600" />
+                    <Building className="h-6 w-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Long-term Leases</h3>

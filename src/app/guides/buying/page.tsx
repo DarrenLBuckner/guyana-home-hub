@@ -120,7 +120,7 @@ export default function HomeBuyingGuidePage() {
             <div id="step2" className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center mb-6">
                 <div className="bg-blue-100 rounded-full p-3 mr-4">
-                  <FileText className="h-8 w-8 text-blue-600" />
+                  <FileText className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900">Step 2: Get Pre-Approved for Financing</h2>
@@ -360,7 +360,7 @@ export default function HomeBuyingGuidePage() {
                   </p>
                 </div>
                 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-800 text-sm mb-2">Market Research</h4>
                   <p className="text-blue-700 text-sm">
                     Study recent sales in your target areas to understand current market values.

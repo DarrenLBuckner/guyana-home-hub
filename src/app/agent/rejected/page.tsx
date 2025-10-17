@@ -84,23 +84,23 @@ export default function AgentRejected() {
           </div>
         )}
 
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 mb-6">
           <h2 className="text-lg font-semibold text-blue-800 mb-2">What you can do:</h2>
           <div className="text-blue-700 space-y-2">
             <div className="flex items-start">
-              <span className="text-blue-600 mr-2">•</span>
+              <span className="text-primary mr-2">•</span>
               <span>Review the feedback provided above</span>
             </div>
             <div className="flex items-start">
-              <span className="text-blue-600 mr-2">•</span>
+              <span className="text-primary mr-2">•</span>
               <span>Address any issues mentioned in the rejection reason</span>
             </div>
             <div className="flex items-start">
-              <span className="text-blue-600 mr-2">•</span>
+              <span className="text-primary mr-2">•</span>
               <span>Gather additional documentation if required</span>
             </div>
             <div className="flex items-start">
-              <span className="text-blue-600 mr-2">•</span>
+              <span className="text-primary mr-2">•</span>
               <span>Submit a new application when ready</span>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function AgentRejected() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={handleReapply}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold"
+            className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 font-semibold"
           >
             Submit New Application
           </button>

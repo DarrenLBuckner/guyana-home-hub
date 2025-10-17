@@ -184,7 +184,7 @@ export default function AgentInquiries() {
 
   const getStatusColor = (status: string) => {
     switch(status) {
-      case 'new': return 'text-blue-600 bg-blue-100'
+      case 'new': return 'text-primary bg-blue-100'
       case 'contacted': return 'text-green-600 bg-green-100'
       case 'qualified': return 'text-yellow-600 bg-yellow-100'
       case 'converted': return 'text-green-700 bg-green-200'
@@ -397,14 +397,14 @@ export default function AgentInquiries() {
                     </div>
                     <div className="flex items-center">
                       <Mail className="h-4 w-4 mr-2 text-gray-400" />
-                      <a href={`mailto:${selectedInquiry.customer_email}`} className="text-blue-600 hover:underline">
+                      <a href={`mailto:${selectedInquiry.customer_email}`} className="text-primary hover:underline">
                         {selectedInquiry.customer_email}
                       </a>
                     </div>
                     {selectedInquiry.customer_phone && (
                       <div className="flex items-center">
                         <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                        <a href={`tel:${selectedInquiry.customer_phone}`} className="text-blue-600 hover:underline">
+                        <a href={`tel:${selectedInquiry.customer_phone}`} className="text-primary hover:underline">
                           {selectedInquiry.customer_phone}
                         </a>
                       </div>
@@ -488,10 +488,10 @@ export default function AgentInquiries() {
                 {selectedInquiry.agent_response && (
                   <div className="mt-6 pt-6 border-t">
                     <h4 className="font-medium text-gray-900 mb-3">Your Previous Response</h4>
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="bg-primary/10 p-4 rounded-lg">
                       <p className="text-sm text-blue-900">{selectedInquiry.agent_response}</p>
                       {selectedInquiry.responded_at && (
-                        <p className="text-xs text-blue-600 mt-2">
+                        <p className="text-xs text-primary mt-2">
                           Sent on {new Date(selectedInquiry.responded_at).toLocaleDateString()}
                         </p>
                       )}

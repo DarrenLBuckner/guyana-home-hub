@@ -46,7 +46,7 @@ export default function FSBOPage() {
                 </div>
                 
                 <div className="flex items-start">
-                  <Home className="h-8 w-8 text-blue-600 mt-1 mr-4 flex-shrink-0" />
+                  <Home className="h-8 w-8 text-primary mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Full Control</h3>
                     <p className="text-gray-600">
@@ -130,13 +130,13 @@ export default function FSBOPage() {
               </p>
               <Link 
                 href="/list-owner" 
-                className="block w-full bg-blue-600 text-white text-center py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4"
+                className="block w-full bg-primary text-white text-center py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors mb-4"
               >
                 List Your Property
               </Link>
               <Link 
                 href="/contact" 
-                className="block w-full border border-blue-600 text-blue-600 text-center py-3 px-6 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                className="block w-full border border-primary text-primary text-center py-3 px-6 rounded-lg font-semibold hover:bg-primary/10 transition-colors"
               >
                 Get Help
               </Link>
@@ -146,19 +146,19 @@ export default function FSBOPage() {
               <h3 className="text-xl font-bold text-gray-900 mb-4">FSBO Resources</h3>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/guides/buying" className="text-blue-600 hover:text-blue-800 flex items-center">
+                  <Link href="/guides/buying" className="text-primary hover:text-blue-800 flex items-center">
                     <FileText className="h-4 w-4 mr-2" />
                     Home Selling Guide
                   </Link>
                 </li>
                 <li>
-                  <Link href="/properties" className="text-blue-600 hover:text-blue-800 flex items-center">
+                  <Link href="/properties" className="text-primary hover:text-blue-800 flex items-center">
                     <Home className="h-4 w-4 mr-2" />
                     Browse All Properties
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="text-blue-600 hover:text-blue-800 flex items-center">
+                  <Link href="/contact" className="text-primary hover:text-blue-800 flex items-center">
                     <Phone className="h-4 w-4 mr-2" />
                     Contact Support
                   </Link>

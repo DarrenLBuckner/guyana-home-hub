@@ -261,7 +261,7 @@ export default function AgentAnalytics() {
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
                   <span className="text-sm text-gray-600">{new Date(trend.date).toLocaleDateString()}</span>
                   <div className="flex space-x-4 text-sm">
-                    <span className="text-blue-600">{trend.inquiries} inquiries</span>
+                    <span className="text-primary">{trend.inquiries} inquiries</span>
                     <span className="text-green-600">{trend.responses} responses</span>
                     <span className="text-purple-600">{trend.conversions} conversions</span>
                   </div>
@@ -311,7 +311,7 @@ export default function AgentAnalytics() {
               {analytics?.recentActivity.map((activity, index) => (
                 <div key={index} className="flex items-center space-x-4">
                   <div className={`w-2 h-2 rounded-full ${
-                    activity.status === 'new' ? 'bg-blue-500' :
+                    activity.status === 'new' ? 'bg-primary' :
                     activity.status === 'success' ? 'bg-green-500' :
                     activity.status === 'completed' ? 'bg-gray-500' :
                     'bg-yellow-500'

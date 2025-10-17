@@ -63,7 +63,7 @@ export default function AgentDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <Home className="h-6 w-6 text-blue-600" />
+                <Home className="h-6 w-6 text-primary" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Properties</p>
@@ -130,7 +130,7 @@ export default function AgentDashboard() {
                   href="/agent/properties"
                   className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <Home className="h-5 w-5 text-blue-600 mr-3" />
+                  <Home className="h-5 w-5 text-primary mr-3" />
                   <span className="text-gray-700">Manage Properties</span>
                 </Link>
                 
@@ -251,8 +251,8 @@ export default function AgentDashboard() {
                     <p className="text-sm text-gray-600">Avg. Property Value</p>
                     <p className="text-xl font-bold text-gray-900">{stats.avgPrice}</p>
                   </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <Star className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                  <div className="text-center p-4 bg-primary/10 rounded-lg">
+                    <Star className="h-8 w-8 text-primary mx-auto mb-2" />
                     <p className="text-sm text-gray-600">Agent Rating</p>
                     <p className="text-xl font-bold text-gray-900">4.8/5</p>
                   </div>

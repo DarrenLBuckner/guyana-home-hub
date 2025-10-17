@@ -54,7 +54,7 @@ const PRICING_TIERS: PricingTier[] = [
       'Property analytics'
     ],
     buttonText: 'Choose Basic',
-    buttonStyle: 'bg-blue-600 text-white hover:bg-blue-700'
+    buttonStyle: 'bg-primary text-white hover:bg-primary/90'
   },
   {
     name: 'Premium',
@@ -72,7 +72,7 @@ const PRICING_TIERS: PricingTier[] = [
     ],
     popular: true,
     buttonText: 'Choose Premium',
-    buttonStyle: 'bg-blue-600 text-white hover:bg-blue-700'
+    buttonStyle: 'bg-primary text-white hover:bg-primary/90'
   },
   {
     name: 'Platinum',
@@ -140,7 +140,7 @@ export default function MultiCurrencyPricing({ siteId = 'guyana', defaultCurrenc
   if (loading) {
     return (
       <div className="flex justify-center items-center py-20">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -198,7 +198,7 @@ export default function MultiCurrencyPricing({ siteId = 'guyana', defaultCurrenc
             >
               {tier.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                  <span className="bg-primary text-white px-3 py-1 rounded-full text-xs font-semibold">
                     ⭐ Most Popular
                   </span>
                 </div>
@@ -217,7 +217,7 @@ export default function MultiCurrencyPricing({ siteId = 'guyana', defaultCurrenc
 
               <div className="mb-6">
                 <div className="text-center mb-4">
-                  <span className="text-2xl font-bold text-blue-600">
+                  <span className="text-2xl font-bold text-primary">
                     {tier.properties === 999 ? '∞' : tier.properties}
                   </span>
                   <span className="text-sm text-gray-600 ml-1">

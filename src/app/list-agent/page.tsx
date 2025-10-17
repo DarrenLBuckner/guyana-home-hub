@@ -11,7 +11,7 @@ export default function ListAgentPage() {
       price: 6000,
       period: "/ month",
       description: "Perfect for new agents getting started",
-      icon: <Star className="h-8 w-8 text-blue-600" />,
+      icon: <Star className="h-8 w-8 text-primary" />,
       color: "blue",
       features: [
         "Up to 5 listings",
@@ -82,7 +82,7 @@ export default function ListAgentPage() {
     
     switch (plan.color) {
       case "blue":
-        return `${baseClasses} bg-blue-600 text-white hover:bg-blue-700`;
+        return `${baseClasses} bg-primary text-white hover:bg-primary/90`;
       case "yellow":
         return `${baseClasses} bg-yellow-600 text-white hover:bg-yellow-700`;
       case "purple":
@@ -175,7 +175,7 @@ export default function ListAgentPage() {
             </div>
             <div className="text-center">
               <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-8 w-8 text-blue-600" />
+                <Zap className="h-8 w-8 text-primary" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Instant Lead Generation</h3>
               <p className="text-gray-600">

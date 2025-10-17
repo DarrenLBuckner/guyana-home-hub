@@ -41,7 +41,7 @@ export default function PropertiesListing() {
           <p className="text-gray-600 mb-2">{property.address}</p>
           <p className="text-2xl font-bold text-green-600 mb-4">${property.price?.toLocaleString()}</p>
           <p className="text-gray-700 mb-4">{property.description}</p>
-          <Link href={`/properties/${property.id}`} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <Link href={`/properties/${property.id}`} className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90">
             View Details
           </Link>
         </div>

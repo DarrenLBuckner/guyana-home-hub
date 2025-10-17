@@ -239,7 +239,7 @@ export default function PropertyDetailPage() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <a 
                       href={`mailto:${property.owner_email}`}
-                      className="flex-1 bg-blue-600 text-white text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+                      className="flex-1 bg-primary text-white text-center py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors"
                     >
                       📧 Email Owner
                     </a>
@@ -255,7 +255,7 @@ export default function PropertyDetailPage() {
                 </div>
               ) : (
                 <div className="flex gap-4">
-                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                  <button className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors">
                     Contact Agent
                   </button>
                   <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">

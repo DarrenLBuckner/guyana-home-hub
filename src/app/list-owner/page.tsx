@@ -165,7 +165,7 @@ export default function ListOwnerPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Owner Verification</h3>
               
               {/* Basic Owner Information */}
-              <div className="bg-blue-50 border border-blue-200 rounded p-4">
+              <div className="bg-primary/10 border border-primary/20 rounded p-4">
                 <h4 className="font-medium text-blue-800 mb-3">👤 Property Owner Information</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

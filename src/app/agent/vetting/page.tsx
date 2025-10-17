@@ -399,7 +399,7 @@ export default function AgentVetting() {
           </div>
 
           {/* Consent & Submission */}
-          <div className="bg-blue-50 p-6 rounded-lg">
+          <div className="bg-primary/10 p-6 rounded-lg">
             <h3 className="text-lg font-semibold text-blue-800 mb-2">Verification Agreement</h3>
             <div className="text-sm text-blue-700 space-y-2">
               <p>By submitting this application, I confirm that:</p>

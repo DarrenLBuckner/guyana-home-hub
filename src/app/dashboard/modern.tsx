@@ -181,10 +181,10 @@ export default async function ModernDashboard() {
             <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow group-hover:border-blue-300">
               <div className="flex items-center">
                 <div className="p-3 bg-blue-100 rounded-lg">
-                  <Phone className="h-6 w-6 text-blue-600" />
+                  <Phone className="h-6 w-6 text-primary" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary">
                     Inquiries
                   </h3>
                   <p className="text-sm text-gray-600">
@@ -230,7 +230,7 @@ export default async function ModernDashboard() {
             </div>
             <div className="flex items-center space-x-4 text-sm">
               <div className="p-2 bg-blue-100 rounded-full">
-                <Phone className="h-4 w-4 text-blue-600" />
+                <Phone className="h-4 w-4 text-primary" />
               </div>
               <div className="flex-1">
                 <p className="text-gray-900">New inquiry for "Luxury Apartment in New Amsterdam"</p>

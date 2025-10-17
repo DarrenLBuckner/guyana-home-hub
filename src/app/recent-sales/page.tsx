@@ -28,8 +28,8 @@ export default function RecentSalesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {/* Coming Soon Notice */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-12 text-center">
-          <BarChart3 className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-8 mb-12 text-center">
+          <BarChart3 className="h-16 w-16 text-primary mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Sales Data Coming Soon!</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             We're compiling comprehensive sales data from across Guyana to provide you with the most 
@@ -71,7 +71,7 @@ export default function RecentSalesPage() {
                 </div>
                 
                 <div className="flex items-start">
-                  <Calendar className="h-8 w-8 text-blue-600 mt-1 mr-4 flex-shrink-0" />
+                  <Calendar className="h-8 w-8 text-primary mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Sale Dates</h3>
                     <p className="text-gray-600">

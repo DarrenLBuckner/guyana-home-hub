@@ -28,8 +28,8 @@ export default function OpenHousesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {/* Coming Soon Notice */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 mb-12 text-center">
-          <Home className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-8 mb-12 text-center">
+          <Home className="h-16 w-16 text-primary mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Open House Listings Coming Soon!</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             We're working with agents and homeowners to bring you a comprehensive schedule of open houses 
@@ -71,7 +71,7 @@ export default function OpenHousesPage() {
                 </div>
                 
                 <div className="flex items-start">
-                  <Users className="h-8 w-8 text-blue-600 mt-1 mr-4 flex-shrink-0" />
+                  <Users className="h-8 w-8 text-primary mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Meet the Agent</h3>
                     <p className="text-gray-600">

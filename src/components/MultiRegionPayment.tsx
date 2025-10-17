@@ -283,7 +283,7 @@ export default function MultiRegionPayment() {
 
       {/* Special Instructions for Guyana */}
       {selectedRegion === 'guyana' && selectedMethod === 'cash_office' && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-4">
           <h4 className="font-medium text-blue-900 mb-2">Cash Payment Instructions</h4>
           <p className="text-sm text-blue-800">
             Visit our Georgetown office at [Address] during business hours (Mon-Fri 9AM-5PM).

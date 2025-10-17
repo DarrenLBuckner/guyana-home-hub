@@ -245,7 +245,7 @@ export default function AgentTasks() {
                 <p className="text-sm font-medium text-gray-600">Pending Tasks</p>
                 <p className="text-2xl font-bold text-gray-900">{pendingTasks.length}</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-600" />
+              <Clock className="h-8 w-8 text-primary" />
             </div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
@@ -393,7 +393,7 @@ export default function AgentTasks() {
                             )}
                             <a 
                               href={`mailto:${task.customer_email}`}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                              className="p-2 text-primary hover:bg-primary/10 rounded-lg"
                               title="Email Customer"
                             >
                               <Mail className="h-4 w-4" />

@@ -87,7 +87,7 @@ export default function ForeclosuresPage() {
                 </div>
                 
                 <div className="flex items-start">
-                  <Clock className="h-8 w-8 text-blue-600 mt-1 mr-4 flex-shrink-0" />
+                  <Clock className="h-8 w-8 text-primary mt-1 mr-4 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">Timeline Varies</h3>
                     <p className="text-gray-600">
