@@ -52,17 +52,21 @@ export default function HomePage() {
               setShowListCards(true);
               setShowBrowseCards(false);
             }}
-            className="border-2 px-8 py-3 rounded-lg text-lg font-semibold hover:text-white transition hover:opacity-90"
+            className="border-2 px-8 py-3 rounded-lg text-lg font-semibold transition hover:opacity-90"
             style={{ 
-              borderColor: theme.colors.primary,
-              color: theme.colors.primary,
+              borderColor: country === 'JM' ? theme.colors.secondary : theme.colors.primary,
+              color: country === 'JM' ? theme.colors.secondary : theme.colors.primary,
               backgroundColor: 'transparent'
             }}
             onMouseEnter={(e) => {
-              (e.target as HTMLElement).style.backgroundColor = theme.colors.primary;
+              const bgColor = country === 'JM' ? theme.colors.secondary : theme.colors.primary;
+              (e.target as HTMLElement).style.backgroundColor = bgColor;
+              (e.target as HTMLElement).style.color = 'white';
             }}
             onMouseLeave={(e) => {
               (e.target as HTMLElement).style.backgroundColor = 'transparent';
+              const textColor = country === 'JM' ? theme.colors.secondary : theme.colors.primary;
+              (e.target as HTMLElement).style.color = textColor;
             }}
           >
             List Your Property
@@ -76,7 +80,9 @@ export default function HomePage() {
             <p className="text-lg">Properties Listed</p>
           </div>
           <div>
-            <h3 className="text-4xl font-bold" style={{ color: theme.colors.primary }}>50+</h3>
+            <h3 className="text-4xl font-bold" style={{ 
+              color: country === 'JM' ? theme.colors.secondary : theme.colors.primary 
+            }}>50+</h3>
             <p className="text-lg">Professional Agents</p>
           </div>
           <div>

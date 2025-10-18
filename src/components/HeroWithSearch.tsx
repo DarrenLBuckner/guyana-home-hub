@@ -41,7 +41,7 @@ export default function HeroWithSearch() {
         {/* Desktop Image */}
         <img
           src="/images/hero-house-desktop.jpg"
-          alt="Hero House Guyana"
+          alt={`Hero House ${countryName}`}
           style={{
             width: '100%',
             height: '100%',

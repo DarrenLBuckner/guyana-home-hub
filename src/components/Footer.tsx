@@ -4,28 +4,29 @@ import Link from "next/link";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function Footer() {
-  const { theme } = useCountryTheme();
+  const { theme, country } = useCountryTheme();
+  const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   return (
     <footer className="bg-gray-100 text-gray-700 py-8 mt-12">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* ───────── Column 1 – About ───────── */}
         <div>
-          <h4 className="font-bold mb-2 text-green-700">{theme.name}</h4>
+          <h4 className="font-bold mb-2" style={{ color: theme.colors.primary }}>{theme.name}</h4>
           <p className="mb-3">
             Your trusted platform for buying, selling, and renting property in
-            Guyana.
+            {countryName}.
           </p>
           <div className="text-sm space-y-1">
             <p>
               <strong>Phone:</strong>{" "}
-              <a href="tel:+5927629797" className="hover:text-green-700">
+              <a href="tel:+5927629797" style={{ color: theme.colors.primary }} className="hover:opacity-80">
                 +592 762 9797
               </a>
             </p>
             <p>
               <strong>Email:</strong>{" "}
-              <a href="mailto:info@guyanahomehub.com" className="hover:text-green-700">
-                info@guyanahomehub.com
+              <a href="mailto:info@caribbeanhomehub.com" style={{ color: theme.colors.primary }} className="hover:opacity-80">
+                info@caribbeanhomehub.com
               </a>
             </p>
             <p>
