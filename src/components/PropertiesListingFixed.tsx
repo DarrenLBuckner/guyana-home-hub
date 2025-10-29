@@ -20,7 +20,6 @@ import {
   ChevronRight,
   ChevronDown
 } from 'lucide-react'
-import ContactAgent from '@/components/ContactAgent'
 import { useFavorites } from '@/hooks/useFavorites'
 
 interface Property {
@@ -67,8 +66,6 @@ function PropertiesListingContent({
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [showContactModal, setShowContactModal] = useState(false)
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showFiltersModal, setShowFiltersModal] = useState(false)
   
   // Favorites hook
@@ -528,19 +525,10 @@ function PropertiesListingContent({
                     <div className="text-2xl font-bold text-green-600">
                       {formatPrice(property.price, property.price_type)}
                     </div>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => {
-                          setSelectedProperty(property)
-                          setShowContactModal(true)
-                        }}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition-colors"
-                      >
-                        Contact Agent
-                      </button>
+                    <div className="flex">
                       <Link 
                         href={`/properties/${property.id}`}
-                        className="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200 text-sm font-medium transition-colors"
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition-colors"
                       >
                         View Details
                       </Link>
@@ -553,22 +541,7 @@ function PropertiesListingContent({
         )}
       </div>
 
-      {/* Contact Agent Modal */}
-      {showContactModal && selectedProperty && (
-        <ContactAgent 
-          property={{
-            id: selectedProperty.id,
-            title: selectedProperty.title,
-            location: selectedProperty.location,
-            price: selectedProperty.price,
-          }}
-          isModal={true}
-          onCloseAction={() => {
-            setShowContactModal(false)
-            setSelectedProperty(null)
-          }}
-        />
-      )}
+
 
       {/* Mobile Filter Drawer */}
       {showFiltersModal && (
