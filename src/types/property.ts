@@ -65,6 +65,9 @@ export interface Property extends BaseProperty {
   // Owner/Agent Info
   agent_id: string
   owner_id?: string
+  owner_email?: string
+  owner_whatsapp?: string
+  listed_by_type?: 'owner' | 'agent'
   
   // Analytics
   metadata: PropertyMetadata

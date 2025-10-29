@@ -171,8 +171,37 @@ export function PropertySearch({
   }, [])
 
   const handlePropertyContact = useCallback((property: Property) => {
-    // TODO: Implement contact modal/navigation
-    console.log('Contacting about property:', property.id)
+    // Get phone number from property
+    const phoneNumber = property?.owner_whatsapp;
+    
+    if (!phoneNumber) {
+      alert('Contact information not available for this property');
+      return;
+    }
+    
+    // Clean phone number (remove +, spaces, dashes, parentheses)
+    const cleanNumber = phoneNumber.replace(/[\s\-\+\(\)]/g, '');
+    
+    // Create WhatsApp message
+    const propertyTitle = property?.title || 'this property';
+    const propertyPrice = property?.price ? `GYD ${parseInt(property.price.toString()).toLocaleString()}` : '';
+    const propertyLocation = property?.location || '';
+    
+    const message = encodeURIComponent(
+      `Hi! I'm interested in your property:\n\n` +
+      `${propertyTitle}\n` +
+      `${propertyPrice ? `Price: ${propertyPrice}\n` : ''}` +
+      `${propertyLocation ? `Location: ${propertyLocation}\n` : ''}\n` +
+      `I'd like to know more details.`
+    );
+    
+    // WhatsApp URL
+    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
+    
+    // Open in new window
+    window.open(whatsappUrl, '_blank');
+    
+    console.log('WhatsApp contact initiated:', cleanNumber);
   }, [])
 
   const sortOptions = [
