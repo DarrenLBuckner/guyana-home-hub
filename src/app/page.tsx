@@ -43,7 +43,7 @@ export default function HomePage() {
             
             {/* Browse For Sale Button */}
             <button 
-              onClick={() => router.push('/properties/for-sale')}
+              onClick={() => router.push('/properties/buy')}
               className="flex-1 flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -54,7 +54,7 @@ export default function HomePage() {
 
             {/* Browse For Rent Button */}
             <button
-              onClick={() => router.push('/properties/for-rent')}
+              onClick={() => router.push('/properties/rent')}
               className="flex-1 flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
             >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -66,15 +66,17 @@ export default function HomePage() {
 
           {/* Secondary CTA - List Property */}
           <div className="flex justify-center">
-            <button
-              onClick={() => router.push('/list-property')}
-              className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 text-base"
+            <a
+              href="https://portalhomehub.com/register"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl text-base"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"/>
               </svg>
               List My Property (Free)
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -236,15 +238,14 @@ export default function HomePage() {
                 >
                   Start Browsing Now
                 </button>
-                <button
-                  onClick={() => {
-                    setShowListCards(true);
-                    setShowBrowseCards(false);
-                  }}
+                <a
+                  href="https://portalhomehub.com/register"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-green-700 transition"
                 >
                   List Your Property
-                </button>
+                </a>
               </div>
             </section>
           </div>

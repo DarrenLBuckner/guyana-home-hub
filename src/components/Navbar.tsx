@@ -83,11 +83,8 @@ export default function Navbar() {
           <Link href="/properties/rent" className="hover:text-green-600">
             Rent
           </Link>
-          <Link
-            href="/properties/developments"
-            className="hover:text-green-600"
-          >
-            Developments
+          <Link href="/contact" className="hover:text-green-600">
+            Contact
           </Link>
           {/* [CHH-SYS] Admin Login link */}
           {/* Admin login link removed for production */}
@@ -126,12 +123,14 @@ export default function Navbar() {
               Sign In
             </Link>
           )}
-          <Link
-            href="/advertise"
+          <a
+            href="https://portalhomehub.com/register"
+            target="_blank"
+            rel="noopener noreferrer"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
           >
-            Advertise
-          </Link>
+            List Property
+          </a>
         </div>
 
         {/* Mobile menu button */}
@@ -168,11 +167,11 @@ export default function Navbar() {
             Rent
           </Link>
           <Link
-            href="/properties/developments"
+            href="/contact"
             className="block text-green-700 hover:text-green-800"
             onClick={closeMenu}
           >
-            Developments
+            Contact
           </Link>
 
           {/* Mobile Auth Section */}
@@ -245,11 +244,17 @@ export default function Navbar() {
           >
             Contact Us
           </Link>
-          <Link href="/advertise" className="block" onClick={closeMenu}>
+          <a 
+            href="https://portalhomehub.com/register"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block"
+            onClick={closeMenu}
+          >
             <button className="w-full bg-green-600 text-white py-2 rounded-md">
-              Advertise
+              List Property
             </button>
-          </Link>
+          </a>
           {/* [CHH-SYS] Admin Login link for mobile */}
           {/* Admin login link removed for production (mobile) */}
         </div>
