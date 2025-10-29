@@ -22,7 +22,7 @@ export default function AuthVerify() {
         if (error || !session) {
           setMessage('Verification failed. Please try signing in again.')
         } else {
-          router.replace('/dashboard')
+          router.replace('/onboard/profile')
         }
       })
   }, [router, supabase])

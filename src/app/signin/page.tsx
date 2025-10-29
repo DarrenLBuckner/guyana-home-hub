@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
@@ -9,6 +9,12 @@ import { createClient } from '@/lib/supabase/client'
 export default function CustomerSignIn() {
   const router = useRouter()
   const supabase = createClient()
+  const [origin, setOrigin] = useState('')
+
+  useEffect(() => {
+    // Set origin only on client side
+    setOrigin(window.location.origin)
+  }, [])
 
   useEffect(() => {
     // Listen for all auth events (including OAuth)
@@ -43,7 +49,7 @@ export default function CustomerSignIn() {
           appearance={{ theme: ThemeSupa }}
           providers={['google', 'facebook']}
           magicLink={true}
-          // note: redirectTo only works for magic links; our listener will handle OAuth
+          redirectTo={origin ? `${origin}/auth/callback` : '/auth/callback'}
         />
       </div>
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import HeroWithSearch from "../components/HeroWithSearch";
+import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
@@ -32,46 +32,54 @@ export default function HomePage() {
 
   return (
     <div>
-      <HeroWithSearch />
+      <Hero site={country === 'JM' ? 'jamaica' : 'guyana'} />
+
+      {/* Property Browsing Buttons - Below Hero */}
+      <section className="w-full bg-white py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          
+          {/* Main Action Buttons - Side by Side */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            
+            {/* Browse For Sale Button */}
+            <button 
+              onClick={() => router.push('/properties/for-sale')}
+              className="flex-1 flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+              </svg>
+              Browse Properties for Sale
+            </button>
+
+            {/* Browse For Rent Button */}
+            <button
+              onClick={() => router.push('/properties/for-rent')}
+              className="flex-1 flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+            >
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd"/>
+              </svg>
+              Browse Properties for Rent
+            </button>
+          </div>
+
+          {/* Secondary CTA - List Property */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => router.push('/list-property')}
+              className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 text-base"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"/>
+              </svg>
+              List My Property (Free)
+            </button>
+          </div>
+        </div>
+      </section>
 
       <main className="min-h-screen bg-white flex flex-col items-center justify-start pt-12 pb-24 px-4">
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <button
-            onClick={() => router.push('/properties')}
-            className="text-white px-8 py-3 rounded-lg text-lg font-semibold transition hover:opacity-90"
-            style={{ 
-              backgroundColor: theme.colors.primary,
-            }}
-          >
-            Browse Properties
-          </button>
-
-          <button
-            onClick={() => {
-              setShowListCards(true);
-              setShowBrowseCards(false);
-            }}
-            className="border-2 px-8 py-3 rounded-lg text-lg font-semibold transition hover:opacity-90"
-            style={{ 
-              borderColor: country === 'JM' ? theme.colors.secondary : theme.colors.primary,
-              color: country === 'JM' ? theme.colors.secondary : theme.colors.primary,
-              backgroundColor: 'transparent'
-            }}
-            onMouseEnter={(e) => {
-              const bgColor = country === 'JM' ? theme.colors.secondary : theme.colors.primary;
-              (e.target as HTMLElement).style.backgroundColor = bgColor;
-              (e.target as HTMLElement).style.color = 'white';
-            }}
-            onMouseLeave={(e) => {
-              (e.target as HTMLElement).style.backgroundColor = 'transparent';
-              const textColor = country === 'JM' ? theme.colors.secondary : theme.colors.primary;
-              (e.target as HTMLElement).style.color = textColor;
-            }}
-          >
-            List Your Property
-          </button>
-        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-gray-700 mb-12">
