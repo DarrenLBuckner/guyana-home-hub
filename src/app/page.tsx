@@ -239,7 +239,7 @@ export default function HomePage() {
                   Start Browsing Now
                 </button>
                 <a
-                  href="https://portalhomehub.com/register"
+                  href="https://portalhomehub.com/register/select-country"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-green-700 transition"

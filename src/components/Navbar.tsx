@@ -218,7 +218,7 @@ export default function Navbar() {
               For Agents
             </div>
             <Link
-              href="https://portalhomehub.com/register"
+              href="https://portalhomehub.com/register/select-country?type=agent"
               className="block text-sm text-green-700 hover:text-green-800 pl-2"
               target="_blank"
               rel="noopener noreferrer"
@@ -245,7 +245,7 @@ export default function Navbar() {
             Contact Us
           </Link>
           <a 
-            href="https://portalhomehub.com/register"
+            href="https://portalhomehub.com/register/select-country"
             target="_blank"
             rel="noopener noreferrer"
             className="block"

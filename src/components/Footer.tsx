@@ -97,7 +97,7 @@ export default function Footer() {
                 For Agents
               </div>
               <a
-                href="https://portalhomehub.com/register"
+                href="https://portalhomehub.com/register/select-country?type=agent"
                 className="text-sm hover:text-green-700 block"
                 target="_blank"
                 rel="noopener noreferrer"
