@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { ChevronLeft, ChevronRight, Home } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home } from 'lucide-react'
 
 interface Property {
   id: string
@@ -37,6 +37,50 @@ interface Property {
     company?: string
     user_type?: string
   }
+}
+
+// Truncated Description Component  
+function TruncatedDescription({ description, maxLength = 300 }: { description: string, maxLength?: number }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // If description is short, show it all
+  if (description.length <= maxLength) {
+    return <p className="text-gray-700 leading-relaxed">{description}</p>;
+  }
+  
+  // Find the last complete word within maxLength
+  let truncateIndex = maxLength;
+  while (truncateIndex > 0 && description[truncateIndex] !== ' ') {
+    truncateIndex--;
+  }
+  // Fallback to character limit if no space found
+  if (truncateIndex === 0) truncateIndex = maxLength;
+  
+  const truncatedText = description.substring(0, truncateIndex) + '...';
+  
+  return (
+    <div>
+      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+        {isExpanded ? description : truncatedText}
+      </p>
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="mt-3 inline-flex items-center gap-1 text-green-600 hover:text-green-700 font-medium text-sm bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-full transition-colors"
+      >
+        {isExpanded ? (
+          <>
+            <ChevronUp className="h-4 w-4" />
+            Show Less
+          </>
+        ) : (
+          <>
+            <ChevronDown className="h-4 w-4" />
+            Show More
+          </>
+        )}
+      </button>
+    </div>
+  );
 }
 
 export default function PropertyDetailPage() {
@@ -252,7 +296,7 @@ export default function PropertyDetailPage() {
             {property.description && (
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <p className="text-gray-700 leading-relaxed">{property.description}</p>
+                <TruncatedDescription description={property.description} maxLength={300} />
               </div>
             )}
             
