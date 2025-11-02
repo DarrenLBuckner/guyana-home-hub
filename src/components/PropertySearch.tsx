@@ -434,7 +434,7 @@ export function PropertySearch({
                   property={property}
                   variant={viewMode}
                   showStats={true}
-                  showContactButtons={false}
+                  showContactButtons={true}
                   favoriteAction={handlePropertyFavorite}
                   shareAction={handlePropertyShare}
                   contactAction={handlePropertyContact}
