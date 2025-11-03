@@ -191,9 +191,13 @@ export default function Hero({
             onSubmit={(e) => {
               e.preventDefault();
               const form = e.currentTarget as HTMLFormElement;
-              const q = (form.elements.namedItem("q") as HTMLInputElement)?.value;
+              const q = (form.elements.namedItem("q") as HTMLInputElement)?.value?.trim();
               analytics.searchSubmit(q || "", site);
-              // TODO: route to /search?q=...
+              
+              // Route to search page with query
+              if (q) {
+                window.location.href = `/search?q=${encodeURIComponent(q)}`;
+              }
             }}
           >
             <input
@@ -230,7 +234,11 @@ export default function Hero({
           })().map((city) => (
             <button
               key={city}
-              onClick={() => analytics.quickSearch(city, site)}
+              onClick={() => {
+                analytics.quickSearch(city, site);
+                // Navigate to search page with the city as query
+                window.location.href = `/search?q=${encodeURIComponent(city)}`;
+              }}
               className="rounded-full border border-white/70 bg-white/10 px-4 py-2 backdrop-blur hover:bg-white/20"
             >
               {city}
