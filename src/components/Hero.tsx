@@ -38,7 +38,7 @@ function getABVariant(key: string, buckets = ["A", "B"]) {
 // -------- Helpers --------------------------------------------
 const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-type Site = "jamaica" | "guyana";
+type Site = "jamaica" | "guyana" | "barbados" | "rwanda" | "ghana" | "namibia" | "south-africa" | "kenya" | "dominican-republic" | "trinidad";
 
 export default function Hero({
   site,
@@ -49,7 +49,21 @@ export default function Hero({
   desktopImage?: string; // 1920x900 or similar
   mobileImage?: string; // 1080x1600 portrait crop
 }) {
-  const country = useMemo(() => (site === "jamaica" ? "Jamaica" : "Guyana"), [site]);
+  const country = useMemo(() => {
+    const countryNames: Record<Site, string> = {
+      jamaica: "Jamaica",
+      guyana: "Guyana", 
+      barbados: "Barbados",
+      rwanda: "Rwanda",
+      ghana: "Ghana",
+      namibia: "Namibia",
+      "south-africa": "South Africa",
+      kenya: "Kenya",
+      "dominican-republic": "Dominican Republic",
+      trinidad: "Trinidad"
+    };
+    return countryNames[site] || "Jamaica";
+  }, [site]);
 
   // A/B: Variant A (buyer‑first); Variant B (seller‑first)
   const [variant, setVariant] = useState<"A" | "B">("A");
@@ -60,6 +74,42 @@ export default function Hero({
     // Track hero view with variant
     analytics.heroView(abVariant, site);
   }, [site]);
+
+  // Mobile image rotation for cultural diversity
+  const mobileImages = useMemo(() => {
+    // Map site names to country folder names
+    const countryMapping: Record<Site, string> = {
+      jamaica: "jamaica",
+      guyana: "guyana",
+      barbados: "barbados",
+      rwanda: "rwanda",
+      ghana: "ghana",
+      namibia: "namibia",
+      "south-africa": "south-africa",
+      kenya: "kenya",
+      "dominican-republic": "dominican-republic",
+      trinidad: "trinidad"
+    };
+    
+    const countryCode = countryMapping[site] || "jamaica";
+    
+    // Always use country-specific images
+    const countrySpecific = [
+      `/images/countries/${countryCode}/hero-mobile-1.jpg`,
+      `/images/countries/${countryCode}/hero-mobile-2.jpg`,
+      `/images/countries/${countryCode}/hero-mobile-3.jpg`
+    ];
+    
+    return countrySpecific;
+  }, [site]);
+  
+  const [mobileImageIndex, setMobileImageIndex] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setMobileImageIndex((i) => (i + 1) % mobileImages.length);
+    }, 8000); // Change image every 8 seconds
+    return () => clearInterval(id);
+  }, [mobileImages.length]);
 
   // Rotating secondary line
   const rotating = useMemo(() => [
@@ -103,11 +153,11 @@ export default function Hero({
       {/* Background Image with responsive sources */}
       <div className="absolute inset-0 -z-10">
         <picture>
-          <source media="(max-width: 768px)" srcSet={mobileImage} />
+          <source media="(max-width: 768px)" srcSet={mobileImages[mobileImageIndex]} />
           <img
             src={desktopImage}
             alt={`${country} homes background`}
-            className="h-[78vh] w-full object-cover object-top"
+            className="h-[78vh] w-full object-cover object-top transition-opacity duration-1000 ease-in-out"
             fetchPriority="high"
           />
         </picture>
@@ -163,10 +213,21 @@ export default function Hero({
 
         {/* Popular quick chips (optional) */}
         <div className="mt-4 flex flex-wrap justify-center gap-3 text-sm">
-          {(site === "jamaica" 
-            ? ["Kingston", "Spanish Town", "Portmore", "May Pen"]
-            : ["Georgetown", "Providence", "Eccles", "New Amsterdam"]
-          ).map((city) => (
+          {(() => {
+            const citiesMap: Record<Site, string[]> = {
+              jamaica: ["Kingston", "Spanish Town", "Portmore", "May Pen"],
+              guyana: ["Georgetown", "Providence", "Eccles", "New Amsterdam"],
+              barbados: ["Bridgetown", "St. Lawrence", "Oistins", "Speightstown"],
+              rwanda: ["Kigali", "Butare", "Gitarama", "Ruhengeri"],
+              ghana: ["Accra", "Kumasi", "Tamale", "Cape Coast"],
+              namibia: ["Windhoek", "Swakopmund", "Walvis Bay", "Oshakati"],
+              "south-africa": ["Cape Town", "Johannesburg", "Durban", "Pretoria"],
+              kenya: ["Nairobi", "Mombasa", "Kisumu", "Nakuru"],
+              "dominican-republic": ["Santo Domingo", "Santiago", "La Romana", "Puerto Plata"],
+              trinidad: ["Port of Spain", "San Fernando", "Chaguanas", "Arima"]
+            };
+            return citiesMap[site] || citiesMap.jamaica;
+          })().map((city) => (
             <button
               key={city}
               onClick={() => analytics.quickSearch(city, site)}
