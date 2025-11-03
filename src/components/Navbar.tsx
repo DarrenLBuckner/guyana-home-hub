@@ -124,7 +124,7 @@ export default function Navbar() {
             </Link>
           )}
           <a
-            href="https://portalhomehub.com/register"
+            href="https://portalhomehub.com/register/select-country"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"

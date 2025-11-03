@@ -67,7 +67,7 @@ export default function HomePage() {
           {/* Secondary CTA - List Property */}
           <div className="flex justify-center">
             <a
-              href="https://portalhomehub.com/register"
+              href="https://portalhomehub.com/register/select-country"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl text-base"
