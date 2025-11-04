@@ -75,7 +75,7 @@ export default function Hero({
     analytics.heroView(abVariant, site);
   }, [site]);
 
-  // Mobile image rotation for cultural diversity
+  // Mobile image rotation for cultural diversity (only existing images)
   const mobileImages = useMemo(() => {
     // Map site names to country folder names
     const countryMapping: Record<Site, string> = {
@@ -93,21 +93,31 @@ export default function Hero({
     
     const countryCode = countryMapping[site] || "jamaica";
     
-    // Always use country-specific images
-    const countrySpecific = [
-      `/images/countries/${countryCode}/hero-mobile-1.jpg`,
-      `/images/countries/${countryCode}/hero-mobile-2.jpg`,
-      `/images/countries/${countryCode}/hero-mobile-3.jpg`
-    ];
+    // Define available images per country (only the 2 existing images)
+    const availableImages: Record<string, string[]> = {
+      guyana: [
+        `/images/countries/${countryCode}/hero-mobile-1.jpg`, // Your family photo - must keep!
+        `/images/countries/${countryCode}/hero-mobile-2.jpg`
+      ],
+      jamaica: [
+        `/images/countries/${countryCode}/hero-mobile-1.jpg`, // Primary image
+        `/images/countries/${countryCode}/hero-mobile-2.jpg`
+      ]
+    };
     
-    return countrySpecific;
+    return availableImages[countryCode] || [
+      `/images/countries/${countryCode}/hero-mobile-1.jpg`
+    ];
   }, [site]);
   
   const [mobileImageIndex, setMobileImageIndex] = useState(0);
   useEffect(() => {
+    // Only rotate if there are multiple images
+    if (mobileImages.length <= 1) return;
+    
     const id = setInterval(() => {
       setMobileImageIndex((i) => (i + 1) % mobileImages.length);
-    }, 8000); // Change image every 8 seconds
+    }, 4000); // Change image every 4 seconds - optimized for user attention span
     return () => clearInterval(id);
   }, [mobileImages.length]);
 
@@ -118,7 +128,7 @@ export default function Hero({
   ], [country]);
   const [rotIndex, setRotIndex] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setRotIndex((i) => (i + 1) % rotating.length), 6000);
+    const id = setInterval(() => setRotIndex((i) => (i + 1) % rotating.length), 3500); // Faster text rotation for better engagement
     return () => clearInterval(id);
   }, [rotating.length]);
 
@@ -152,20 +162,40 @@ export default function Hero({
     <section className="relative w-full">
       {/* Background Image with responsive sources */}
       <div className="absolute inset-0 -z-10">
-        <picture>
-          <source media="(max-width: 768px)" srcSet={mobileImages[mobileImageIndex]} />
-          <img
-            src={desktopImage}
-            alt={`${country} homes background`}
-            className="h-[78vh] w-full object-cover object-top transition-opacity duration-1000 ease-in-out"
-            fetchPriority="high"
-          />
-        </picture>
-        <div className="absolute inset-0 bg-black/30" />
+        {/* Desktop Image */}
+        <img
+          src={desktopImage}
+          alt={`${country} homes background`}
+          className="hidden h-[78vh] w-full object-cover object-top md:block"
+          fetchPriority="high"
+        />
+        
+        {/* Mobile Images with Smooth Transitions */}
+        <div className="relative h-[78vh] w-full md:hidden">
+          {mobileImages.map((imgSrc, index) => (
+            <img
+              key={imgSrc}
+              src={imgSrc}
+              alt={`${country} homes background ${index + 1}`}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-1000 ease-in-out ${
+                index === mobileImageIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+              fetchPriority={index === 0 ? "high" : "low"}
+              onError={(e) => {
+                console.warn(`Failed to load mobile hero image: ${imgSrc}`);
+                // Hide broken image
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Gradient overlay - optimized to show faces while maintaining text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 via-black/30 to-black/20" />
       </div>
 
-      {/* Content */}
-      <div className="mx-auto flex h-[78vh] max-w-6xl flex-col items-center justify-center px-4 text-center text-white">
+      {/* Content - positioned to show faces in mobile hero images */}
+      <div className="mx-auto flex h-[78vh] max-w-6xl flex-col items-center justify-center px-4 pt-8 text-center text-white md:justify-start md:pt-24">
         <h1 className="text-4xl font-extrabold leading-tight drop-shadow md:text-6xl">
           {headline}
         </h1>
@@ -184,8 +214,8 @@ export default function Hero({
           </AnimatePresence>
         </div>
 
-        {/* Search bar */}
-        <div className="mt-5 w-full max-w-3xl">
+        {/* Search bar - extra spacing on mobile to show faces */}
+        <div className="mt-8 w-full max-w-3xl md:mt-5">
           <form
             className="flex overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5"
             onSubmit={(e) => {
@@ -215,8 +245,8 @@ export default function Hero({
           </form>
         </div>
 
-        {/* Popular quick chips (optional) */}
-        <div className="mt-4 flex flex-wrap justify-center gap-3 text-sm">
+        {/* Popular quick chips - extra spacing on mobile */}
+        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm md:mt-4">
           {(() => {
             const citiesMap: Record<Site, string[]> = {
               jamaica: ["Kingston", "Spanish Town", "Portmore", "May Pen"],

@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home } from 'lucide-react'
+import VideoEmbed from '@/components/VideoEmbed'
+
 
 interface Property {
   id: string
@@ -26,6 +28,8 @@ interface Property {
   owner_whatsapp?: string
   images?: string[]
   hero_index?: number
+  video_url?: string
+
   listing_type?: 'sale' | 'rent'
   property_type?: string
   agent_profile?: {
@@ -297,6 +301,13 @@ export default function PropertyDetailPage() {
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
                 <TruncatedDescription description={property.description} maxLength={300} />
+              </div>
+            )}
+            
+            {property.video_url && (
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Property Video</h2>
+                <VideoEmbed videoUrl={property.video_url} className="max-w-2xl" />
               </div>
             )}
             

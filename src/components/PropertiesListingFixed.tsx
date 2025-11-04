@@ -20,7 +20,7 @@ import {
   ChevronRight,
   ChevronDown
 } from 'lucide-react'
-import { useFavorites } from '@/hooks/useFavorites'
+import { usePropertyEngagement } from '@/hooks/usePropertyEngagement'
 
 interface Property {
   id: string
@@ -68,18 +68,27 @@ function PropertiesListingContent({
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFiltersModal, setShowFiltersModal] = useState(false)
   
-  // Favorites hook
-  const { favoriteStatus, toggleFavorite, user } = useFavorites()
+  // Property engagement hook (likes + favorites)
+  const { 
+    favoriteStatus, 
+    toggleFavorite, 
+    user,
+    likesData,
+    fetchLikes,
+    addLike,
+    getLikesCount,
+    getUserHasLiked,
+    isFavorited,
+    isLikesLoading
+  } = usePropertyEngagement()
 
   // Filter states - Initialize with URL parameters
   const [searchTerm, setSearchTerm] = useState(searchParams.get('location') || '')
-  const [selectedRegion, setSelectedRegion] = useState('')
   const [selectedType, setSelectedType] = useState('')
-  const [minPrice, setMinPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
+  const [priceRange, setPriceRange] = useState('')
   const [bedrooms, setBedrooms] = useState('')
   const [bathrooms, setBathrooms] = useState('')
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+  const [sortBy, setSortBy] = useState('price-high') // Default to highest price first
 
   useEffect(() => {
     async function fetchProperties() {
@@ -91,6 +100,13 @@ function PropertiesListingContent({
         }
         const result = await response.json();
         setProperties(result.properties || []);
+        
+        // Fetch likes data for all properties
+        if (result.properties?.length > 0) {
+          result.properties.forEach((property: Property) => {
+            fetchLikes(property.id);
+          });
+        }
       } catch (error) {
         console.error('Error fetching properties:', error);
         setProperties([]);
@@ -98,43 +114,45 @@ function PropertiesListingContent({
       setLoading(false);
     }
     fetchProperties();
-  }, []);
+  }, [fetchLikes]);
 
-  const regions = [
-    'Region 1 (Barima-Waini)',
-    'Region 2 (Pomeroon-Supenaam)',
-    'Region 3 (Essequibo Islands-West Demerara)',
-    'Region 4 (Demerara-Mahaica)',
-    'Region 5 (Mahaica-Berbice)',
-    'Region 6 (East Berbice-Corentyne)',
-    'Region 7 (Cuyuni-Mazaruni)',
-    'Region 8 (Potaro-Siparuni)',
-    'Region 9 (Upper Takutu-Upper Essequibo)',
-    'Region 10 (Upper Demerara-Berbice)'
-  ]
+  // Smart price ranges based on listing type
+  const getPriceRanges = () => {
+    if (filterType === 'rent') {
+      return [
+        { label: 'Under GYD 50K', value: '0-50000' },
+        { label: 'GYD 50K - 100K', value: '50000-100000' },
+        { label: 'GYD 100K - 200K', value: '100000-200000' },
+        { label: 'GYD 200K - 500K', value: '200000-500000' },
+        { label: 'GYD 500K+', value: '500000-999999999' }
+      ];
+    } else {
+      return [
+        { label: 'Under GYD 10M', value: '0-10000000' },
+        { label: 'GYD 10M - 25M', value: '10000000-25000000' },
+        { label: 'GYD 25M - 50M', value: '25000000-50000000' },
+        { label: 'GYD 50M - 100M', value: '50000000-100000000' },
+        { label: 'GYD 100M+', value: '100000000-999999999' }
+      ];
+    }
+  };
 
   const formatPrice = (price: number, type?: string) => {
     const formatted = price.toLocaleString()
     return type === 'rent' ? `GYD ${formatted}/month` : `GYD ${formatted}`
   }
 
-  const handleFeatureToggle = (feature: string) => {
-    setSelectedFeatures(prev => 
-      prev.includes(feature) 
-        ? prev.filter(f => f !== feature)
-        : [...prev, feature]
-    )
+  const handlePriceRangeChange = (value: string) => {
+    setPriceRange(value)
   }
 
   const clearAllFilters = () => {
     setSearchTerm('')
-    setSelectedRegion('')
     setSelectedType('')
-    setMinPrice('')
-    setMaxPrice('')
+    setPriceRange('')
     setBedrooms('')
     setBathrooms('')
-    setSelectedFeatures([])
+    setSortBy('price-high')
   }
 
   const filteredProperties = properties.filter(property => {
@@ -142,7 +160,6 @@ function PropertiesListingContent({
                          property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesRegion = !selectedRegion || property.region === selectedRegion
     const matchesType = !selectedType || property.property_type === selectedType
     const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms)
     const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
@@ -153,16 +170,28 @@ function PropertiesListingContent({
       (filterType === 'sale' && listingType === 'sale') ||
       (filterType === 'rent' && listingType === 'rent')
     
+    // Handle price range filtering
     let matchesPrice = true
-    if (minPrice && property.price < parseInt(minPrice)) matchesPrice = false
-    if (maxPrice && property.price > parseInt(maxPrice)) matchesPrice = false
+    if (priceRange) {
+      const [min, max] = priceRange.split('-').map(p => parseInt(p))
+      matchesPrice = property.price >= min && property.price <= max
+    }
 
-    const matchesFeatures = selectedFeatures.length === 0 || 
-      selectedFeatures.every(feature => 
-        property.features && property.features.includes(feature)
-      )
-
-    return matchesSearch && matchesRegion && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesFeatures && matchesListingType
+    return matchesSearch && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesListingType
+  }).sort((a, b) => {
+    // Apply sorting
+    switch (sortBy) {
+      case 'price-high':
+        return b.price - a.price // Highest first
+      case 'price-low':
+        return a.price - b.price // Lowest first
+      case 'newest':
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      case 'oldest':
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      default:
+        return b.price - a.price // Default to highest price first
+    }
   })
 
   if (loading) {
@@ -186,50 +215,67 @@ function PropertiesListingContent({
               <h1 className="text-2xl font-bold text-green-700">{title}</h1>
               <p className="text-gray-600 text-sm">{filteredProperties.length} properties found</p>
             </div>
-            {showFilters && (
-              <button
-                onClick={() => setShowFiltersModal(true)}
-                className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 flex items-center gap-2 lg:hidden"
-              >
-                <Filter className="w-4 h-4" />
-                Filters
-              </button>
-            )}
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Desktop Filters - Hidden on Mobile */}
+        {/* Clean Filter Bar - Zillow Style */}
         {showFilters && (
-          <div className="hidden lg:block bg-gradient-to-r from-green-600 to-yellow-500 p-6 shadow-lg rounded-lg mb-8">
-            {/* Main Search Bar */}
-            <div className="mb-6">
-              <div className="flex gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <input
-                    type="text"
-                    placeholder="Search for properties..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 text-lg"
-                  />
-                </div>
-                <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors">
-                  Search
-                </button>
+          <div className="bg-white p-4 shadow-sm rounded-lg mb-6 border">
+            {/* Desktop Filters */}
+            <div className="hidden lg:flex items-center gap-4 flex-wrap">
+              {/* Price Range */}
+              <div className="relative">
+                <select
+                  value={priceRange}
+                  onChange={(e) => handlePriceRangeChange(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                >
+                  <option value="">{filterType === 'rent' ? 'Monthly Rent' : 'Price Range'}</option>
+                  {getPriceRanges().map(range => (
+                    <option key={range.value} value={range.value}>{range.label}</option>
+                  ))}
+                </select>
               </div>
-            </div>
 
-            {/* Filter Dropdowns Row */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-              {/* Property Type Dropdown */}
+              {/* Bedrooms */}
+              <div className="relative">
+                <select
+                  value={bedrooms}
+                  onChange={(e) => setBedrooms(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                >
+                  <option value="">Beds</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                  <option value="5">5+</option>
+                </select>
+              </div>
+
+              {/* Bathrooms */}
+              <div className="relative">
+                <select
+                  value={bathrooms}
+                  onChange={(e) => setBathrooms(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                >
+                  <option value="">Baths</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                </select>
+              </div>
+
+              {/* Property Type */}
               <div className="relative">
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
                 >
                   <option value="">Property Type</option>
                   <option value="house">House</option>
@@ -237,142 +283,55 @@ function PropertiesListingContent({
                   <option value="land">Land</option>
                   <option value="commercial">Commercial</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
               </div>
 
-              {/* Min Price Dropdown */}
+              {/* Sort */}
               <div className="relative">
                 <select
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
                 >
-                  <option value="">Min Price</option>
-                  <option value="5000000">GYD 5M</option>
-                  <option value="10000000">GYD 10M</option>
-                  <option value="25000000">GYD 25M</option>
-                  <option value="50000000">GYD 50M</option>
-                  <option value="100000000">GYD 100M</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
               </div>
 
-              {/* Max Price Dropdown */}
-              <div className="relative">
-                <select
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
-                >
-                  <option value="">Max Price</option>
-                  <option value="25000000">GYD 25M</option>
-                  <option value="50000000">GYD 50M</option>
-                  <option value="100000000">GYD 100M</option>
-                  <option value="200000000">GYD 200M</option>
-                  <option value="500000000">GYD 500M</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+              {/* Search */}
+              <div className="flex-1 relative min-w-[200px]">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="Search location, title..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
               </div>
 
-              {/* Bedrooms Dropdown */}
-              <div className="relative">
-                <select
-                  value={bedrooms}
-                  onChange={(e) => setBedrooms(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
-                >
-                  <option value="">Bedrooms</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                  <option value="4">4+</option>
-                  <option value="5">5+</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Bathrooms Dropdown */}
-              <div className="relative">
-                <select
-                  value={bathrooms}
-                  onChange={(e) => setBathrooms(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
-                >
-                  <option value="">Bathrooms</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                  <option value="4">4+</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-              </div>
-
-              {/* Region Dropdown */}
-              <div className="relative">
-                <select
-                  value={selectedRegion}
-                  onChange={(e) => setSelectedRegion(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
-                >
-                  <option value="">All Regions</option>
-                  {regions.map(region => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Checkbox Filters Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Features Section */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <h3 className="text-white font-semibold mb-3 text-lg">Features</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {['Pet Friendly', 'Garden', 'Pool', 'Security Estate', 'AC', 'Security System', 'Fenced', 'Backup Generator', 'Garage', 'Furnished'].map((feature) => (
-                    <label key={feature} className="flex items-center space-x-2 text-white cursor-pointer hover:bg-white/10 p-2 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedFeatures.includes(feature)}
-                        onChange={() => handleFeatureToggle(feature)}
-                        className="rounded border-gray-300 text-green-600 focus:ring-green-500 focus:ring-offset-0"
-                      />
-                      <span className="text-sm">{feature}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Other Section */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <h3 className="text-white font-semibold mb-3 text-lg">Other</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {['WiFi', 'Cable TV', 'Kitchen Appliances', 'Washing Machine'].map((feature) => (
-                    <label key={feature} className="flex items-center space-x-2 text-white cursor-pointer hover:bg-white/10 p-2 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedFeatures.includes(feature)}
-                        onChange={() => handleFeatureToggle(feature)}
-                        className="rounded border-gray-300 text-green-600 focus:ring-green-500 focus:ring-offset-0"
-                      />
-                      <span className="text-sm">{feature}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Clear Filters Button */}
-            {(selectedFeatures.length > 0 || searchTerm || selectedRegion || selectedType || minPrice || maxPrice || bedrooms || bathrooms) && (
-              <div className="mt-6 text-center">
+              {/* Clear Filters */}
+              {(searchTerm || selectedType || priceRange || bedrooms || bathrooms) && (
                 <button
                   onClick={clearAllFilters}
-                  className="bg-white text-green-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                  className="text-green-600 hover:text-green-700 text-sm font-medium"
                 >
-                  Clear All Filters ({selectedFeatures.length + (searchTerm ? 1 : 0) + (selectedRegion ? 1 : 0) + (selectedType ? 1 : 0) + (minPrice ? 1 : 0) + (maxPrice ? 1 : 0) + (bedrooms ? 1 : 0) + (bathrooms ? 1 : 0)})
+                  Clear All
                 </button>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Mobile Filter Button */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setShowFiltersModal(true)}
+                className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2"
+              >
+                <Filter className="w-4 h-4" />
+                Filters & Sort
+              </button>
+            </div>
           </div>
         )}
 
@@ -432,34 +391,71 @@ function PropertiesListingContent({
                       {property.price_type === 'rent' ? 'For Rent' : 'For Sale'}
                     </span>
                   </div>
-                  <button 
-                    onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation()
-                      toggleFavorite({
-                        id: property.id,
-                        title: property.title,
-                        price: property.price,
-                        location: property.location || '',
-                        property_type: property.property_type,
-                        listing_type: property.listing_type || 'sale'
-                      })
-                    }}
-                    className={`absolute top-2 right-2 p-1 rounded-full shadow transition-colors ${
-                      favoriteStatus[property.id] 
-                        ? 'bg-red-100 hover:bg-red-200' 
-                        : 'bg-white hover:bg-gray-100'
-                    }`}
-                    title={favoriteStatus[property.id] ? 'Remove from favorites' : 'Add to favorites'}
-                  >
-                    <Heart 
-                      className={`h-4 w-4 transition-colors ${
-                        favoriteStatus[property.id] 
-                          ? 'text-red-500 fill-red-500' 
-                          : 'text-gray-600'
-                      }`} 
-                    />
-                  </button>
+                  {/* Two-Tier Engagement System */}
+                  <div className="absolute top-2 right-2 flex flex-col gap-1">
+                    {/* Anonymous Like Button */}
+                    <button 
+                      onClick={async (e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        
+                        if (getUserHasLiked(property.id)) {
+                          return; // Already liked
+                        }
+                        
+                        const result = await addLike(property.id)
+                        if (!result.success && result.error === 'Already liked this property today') {
+                          // Show tooltip or message
+                        }
+                      }}
+                      disabled={isLikesLoading(property.id) || getUserHasLiked(property.id)}
+                      className={`p-1 rounded-full shadow transition-colors flex items-center gap-1 text-xs ${
+                        getUserHasLiked(property.id)
+                          ? 'bg-blue-100 text-blue-600 cursor-default'
+                          : 'bg-white hover:bg-blue-50 text-gray-600 hover:text-blue-600'
+                      }`}
+                      title={getUserHasLiked(property.id) ? 'You showed interest today' : 'Show interest (no signup required)'}
+                    >
+                      <span className="text-xs">👍</span>
+                      <span className="font-medium">{getLikesCount(property.id)}</span>
+                    </button>
+
+                    {/* Authenticated Favorite Button */}
+                    <button 
+                      onClick={async (e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        
+                        const result = await toggleFavorite({
+                          id: property.id,
+                          title: property.title,
+                          price: property.price,
+                          location: property.location || '',
+                          property_type: property.property_type,
+                          listing_type: property.listing_type || 'sale'
+                        })
+                        
+                        if (!result.success && result.requiresAuth) {
+                          // Show sign-in modal or redirect
+                          alert('Please sign in to save properties and get price alerts!')
+                        }
+                      }}
+                      className={`p-1 rounded-full shadow transition-colors ${
+                        isFavorited(property.id)
+                          ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-600' 
+                          : 'bg-white hover:bg-yellow-50 text-gray-600 hover:text-yellow-600'
+                      }`}
+                      title={
+                        user 
+                          ? (isFavorited(property.id) ? 'Remove from saved properties' : 'Save & get alerts') 
+                          : 'Sign in to save & get price alerts'
+                      }
+                    >
+                      <span className="text-sm">
+                        {isFavorited(property.id) ? '⭐' : '☆'}
+                      </span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Property Details */}
@@ -601,34 +597,18 @@ function PropertiesListingContent({
                 {/* Price Range */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {filterType === 'rent' ? 'Monthly Rent (GYD)' : 'Price (GYD)'}
+                    {filterType === 'rent' ? 'Monthly Rent (GYD)' : 'Price Range (GYD)'}
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <select
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Min Price</option>
-                      <option value="5000000">GYD 5M</option>
-                      <option value="10000000">GYD 10M</option>
-                      <option value="25000000">GYD 25M</option>
-                      <option value="50000000">GYD 50M</option>
-                      <option value="100000000">GYD 100M</option>
-                    </select>
-                    <select
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                      className="px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Max Price</option>
-                      <option value="25000000">GYD 25M</option>
-                      <option value="50000000">GYD 50M</option>
-                      <option value="100000000">GYD 100M</option>
-                      <option value="200000000">GYD 200M</option>
-                      <option value="500000000">GYD 500M</option>
-                    </select>
-                  </div>
+                  <select
+                    value={priceRange}
+                    onChange={(e) => handlePriceRangeChange(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  >
+                    <option value="">All Prices</option>
+                    {getPriceRanges().map(range => (
+                      <option key={range.value} value={range.value}>{range.label}</option>
+                    ))}
+                  </select>
                 </div>
                 
                 {/* Beds/Baths */}
@@ -664,45 +644,26 @@ function PropertiesListingContent({
                   </div>
                 </div>
 
-                {/* Region */}
+                {/* Sort */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
                   <select
-                    value={selectedRegion}
-                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   >
-                    <option value="">All Regions</option>
-                    {regions.map(region => (
-                      <option key={region} value={region}>{region}</option>
-                    ))}
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
                   </select>
                 </div>
                 
-                {/* Advanced Filters - Collapsible */}
-                <details className="border-t pt-4">
-                  <summary className="font-medium cursor-pointer text-green-600 hover:text-green-700">
-                    + More Filters
-                  </summary>
-                  <div className="mt-4 space-y-3">
-                    {['Pet Friendly', 'Garden', 'Pool', 'Security Estate', 'AC', 'Security System', 'Fenced', 'Backup Generator', 'Garage', 'Furnished', 'WiFi', 'Cable TV', 'Kitchen Appliances', 'Washing Machine'].map((feature) => (
-                      <label key={feature} className="flex items-center gap-3 cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedFeatures.includes(feature)}
-                          onChange={() => handleFeatureToggle(feature)}
-                          className="w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                        />
-                        <span className="text-gray-700">{feature}</span>
-                      </label>
-                    ))}
-                  </div>
-                </details>
               </div>
               
               {/* Action Buttons */}
               <div className="mt-8 flex gap-3">
-                {(selectedFeatures.length > 0 || searchTerm || selectedRegion || selectedType || minPrice || maxPrice || bedrooms || bathrooms) && (
+                {(searchTerm || selectedType || priceRange || bedrooms || bathrooms) && (
                   <button 
                     onClick={clearAllFilters}
                     className="flex-1 border-2 border-gray-300 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50"

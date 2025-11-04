@@ -83,6 +83,9 @@ export default function Navbar() {
           <Link href="/properties/rent" className="hover:text-green-600">
             Rent
           </Link>
+          <Link href="/services" className="hover:text-green-600">
+            Services
+          </Link>
           <Link href="/contact" className="hover:text-green-600">
             Contact
           </Link>
@@ -165,6 +168,13 @@ export default function Navbar() {
             onClick={closeMenu}
           >
             Rent
+          </Link>
+          <Link
+            href="/services"
+            className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
+          >
+            Services
           </Link>
           <Link
             href="/contact"

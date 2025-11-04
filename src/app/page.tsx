@@ -6,6 +6,7 @@ import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
+import AdDisplay from "@/components/ads/AdDisplay";
 
 export default function HomePage() {
   const [showBrowseCards, setShowBrowseCards] = useState(false);
@@ -81,25 +82,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      <main className="min-h-screen bg-white flex flex-col items-center justify-start pt-12 pb-24 px-4">
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center text-gray-700 mb-12">
-          <div>
-            <h3 className="text-4xl font-bold" style={{ color: theme.colors.primary }}>500+</h3>
-            <p className="text-lg">Properties Listed</p>
-          </div>
-          <div>
-            <h3 className="text-4xl font-bold" style={{ 
-              color: country === 'JM' ? theme.colors.secondary : theme.colors.primary 
-            }}>50+</h3>
-            <p className="text-lg">Professional Agents</p>
-          </div>
-          <div>
-            <h3 className="text-4xl font-bold" style={{ color: theme.colors.primary }}>1000+</h3>
-            <p className="text-lg">Happy Customers</p>
-          </div>
+      {/* Business Advertisement Banner - Mobile Optimized */}
+      <section className="w-full bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <AdDisplay 
+            placement="gy-home-hero"
+            pageType="home"
+            className="w-full"
+            maxAds={1}
+            compactMode={false}
+            fallbackContent={
+              <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-xl shadow-lg overflow-hidden">
+                <div className="p-4 sm:p-6 md:p-8 text-center">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
+                    Advertise Your Real Estate Business Here
+                  </h3>
+                  <p className="text-sm sm:text-base md:text-lg mb-4 opacity-90">
+                    Reach thousands of property seekers across Guyana
+                  </p>
+                  <a 
+                    href="/contact" 
+                    className="inline-block bg-white text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
+                  >
+                    Get Started Today
+                  </a>
+                </div>
+              </div>
+            }
+          />
         </div>
+      </section>
+
+      <main className="min-h-screen bg-white flex flex-col items-center justify-start pt-12 pb-24 px-4">
 
         {/* Featured Content - Only show when no cards are active */}
         {!showBrowseCards && !showListCards && (

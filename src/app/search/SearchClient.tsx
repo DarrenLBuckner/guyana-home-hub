@@ -11,12 +11,12 @@ interface PropertyCard {
   title: string
   price: number
   status: string
-  hero_image?: string
-  image_urls?: string[]
+  images?: string[]
+  hero_index?: number
   location?: string
   bedrooms?: number
   bathrooms?: number
-  property_size?: number
+  home_size?: string
   property_type?: string
   listing_type?: 'sale' | 'rent'
 }
@@ -160,24 +160,48 @@ export default function SearchClient() {
       {!loading && !error && results.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {results.map((property) => {
-            const imageUrl = property.hero_image || property.image_urls?.[0] || '/images/placeholder-property.jpg'
+            // Fix image loading - use images array with hero_index or first image
+            const imageUrl = property.images && property.images.length > 0 
+              ? property.images[property.hero_index || 0] 
+              : null
+              
+            // Fix currency formatting to match site (GYD instead of $)
             const priceFormatted = property.listing_type === 'rent' 
-              ? `$${property.price.toLocaleString()}/month` 
-              : `$${property.price.toLocaleString()}`
+              ? `GYD ${property.price.toLocaleString()}/month` 
+              : `GYD ${property.price.toLocaleString()}`
             
             return (
               <Link key={property.id} href={`/properties/${property.id}`}>
                 <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden cursor-pointer">
                   <div className="relative">
-                    <img
-                      src={imageUrl}
-                      alt={property.title}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.src = '/images/placeholder-property.jpg'
-                      }}
-                    />
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={property.title}
+                        className="w-full h-48 object-cover transition-opacity duration-300"
+                        loading="lazy"
+                        onLoad={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.style.opacity = '1'
+                        }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          // Hide broken image and show placeholder
+                          target.style.display = 'none'
+                          const placeholder = target.nextElementSibling as HTMLElement
+                          if (placeholder) placeholder.style.display = 'flex'
+                        }}
+                        style={{ opacity: 0 }}
+                      />
+                    ) : null}
+                    <div 
+                      className={`w-full h-48 bg-gray-200 flex items-center justify-center ${imageUrl ? 'hidden' : 'flex'}`}
+                    >
+                      <div className="text-center">
+                        <div className="text-4xl text-gray-400 mb-2">🏠</div>
+                        <p className="text-gray-500 text-sm">No image available</p>
+                      </div>
+                    </div>
                     <div className="absolute top-2 right-2">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                         property.listing_type === 'rent' 
@@ -225,10 +249,10 @@ export default function SearchClient() {
                           <span>{property.bathrooms} bath</span>
                         </div>
                       )}
-                      {property.property_size && (
+                      {property.home_size && (
                         <div className="flex items-center">
                           <Square className="h-4 w-4 mr-1" />
-                          <span>{property.property_size.toLocaleString()} sqft</span>
+                          <span>{property.home_size} sq ft</span>
                         </div>
                       )}
                     </div>

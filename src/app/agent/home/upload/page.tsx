@@ -5,13 +5,13 @@ import { createClient } from '@/lib/supabase/client'
 import UploadPhotos from '@/components/UploadPhotos'
 import { useRouter } from 'next/navigation'
 
+
 type FormState = {
   title: string
   price: string
   location: string
   bedrooms: string
   bathrooms: string
-  video: string
   homeSize: string
   lotSize: string
   description: string
@@ -28,7 +28,6 @@ export default function UploadPropertyForm() {
     location: '',
     bedrooms: '',
     bathrooms: '',
-    video: '',
     homeSize: '',
     lotSize: '',
     description: '',
@@ -50,7 +49,6 @@ export default function UploadPropertyForm() {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
       setAuthChecked(true)
-      console.log('Upload page - User authenticated:', user?.email)
     }
 
     checkAuth()
@@ -188,7 +186,7 @@ Write a professional, engaging description that highlights the property's best f
         location: form.location.trim(),
         bedrooms: parseInt(form.bedrooms, 10) || 0,
         bathrooms: parseInt(form.bathrooms, 10) || 0,
-        video_url: form.video.trim() || null,
+
         lot_size: form.lotSize.trim() || null,
         home_size: form.homeSize.trim() || null,
         features: form.features,
@@ -216,7 +214,6 @@ Write a professional, engaging description that highlights the property's best f
         location: '',
         bedrooms: '',
         bathrooms: '',
-        video: '',
         homeSize: '',
         lotSize: '',
         description: '',
@@ -368,19 +365,6 @@ Write a professional, engaging description that highlights the property's best f
             </div>
           </div>
 
-          {/* Video / sizes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              YouTube Video URL (optional)
-            </label>
-            <input
-              name="video"
-              value={form.video}
-              onChange={handleChange}
-              placeholder="https://www.youtube.com/watch?v=..."
-              className="w-full border border-gray-300 rounded p-3 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            />
-          </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
