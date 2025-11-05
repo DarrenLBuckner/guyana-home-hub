@@ -96,17 +96,33 @@ export default function ServicesOverview() {
 
       // Use Portal Home Hub API (now with CORS headers)
       const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
-      const response = await fetch(`${portalBaseUrl}/api/public/services/GY`);
+      const apiUrl = `${portalBaseUrl}/api/public/services/GY`;
+      
+      console.log('🔍 Fetching services from:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'cors', // Explicitly set CORS mode
+      });
+      
+      console.log('📡 Response status:', response.status);
+      console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
       
       if (!response.ok) {
-        throw new Error(`Failed to fetch services: ${response.status}`);
+        const errorText = await response.text();
+        console.error('❌ Error response:', errorText);
+        throw new Error(`Failed to fetch services: ${response.status} - ${errorText}`);
       }
       
       const data = await response.json();
+      console.log('✅ Received data:', data);
       setServicesData(data);
     } catch (err) {
-      console.error('Error fetching services:', err);
-      setError('Failed to load services. Please try again later.');
+      console.error('💥 Error fetching services:', err);
+      setError(`Failed to load services: ${err instanceof Error ? err.message : 'Unknown error'}. Please try again later.`);
     } finally {
       setLoading(false);
     }
