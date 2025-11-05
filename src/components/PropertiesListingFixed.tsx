@@ -388,7 +388,7 @@ function PropertiesListingContent({
                   </div>
                   <div className="absolute top-2 left-2">
                     <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-medium">
-                      {property.price_type === 'rent' ? 'For Rent' : 'For Sale'}
+                      {property.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
                     </span>
                   </div>
                   {/* Improved Engagement Buttons - Better UX & Spacing */}
