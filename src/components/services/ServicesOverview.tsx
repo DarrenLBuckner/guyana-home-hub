@@ -102,10 +102,8 @@ export default function ServicesOverview() {
       
       const response = await fetch(apiUrl, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         mode: 'cors', // Explicitly set CORS mode
+        cache: 'no-cache',
       });
       
       console.log('📡 Response status:', response.status);
