@@ -134,8 +134,10 @@ export default function BusinessDirectoryPage() {
     try {
       setLoading(true);
       
-      // Get Portal Home Hub base URL
-      const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'http://localhost:3000';
+      // Get Portal Home Hub base URL  
+      const portalBaseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://portalhomehub.com' 
+        : (process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com');
       
       // Fetch business directory listings
       const url = selectedCategory === 'all' 

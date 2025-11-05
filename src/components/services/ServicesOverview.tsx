@@ -95,7 +95,10 @@ export default function ServicesOverview() {
       setError(null);
 
       // Use Portal Home Hub API (now with CORS headers)
-      const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
+      // Force production URL to avoid localhost issues
+      const portalBaseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://portalhomehub.com' 
+        : (process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com');
       const apiUrl = `${portalBaseUrl}/api/public/services/GY`;
       
       console.log('🔍 Fetching services from:', apiUrl);
