@@ -17,10 +17,13 @@ interface Service {
   shortDescription: string;
   icon: string;
   category: string;
+  serviceType?: 'free' | 'card' | 'banner';
   price: number;
   currency: string;
   contactEmail: string;
   contactPhone: string;
+  contactAddress?: string;
+  contactWebsite?: string;
   featuredImage?: string;
   galleryImages: string[];
 }
@@ -91,10 +94,8 @@ export default function ServicesOverview() {
       setLoading(true);
       setError(null);
 
-      // Get Portal Home Hub base URL from environment or default
-      const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portal-home-p09uk6ou7-darren-lb-uckner-s-projects.vercel.app';
-      
-      const response = await fetch(`${portalBaseUrl}/api/public/services/GY`);
+      // Use local API endpoint instead of external Portal Home Hub
+      const response = await fetch('/api/public/services/GY');
       
       if (!response.ok) {
         throw new Error(`Failed to fetch services: ${response.status}`);

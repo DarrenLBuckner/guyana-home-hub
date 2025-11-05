@@ -86,11 +86,25 @@ export default function Navbar() {
           <Link href="/services" className="hover:text-green-600">
             Services
           </Link>
+          <Link href="/business-directory" className="hover:text-green-600">
+            Directory
+          </Link>
           <Link href="/contact" className="hover:text-green-600">
             Contact
           </Link>
           {/* [CHH-SYS] Admin Login link */}
           {/* Admin login link removed for production */}
+        </div>
+
+        {/* FREE Listing CTA */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Link 
+            href="/free-listing"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm flex items-center space-x-1"
+          >
+            <span>🆓</span>
+            <span>FREE Listing</span>
+          </Link>
         </div>
 
         {/* Desktop Auth Buttons */}
@@ -177,11 +191,28 @@ export default function Navbar() {
             Services
           </Link>
           <Link
+            href="/business-directory"
+            className="block text-green-700 hover:text-green-800"
+            onClick={closeMenu}
+          >
+            Directory
+          </Link>
+          <Link
             href="/contact"
             className="block text-green-700 hover:text-green-800"
             onClick={closeMenu}
           >
             Contact
+          </Link>
+          
+          {/* FREE Listing CTA - Mobile */}
+          <Link
+            href="/free-listing"
+            className="block bg-green-600 text-white px-4 py-3 rounded-lg text-center font-medium mt-3 flex items-center justify-center space-x-1"
+            onClick={closeMenu}
+          >
+            <span>🆓</span>
+            <span>FREE Business Listing</span>
           </Link>
 
           {/* Mobile Auth Section */}

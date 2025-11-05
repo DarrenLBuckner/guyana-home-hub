@@ -75,10 +75,12 @@ const industries = [
   },
   {
     title: 'I am a local business',
-    subtitle: 'Real estate related services',
+    subtitle: 'Get listed for FREE',
     image: '/images/local-business.jpg',
-    href: '/coming-soon/local-business',
-    description: 'Partner with Guyana premier real estate platform'
+    href: '/free-listing',
+    badge: '100% FREE',
+    description: 'Start with a FREE listing, upgrade for premium visibility',
+    isPrimary: false
   },
 ];
 
@@ -138,6 +140,55 @@ export default function AdvertisePage() {
       <p className="text-center text-gray-700 mt-4 max-w-3xl mx-auto">
         Reach Guyanese locals and diaspora — buyers, sellers, and renters — on the only real estate network of its kind in Guyana.
       </p>
+
+      {/* FREE Business Listing Hero */}
+      <div className="mt-12 mb-16">
+        <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 shadow-lg">
+          <div className="text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-full text-sm font-bold mb-4">
+              🎉 NEW: 100% FREE Business Listings
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Start with a <span className="text-green-600">FREE</span> Business Directory Listing
+            </h2>
+            <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+              Get discovered by thousands of property seekers! List your business in our directory completely FREE. 
+              Upgrade to premium options when you're ready for maximum visibility.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link 
+                href="/free-listing"
+                className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-colors font-bold text-lg flex items-center space-x-2 shadow-lg"
+              >
+                <span>🆓</span>
+                <span>Get FREE Listing Now</span>
+              </Link>
+              <Link 
+                href="/business-directory"
+                className="text-green-600 hover:text-green-700 font-medium flex items-center space-x-1"
+              >
+                <span>👀 See Directory Examples</span>
+              </Link>
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="flex items-center justify-center text-gray-600">
+                <span className="text-green-500 mr-2">✓</span>
+                No payment required
+              </div>
+              <div className="flex items-center justify-center text-gray-600">
+                <span className="text-green-500 mr-2">✓</span>
+                Live within 24 hours
+              </div>
+              <div className="flex items-center justify-center text-gray-600">
+                <span className="text-green-500 mr-2">✓</span>
+                Upgrade options available
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Paid Advertising Section */}
       <div className="mt-12">
