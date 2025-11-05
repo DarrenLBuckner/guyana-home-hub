@@ -94,8 +94,9 @@ export default function ServicesOverview() {
       setLoading(true);
       setError(null);
 
-      // Use local API endpoint instead of external Portal Home Hub
-      const response = await fetch('/api/public/services/GY');
+      // Use Portal Home Hub API (now with CORS headers)
+      const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
+      const response = await fetch(`${portalBaseUrl}/api/public/services/GY`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch services: ${response.status}`);
