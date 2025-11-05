@@ -391,9 +391,9 @@ function PropertiesListingContent({
                       {property.price_type === 'rent' ? 'For Rent' : 'For Sale'}
                     </span>
                   </div>
-                  {/* Two-Tier Engagement System */}
-                  <div className="absolute top-2 right-2 flex flex-col gap-1">
-                    {/* Anonymous Like Button */}
+                  {/* Improved Engagement Buttons - Better UX & Spacing */}
+                  <div className="absolute top-2 right-2 flex flex-col gap-4 items-end">
+                    {/* Anonymous Like Button - Clear & Prominent */}
                     <button 
                       onClick={async (e) => {
                         e.preventDefault()
@@ -405,22 +405,28 @@ function PropertiesListingContent({
                         
                         const result = await addLike(property.id)
                         if (!result.success && result.error === 'Already liked this property today') {
-                          // Show tooltip or message
+                          // Show user-friendly message
+                          alert('👍 Thanks! You already liked this property today')
                         }
                       }}
                       disabled={isLikesLoading(property.id) || getUserHasLiked(property.id)}
-                      className={`p-1 rounded-full shadow transition-colors flex items-center gap-1 text-xs ${
+                      className={`px-3 py-2 min-w-[60px] sm:min-w-[70px] rounded-full shadow-lg transition-all duration-200 flex items-center justify-center gap-1.5 text-sm font-bold touch-manipulation ${
                         getUserHasLiked(property.id)
-                          ? 'bg-blue-100 text-blue-600 cursor-default'
-                          : 'bg-white hover:bg-blue-50 text-gray-600 hover:text-blue-600'
+                          ? 'bg-blue-500 text-white cursor-default transform scale-95'
+                          : 'bg-white hover:bg-blue-50 text-gray-700 hover:text-blue-600 hover:shadow-xl active:scale-95 active:bg-blue-100'
                       }`}
-                      title={getUserHasLiked(property.id) ? 'You showed interest today' : 'Show interest (no signup required)'}
+                      title={getUserHasLiked(property.id) ? '👍 You liked this!' : '👍 Like this property (no signup needed)'}
                     >
-                      <span className="text-xs">👍</span>
-                      <span className="font-medium">{getLikesCount(property.id)}</span>
+                      {isLikesLoading(property.id) ? (
+                        <span className="animate-spin text-sm">⏳</span>
+                      ) : (
+                        <span className="text-sm">{getUserHasLiked(property.id) ? '👍' : '🤍'}</span>
+                      )}
+                      <span className="font-bold">{getLikesCount(property.id)}</span>
+                      <span className="hidden sm:inline text-xs">{getUserHasLiked(property.id) ? 'Liked' : 'Like'}</span>
                     </button>
 
-                    {/* Authenticated Favorite Button */}
+                    {/* Authenticated Save Button - Clear Distinction */}
                     <button 
                       onClick={async (e) => {
                         e.preventDefault()
@@ -436,23 +442,26 @@ function PropertiesListingContent({
                         })
                         
                         if (!result.success && result.requiresAuth) {
-                          // Show sign-in modal or redirect
-                          alert('Please sign in to save properties and get price alerts!')
+                          // Better UX for login requirement
+                          alert('🔐 Sign in to save properties and get price drop alerts!')
                         }
                       }}
-                      className={`p-1 rounded-full shadow transition-colors ${
+                      className={`px-3 py-2 min-w-[60px] sm:min-w-[70px] rounded-full shadow-lg transition-all duration-200 flex items-center justify-center gap-1.5 text-sm font-bold touch-manipulation ${
                         isFavorited(property.id)
-                          ? 'bg-yellow-100 hover:bg-yellow-200 text-yellow-600' 
-                          : 'bg-white hover:bg-yellow-50 text-gray-600 hover:text-yellow-600'
+                          ? 'bg-yellow-500 text-white hover:bg-yellow-600 transform scale-95' 
+                          : 'bg-white hover:bg-yellow-50 text-gray-700 hover:text-yellow-600 hover:shadow-xl active:scale-95 active:bg-yellow-100'
                       }`}
                       title={
                         user 
-                          ? (isFavorited(property.id) ? 'Remove from saved properties' : 'Save & get alerts') 
-                          : 'Sign in to save & get price alerts'
+                          ? (isFavorited(property.id) ? '💾 Remove from saved' : '💾 Save & get alerts') 
+                          : '💾 Sign in to save & get price alerts'
                       }
                     >
                       <span className="text-sm">
-                        {isFavorited(property.id) ? '⭐' : '☆'}
+                        {isFavorited(property.id) ? '💾' : '📌'}
+                      </span>
+                      <span className="hidden sm:inline text-xs">
+                        {isFavorited(property.id) ? 'Saved' : 'Save'}
                       </span>
                     </button>
                   </div>

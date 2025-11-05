@@ -64,7 +64,7 @@ export function usePropertyEngagement() {
     setLikesLoading(prev => ({ ...prev, [propertyId]: true }))
     
     try {
-      const response = await fetch(`/api/properties/${propertyId}/likes`)
+      const response = await fetch(`/api/public/properties/${propertyId}/likes`)
       if (response.ok) {
         const data = await response.json()
         setLikesData(prev => ({
@@ -87,7 +87,7 @@ export function usePropertyEngagement() {
     setLikesLoading(prev => ({ ...prev, [propertyId]: true }))
     
     try {
-      const response = await fetch(`/api/properties/${propertyId}/likes`, {
+      const response = await fetch(`/api/public/properties/${propertyId}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
