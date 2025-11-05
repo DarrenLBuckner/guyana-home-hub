@@ -94,14 +94,10 @@ export default function ServicesOverview() {
       setLoading(true);
       setError(null);
 
-      // Use Portal Home Hub API (now with CORS headers)
-      // Force production URL to avoid localhost issues
-      const portalBaseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://portalhomehub.com' 
-        : (process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com');
-      const apiUrl = `${portalBaseUrl}/api/public/services/GY`;
+      // Use local API proxy route (like properties) - no CORS issues!
+      const apiUrl = '/api/services';
       
-      console.log('🔍 Fetching services from:', apiUrl);
+      console.log('🔍 Fetching services from local proxy:', apiUrl);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
