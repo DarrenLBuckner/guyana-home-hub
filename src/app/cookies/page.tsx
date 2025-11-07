@@ -1,0 +1,342 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Cookie Policy - Guyana Home Hub',
+  description: 'Cookie Policy for Guyana Home Hub real estate platform and services.',
+};
+
+export default function CookiePolicyPage() {
+  return (
+    <main className="max-w-4xl mx-auto px-6 py-12">
+      <h1 className="text-3xl font-bold text-green-700 mb-2">GUYANA HOME HUB</h1>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">COOKIE POLICY</h2>
+      <p className="text-gray-600 mb-8">Last Updated: November 6, 2025</p>
+
+      <div className="prose prose-lg max-w-none">
+        <p className="text-gray-700 mb-6">
+          This Cookie Policy explains how Guyana Home Hub (a subsidiary of Caribbean Home Hub, "we," "us," or "our") uses cookies and similar tracking technologies on our website and services (collectively, the "Services").
+        </p>
+
+        <p className="text-gray-700 mb-6">
+          By using our Services, you consent to the use of cookies as described in this Cookie Policy. This Cookie Policy should be read together with our Privacy Policy and Terms of Service.
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">1. WHAT ARE COOKIES AND SIMILAR TECHNOLOGIES?</h3>
+        
+        <h4 className="text-lg font-medium text-gray-800 mb-3">1.1 Cookies</h4>
+        <p className="text-gray-700 mb-4">
+          Cookies are small text files that are placed on your device (computer, smartphone, tablet) when you visit a website. Cookies help websites recognize your device and remember information about your visit, such as your preferences, login status, and browsing history.
+        </p>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">1.2 Similar Technologies</h4>
+        <p className="text-gray-700 mb-3">
+          In addition to cookies, we also use other tracking technologies, including:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li><strong>Web Beacons (Pixels):</strong> Small transparent images embedded in web pages that track user activity</li>
+          <li><strong>Local Storage:</strong> HTML5 local storage that allows websites to store data locally in your browser</li>
+          <li><strong>Device Identifiers:</strong> Unique identifiers for tracking and analytics purposes</li>
+          <li><strong>Session Storage:</strong> Temporary storage that expires when you close your browser</li>
+        </ul>
+        <p className="text-gray-700 mb-6">
+          Throughout this Cookie Policy, we use the term "cookies" to refer to cookies and all similar technologies.
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">2. TYPES OF COOKIES WE USE</h3>
+        <p className="text-gray-700 mb-4">
+          We use both first-party cookies (set by Guyana Home Hub) and third-party cookies (set by other companies we work with). Cookies can be session cookies (deleted when you close your browser) or persistent cookies (stored until expiration or deletion).
+        </p>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">2.1 Essential Cookies (Strictly Necessary)</h4>
+        <p className="text-gray-700 mb-3">
+          These cookies are necessary for our Services to function properly. They enable core functionality such as security, network management, and accessibility. You cannot opt out of these cookies as the Services would not work properly without them.
+        </p>
+        <p className="text-gray-700 mb-3"><strong>Purpose:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>User authentication and account access</li>
+          <li>Security and fraud prevention</li>
+          <li>Load balancing and service routing</li>
+          <li>Remember your cookie consent preferences</li>
+          <li>Enable property search and inquiry functionality</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">2.2 Functional Cookies (Preferences)</h4>
+        <p className="text-gray-700 mb-3">
+          These cookies enable enhanced functionality and personalization. If you do not allow these cookies, some or all of these features may not work properly.
+        </p>
+        <p className="text-gray-700 mb-3"><strong>Purpose:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Remember your search preferences and filters</li>
+          <li>Save your favorite properties</li>
+          <li>Store map view preferences and location settings</li>
+          <li>Remember your preferred currency and measurement units</li>
+          <li>Enable social media sharing features</li>
+          <li>Personalize content based on your location and preferences</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">2.3 Analytics and Performance Cookies</h4>
+        <p className="text-gray-700 mb-3">
+          These cookies help us understand how visitors interact with our Services by collecting and reporting information anonymously. This helps us improve our Services and user experience.
+        </p>
+        <p className="text-gray-700 mb-3"><strong>Purpose:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Track page visits and user navigation patterns</li>
+          <li>Measure website performance and loading times</li>
+          <li>Identify technical errors and issues</li>
+          <li>Understand which property types and locations are most popular</li>
+          <li>Analyze search behavior and trends in the Guyana real estate market</li>
+          <li>Test new features and improvements</li>
+        </ul>
+        <p className="text-gray-700 mb-3"><strong>Analytics Services We Use:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Google Analytics: Tracks website usage and user behavior</li>
+          <li>Facebook Analytics: Measures website engagement from social media</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">2.4 Advertising and Marketing Cookies</h4>
+        <p className="text-gray-700 mb-3">
+          These cookies track your online activity to help advertisers deliver more relevant advertising. They may be placed by advertising networks with our permission.
+        </p>
+        <p className="text-gray-700 mb-3"><strong>Purpose:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Display relevant property advertisements</li>
+          <li>Show you ads based on your property interests</li>
+          <li>Retarget you with relevant property listings</li>
+          <li>Measure the effectiveness of advertising campaigns</li>
+          <li>Limit the number of times you see the same ad</li>
+        </ul>
+        <p className="text-gray-700 mb-3"><strong>Advertising Services We Use:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Google Ads: Display advertising and remarketing</li>
+          <li>Facebook Pixel: Facebook and Instagram advertising</li>
+          <li>Local advertising networks serving the Caribbean region</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">2.5 Social Media Cookies</h4>
+        <p className="text-gray-700 mb-3">
+          These cookies are set by social media platforms that we have integrated into our Services. They enable social sharing functionality and may be used by those platforms to build a profile of your interests.
+        </p>
+        <p className="text-gray-700 mb-3"><strong>Purpose:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Enable social media login (Google, Facebook)</li>
+          <li>Allow sharing of properties on social media</li>
+          <li>Display social media content on our Services</li>
+          <li>Track social media referrals and engagement</li>
+          <li>Enable WhatsApp contact and sharing features</li>
+        </ul>
+        <p className="text-gray-700 mb-3"><strong>Social Platforms We Integrate:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-6 space-y-1">
+          <li>Google (Login and sharing)</li>
+          <li>Facebook (Login and sharing)</li>
+          <li>WhatsApp (Property inquiries and contact)</li>
+          <li>Instagram (Social media presence)</li>
+        </ul>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">3. DETAILED COOKIE LIST</h3>
+        <p className="text-gray-700 mb-4">
+          Below is a detailed list of the primary cookies we use. Please note that this list may change as we update our Services.
+        </p>
+
+        <div className="overflow-x-auto mb-6">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="border border-gray-300 px-4 py-2 text-left">Cookie Name</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Purpose</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_session</td>
+                <td className="border border-gray-300 px-4 py-2">Maintains user session</td>
+                <td className="border border-gray-300 px-4 py-2">Essential</td>
+                <td className="border border-gray-300 px-4 py-2">Session</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_auth</td>
+                <td className="border border-gray-300 px-4 py-2">Authentication token</td>
+                <td className="border border-gray-300 px-4 py-2">Essential</td>
+                <td className="border border-gray-300 px-4 py-2">30 days</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_csrf</td>
+                <td className="border border-gray-300 px-4 py-2">Security protection</td>
+                <td className="border border-gray-300 px-4 py-2">Essential</td>
+                <td className="border border-gray-300 px-4 py-2">Session</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">cookie_consent</td>
+                <td className="border border-gray-300 px-4 py-2">Stores cookie preferences</td>
+                <td className="border border-gray-300 px-4 py-2">Essential</td>
+                <td className="border border-gray-300 px-4 py-2">1 year</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_search_prefs</td>
+                <td className="border border-gray-300 px-4 py-2">Saved search filters</td>
+                <td className="border border-gray-300 px-4 py-2">Functional</td>
+                <td className="border border-gray-300 px-4 py-2">30 days</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_favorites</td>
+                <td className="border border-gray-300 px-4 py-2">Saved properties</td>
+                <td className="border border-gray-300 px-4 py-2">Functional</td>
+                <td className="border border-gray-300 px-4 py-2">1 year</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">ghh_location</td>
+                <td className="border border-gray-300 px-4 py-2">Location preferences</td>
+                <td className="border border-gray-300 px-4 py-2">Functional</td>
+                <td className="border border-gray-300 px-4 py-2">6 months</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">_ga</td>
+                <td className="border border-gray-300 px-4 py-2">Google Analytics tracking</td>
+                <td className="border border-gray-300 px-4 py-2">Analytics</td>
+                <td className="border border-gray-300 px-4 py-2">2 years</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">_gid</td>
+                <td className="border border-gray-300 px-4 py-2">Google Analytics session</td>
+                <td className="border border-gray-300 px-4 py-2">Analytics</td>
+                <td className="border border-gray-300 px-4 py-2">24 hours</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">_fbp</td>
+                <td className="border border-gray-300 px-4 py-2">Facebook Pixel tracking</td>
+                <td className="border border-gray-300 px-4 py-2">Analytics</td>
+                <td className="border border-gray-300 px-4 py-2">3 months</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">_gcl_au</td>
+                <td className="border border-gray-300 px-4 py-2">Google Ads conversion</td>
+                <td className="border border-gray-300 px-4 py-2">Advertising</td>
+                <td className="border border-gray-300 px-4 py-2">3 months</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">fr</td>
+                <td className="border border-gray-300 px-4 py-2">Facebook advertising</td>
+                <td className="border border-gray-300 px-4 py-2">Advertising</td>
+                <td className="border border-gray-300 px-4 py-2">3 months</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p className="text-sm text-gray-600 mb-6">
+          <em>Note: This table includes primary cookies. Additional third-party cookies may be set by services we integrate with.</em>
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">4. HOW TO MANAGE YOUR COOKIE PREFERENCES</h3>
+        
+        <h4 className="text-lg font-medium text-gray-800 mb-3">4.1 Cookie Consent Banner</h4>
+        <p className="text-gray-700 mb-4">
+          When you first visit our website, you will see a cookie consent banner that allows you to accept or customize your cookie preferences. You can change your preferences at any time by clicking the cookie settings link in our website footer.
+        </p>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">4.2 Browser Settings</h4>
+        <p className="text-gray-700 mb-4">
+          Most web browsers allow you to control cookies through their settings. You can:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Block all cookies</li>
+          <li>Block third-party cookies only</li>
+          <li>Delete cookies after each browsing session</li>
+          <li>View and delete individual cookies</li>
+        </ul>
+        <p className="text-gray-700 mb-4">
+          To manage cookies in popular browsers:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li><strong>Google Chrome:</strong> Settings &gt; Privacy and security &gt; Cookies and other site data</li>
+          <li><strong>Firefox:</strong> Settings &gt; Privacy &amp; Security &gt; Cookies and Site Data</li>
+          <li><strong>Safari:</strong> Preferences &gt; Privacy &gt; Manage Website Data</li>
+          <li><strong>Microsoft Edge:</strong> Settings &gt; Cookies and site permissions &gt; Cookies and data stored</li>
+        </ul>
+        <p className="text-gray-700 mb-4">
+          <em>Note: If you block or delete essential cookies, some features of our Services may not work properly, and you may need to sign in again.</em>
+        </p>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">4.3 Opt-Out of Targeted Advertising</h4>
+        <p className="text-gray-700 mb-4">
+          You can opt out of targeted advertising from major advertising networks:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Google Ads: https://adssettings.google.com</li>
+          <li>Facebook Ads: https://www.facebook.com/ads/preferences</li>
+          <li>Digital Advertising Alliance: https://optout.aboutads.info</li>
+          <li>Network Advertising Initiative: https://optout.networkadvertising.org</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">4.4 Mobile Device Settings</h4>
+        <p className="text-gray-700 mb-4">
+          On mobile devices, you can control tracking through your device settings:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li><strong>iOS:</strong> Settings &gt; Privacy &amp; Security &gt; Tracking</li>
+          <li><strong>Android:</strong> Settings &gt; Google &gt; Ads (opt out of Ads Personalization)</li>
+        </ul>
+
+        <h4 className="text-lg font-medium text-gray-800 mb-3">4.5 Google Analytics Opt-Out</h4>
+        <p className="text-gray-700 mb-6">
+          You can opt out of Google Analytics tracking by installing the Google Analytics Opt-out Browser Add-on: https://tools.google.com/dlpage/gaoptout
+        </p>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">5. IMPACT OF BLOCKING COOKIES</h3>
+        <p className="text-gray-700 mb-4">
+          Blocking or deleting cookies may affect your experience on our Services. If you block certain cookies:
+        </p>
+        <ul className="list-disc list-inside text-gray-700 mb-6 space-y-1">
+          <li><strong>Essential Cookies:</strong> You may not be able to log in, save properties, or use key features</li>
+          <li><strong>Functional Cookies:</strong> Your search preferences and favorites will not be saved</li>
+          <li><strong>Analytics Cookies:</strong> We won't be able to improve our Services based on usage patterns</li>
+          <li><strong>Advertising Cookies:</strong> You'll still see ads, but they won't be tailored to your interests</li>
+        </ul>
+
+        <h3 className="text-xl font-semibold mt-6 mb-4">6. UPDATES TO THIS COOKIE POLICY</h3>
+        <p className="text-gray-700 mb-6">
+          We may update this Cookie Policy from time to time to reflect changes in our cookie practices or for operational, legal, or regulatory reasons. When we make material changes, we will update the Last Updated date at the top of this policy and may notify you through our Services or by email. We encourage you to review this Cookie Policy periodically to stay informed about how we use cookies.
+        </p>
+
+        <div className="bg-green-50 border border-green-200 p-6 rounded-lg mt-8">
+          <h3 className="text-xl font-semibold text-green-800 mb-4">7. CONTACT US</h3>
+          <p className="text-gray-700 mb-4">
+            If you have questions or concerns about this Cookie Policy or our use of cookies, please contact us:
+          </p>
+          <div className="space-y-2">
+            <p className="text-gray-800 font-medium">Guyana Home Hub</p>
+            <p className="text-gray-700">A subsidiary of Caribbean Home Hub</p>
+            <p className="text-gray-700">Email: <strong>info@guyanahomehub.com</strong></p>
+            <p className="text-gray-700">Website: www.guyanahomehub.com</p>
+          </div>
+
+          <div className="mt-6">
+            <a 
+              href="https://wa.me/5927629797?text=Hi%20Guyana%20Home%20Hub!%20I%20have%20a%20question%20about%20your%20cookie%20policy." 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+            >
+              <span className="mr-2">💬</span>
+              WhatsApp Support
+            </a>
+            <p className="text-sm text-gray-600 mt-2">
+              Preferred method for fastest response • +592 762-9797
+            </p>
+          </div>
+        </div>
+
+        <hr className="my-8" />
+
+        <p className="text-center text-gray-600 font-medium">
+          By using Guyana Home Hub, you acknowledge that you have read and understood this Cookie Policy.
+        </p>
+        
+        <div className="text-center text-xs text-gray-500 mt-4">
+          © 2025 Caribbean Home Hub. All rights reserved.
+        </div>
+      </div>
+    </main>
+  );
+}

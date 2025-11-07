@@ -119,6 +119,21 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/cookies" className="hover:text-green-700">
+                Cookie Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/acceptable-use" className="hover:text-green-700">
+                Acceptable Use Policy
+              </Link>
+            </li>
+            <li>
+              <Link href="/professional-services" className="hover:text-green-700">
+                Service Agreement
+              </Link>
+            </li>
+            <li>
               <Link href="/terms" className="hover:text-green-700">
                 Terms of Service
               </Link>
