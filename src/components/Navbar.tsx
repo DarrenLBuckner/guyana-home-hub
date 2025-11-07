@@ -83,29 +83,15 @@ export default function Navbar() {
           <Link href="/properties/rent" className="hover:text-green-600">
             Rent
           </Link>
-          <Link href="/services" className="hover:text-green-600">
-            Services
-          </Link>
           <Link href="/business-directory" className="hover:text-green-600">
-            Directory
+            Business Directory
           </Link>
           <Link href="/contact" className="hover:text-green-600">
             Contact
           </Link>
-          {/* [CHH-SYS] Admin Login link */}
-          {/* Admin login link removed for production */}
         </div>
 
-        {/* FREE Listing CTA */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Link 
-            href="/free-listing"
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium text-sm flex items-center space-x-1"
-          >
-            <span>🆓</span>
-            <span>FREE Listing</span>
-          </Link>
-        </div>
+
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
@@ -146,7 +132,7 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
           >
-            List Property
+            List Your Property
           </a>
         </div>
 
@@ -161,71 +147,87 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white px-4 pb-4 space-y-2">
-          <Link
-            href="/"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Home
-          </Link>
-          <Link
-            href="/properties/buy"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Buy
-          </Link>
-          <Link
-            href="/properties/rent"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Rent
-          </Link>
-          <Link
-            href="/services"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Services
-          </Link>
-          <Link
-            href="/business-directory"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Directory
-          </Link>
-          <Link
-            href="/contact"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Contact
-          </Link>
+        <div className="md:hidden bg-white px-4 pb-4">
+          {/* === PRIMARY ACTIONS (Most Important) === */}
+          <div className="space-y-2 py-3">
+            <Link
+              href="/properties/buy"
+              className="block text-blue-600 hover:text-blue-700 text-lg font-bold py-3 px-4"
+              onClick={closeMenu}
+            >
+              🏡 Buy Properties
+            </Link>
+            <Link
+              href="/properties/rent"
+              className="block text-blue-600 hover:text-blue-700 text-lg font-bold py-3 px-4"
+              onClick={closeMenu}
+            >
+              🏠 Rent Properties
+            </Link>
+          </div>
           
-          {/* FREE Listing CTA - Mobile */}
-          <Link
-            href="/free-listing"
-            className="block bg-green-600 text-white px-4 py-3 rounded-lg text-center font-medium mt-3 flex items-center justify-center space-x-1"
-            onClick={closeMenu}
-          >
-            <span>🆓</span>
-            <span>FREE Business Listing</span>
-          </Link>
+          {/* === VISUAL DIVIDER LINE === */}
+          <div className="h-px bg-gray-200 my-3"></div>
+          
+          {/* === SECONDARY ACTIONS === */}
+          <div className="space-y-3">
+            {/* Emphasized CTA for List Property */}
+            <Link
+              href="https://portalhomehub.com/register/select-country"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-5 rounded-lg text-center shadow-md my-2"
+              onClick={closeMenu}
+            >
+              📝 List Your Property Here
+              <div className="text-sm font-normal opacity-90 mt-1">Sell or Rent Your Property</div>
+            </Link>
+            
+            <Link
+              href="/business-directory"
+              className="block text-gray-700 hover:text-green-600 py-2 px-4"
+              onClick={closeMenu}
+            >
+              🏢 Business Directory
+              <div className="text-sm text-gray-500">Find Local Businesses</div>
+            </Link>
+          </div>
+          
+          {/* === VISUAL DIVIDER LINE === */}
+          <div className="h-px bg-gray-200 my-3"></div>
+
+          {/* === USER/ADMIN ACTIONS (Bottom) === */}
+          <div className="space-y-2">
+            <Link
+              href="https://portalhomehub.com/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-gray-500 hover:text-green-600 text-sm py-2 px-4"
+              onClick={closeMenu}
+            >
+              👤 Agent Portal
+            </Link>
+            
+            <Link
+              href="/contact"
+              className="block text-gray-500 hover:text-green-600 text-sm py-2 px-4"
+              onClick={closeMenu}
+            >
+              📞 Contact Us
+            </Link>
+          </div>
 
           {/* Mobile Auth Section */}
           {loading ? (
-            <div className="text-gray-500">Loading...</div>
+            <div className="text-gray-500 text-center py-2">Loading...</div>
           ) : user ? (
-            <div className="pt-2 border-t border-gray-200 mt-2">
-              <div className="text-sm text-gray-600 mb-2">
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <div className="text-sm text-gray-600 mb-2 px-4">
                 Welcome, {user.email?.split('@')[0]}
               </div>
               <Link
                 href="/favorites"
-                className="block text-green-700 hover:text-green-800 flex items-center mb-2"
+                className="block text-green-700 hover:text-green-800 flex items-center mb-2 px-4"
                 onClick={closeMenu}
               >
                 <Heart className="h-4 w-4 mr-2" />
@@ -238,64 +240,22 @@ export default function Navbar() {
               </Link>
               <button 
                 onClick={handleSignOut}
-                className="block text-green-700 hover:text-green-800"
+                className="block text-green-700 hover:text-green-800 px-4"
               >
                 Sign Out
               </button>
             </div>
           ) : (
-            <Link
-              href="/signin"
-              className="block text-green-700 hover:text-green-800"
-              onClick={closeMenu}
-            >
-              Sign In
-            </Link>
-          )}
-          
-          {/* Agent Section in Mobile */}
-          <div className="pt-2 border-t border-gray-200 mt-2">
-            <div className="text-xs font-semibold text-green-700 mb-1">
-              For Agents
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <Link
+                href="/signin"
+                className="block text-green-700 hover:text-green-800 px-4"
+                onClick={closeMenu}
+              >
+                Sign In
+              </Link>
             </div>
-            <Link
-              href="https://portalhomehub.com/register/select-country?type=agent"
-              className="block text-sm text-green-700 hover:text-green-800 pl-2"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-            >
-              Agent Registration
-            </Link>
-            <a
-              href="https://portalhomehub.com/login"
-              className="block text-sm text-gray-500 hover:text-green-800 pl-2 mt-1"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-            >
-              Agent Login
-            </a>
-          </div>
-          
-          <Link
-            href="/contact"
-            className="block text-green-700 hover:text-green-800"
-            onClick={closeMenu}
-          >
-            Contact Us
-          </Link>
-          <a 
-            href="https://portalhomehub.com/register/select-country"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block"
-            onClick={closeMenu}
-          >
-            <button className="w-full bg-green-600 text-white py-2 rounded-md">
-              List Property
-            </button>
-          </a>
+          )}
           {/* [CHH-SYS] Admin Login link for mobile */}
           {/* Admin login link removed for production (mobile) */}
         </div>
