@@ -86,9 +86,6 @@ export default function Navbar() {
           <Link href="/business-directory" className="hover:text-green-600">
             Business Directory
           </Link>
-          <Link href="/contact" className="hover:text-green-600">
-            Contact
-          </Link>
         </div>
 
 
@@ -206,14 +203,6 @@ export default function Navbar() {
               onClick={closeMenu}
             >
               👤 Agent Portal
-            </Link>
-            
-            <Link
-              href="/contact"
-              className="block text-gray-500 hover:text-green-600 text-sm py-2 px-4"
-              onClick={closeMenu}
-            >
-              📞 Contact Us
             </Link>
           </div>
 
