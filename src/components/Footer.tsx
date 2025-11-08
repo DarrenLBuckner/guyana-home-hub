@@ -85,6 +85,16 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <a 
+                href="https://portalhomehub.com/franchise" 
+                className="hover:text-green-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Franchise Opportunities
+              </a>
+            </li>
+            <li>
               <Link href="/register" className="hover:text-green-700">
                 Customer Email Registration
               </Link>
