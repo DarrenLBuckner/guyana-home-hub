@@ -26,6 +26,11 @@ export interface PropertyFeatures {
   bathrooms?: number
   square_footage?: number
   lot_size?: string
+  lot_length?: number
+  lot_width?: number
+  lot_dimension_unit?: string
+  land_size_value?: number
+  land_size_unit?: string
   parking_spaces?: number
   year_built?: number
 }

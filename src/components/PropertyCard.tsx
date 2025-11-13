@@ -210,6 +210,27 @@ export function PropertyCard({
                     <span>{property.features.square_footage.toLocaleString()} sq ft</span>
                   </div>
                 )}
+                {/* Lot Size Display - Show both dimensions and total area */}
+                {(property.features.lot_length && property.features.lot_width) || (property.features.land_size_value) ? (
+                  <div className="flex items-center">
+                    <Square className="h-4 w-4 mr-1" />
+                    <span>
+                      {/* Show dimensions if available (familiar to Guyanese locals) */}
+                      {property.features.lot_length && property.features.lot_width && (
+                        <span>
+                          {property.features.lot_length}×{property.features.lot_width}{property.features.lot_dimension_unit || 'ft'}
+                          {property.features.land_size_value && ' • '}
+                        </span>
+                      )}
+                      {/* Show total area (familiar to international users) */}
+                      {property.features.land_size_value && (
+                        <span>
+                          {property.features.land_size_value.toLocaleString()} {property.features.land_size_unit || 'sq ft'}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                ) : null}
                 {property.features.parking_spaces && (
                   <div className="flex items-center">
                     <Car className="h-4 w-4 mr-1" />
@@ -408,6 +429,27 @@ export function PropertyCard({
                 <span>{property.features.square_footage.toLocaleString()}</span>
               </div>
             )}
+            {/* Lot Size Display - Show dimensions for locals, area for international */}
+            {(property.features.lot_length && property.features.lot_width) || (property.features.land_size_value) ? (
+              <div className="flex items-center">
+                <Square className="h-4 w-4 mr-1" />
+                <span className="text-xs">
+                  {/* Show dimensions if available (familiar to Guyanese locals) */}
+                  {property.features.lot_length && property.features.lot_width && (
+                    <span>
+                      {property.features.lot_length}×{property.features.lot_width}{property.features.lot_dimension_unit || 'ft'}
+                      {property.features.land_size_value && ' • '}
+                    </span>
+                  )}
+                  {/* Show total area (familiar to international users) */}
+                  {property.features.land_size_value && (
+                    <span>
+                      {property.features.land_size_value.toLocaleString()}{property.features.land_size_unit || 'sf'}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ) : null}
           </div>
 
           {/* Description for Featured */}

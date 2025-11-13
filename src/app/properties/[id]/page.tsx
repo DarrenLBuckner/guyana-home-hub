@@ -20,6 +20,9 @@ interface Property {
   house_size_unit?: string
   land_size_value?: number
   land_size_unit?: string
+  lot_length?: number
+  lot_width?: number
+  lot_dimension_unit?: string
   year_built?: number
   amenities?: string[]
   features?: string[]
@@ -271,16 +274,27 @@ export default function PropertyDetailPage() {
                   </div>
                 </div>
               )}
-              {property.land_size_value && (
+              {(property.lot_length && property.lot_width) || property.land_size_value ? (
                 <div className="text-center">
                   <div className="text-lg font-semibold text-gray-800">
-                    {property.land_size_value.toLocaleString()}
+                    {/* Show dimensions if available (familiar to Guyanese locals) */}
+                    {property.lot_length && property.lot_width && (
+                      <div>
+                        {property.lot_length}×{property.lot_width}{property.lot_dimension_unit || 'ft'}
+                      </div>
+                    )}
+                    {/* Show total area (familiar to international users) */}
+                    {property.land_size_value && (
+                      <div className={property.lot_length && property.lot_width ? "text-sm" : ""}>
+                        {property.land_size_value.toLocaleString()} {property.land_size_unit || 'sq ft'}
+                      </div>
+                    )}
                   </div>
                   <div className="text-sm text-gray-600">
-                    Lot Size {property.land_size_unit || 'sq ft'}
+                    Lot Size {property.lot_length && property.lot_width && property.land_size_value ? '(Dimensions • Area)' : ''}
                   </div>
                 </div>
-              )}
+              ) : null}
               {property.property_type && (
                 <div className="text-center">
                   <div className="text-lg font-semibold text-gray-800">{property.property_type}</div>
