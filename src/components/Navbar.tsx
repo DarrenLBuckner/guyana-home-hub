@@ -85,28 +85,48 @@ export default function Navbar() {
             Rent
           </Link>
           {/* Commercial Dropdown */}
-          <div className="relative">
+          <div 
+            className="relative"
+            onMouseLeave={() => setCommercialDropdownOpen(false)}
+          >
             <button
               onClick={() => setCommercialDropdownOpen(!commercialDropdownOpen)}
-              onBlur={() => setTimeout(() => setCommercialDropdownOpen(false), 200)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setCommercialDropdownOpen(!commercialDropdownOpen);
+                }
+                if (e.key === 'Escape') {
+                  setCommercialDropdownOpen(false);
+                }
+              }}
+              aria-expanded={commercialDropdownOpen}
+              aria-haspopup="true"
+              aria-label="Commercial properties menu"
               className="flex items-center hover:text-green-600"
             >
               Commercial
               <ChevronDown className="ml-1 h-4 w-4" />
             </button>
             {commercialDropdownOpen && (
-              <div className="absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg border min-w-[150px] z-50">
+              <div 
+                className="absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg border min-w-[150px] z-50"
+                role="menu"
+                aria-label="Commercial properties submenu"
+              >
                 <Link
                   href="/properties/commercial/lease"
-                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 focus:bg-green-50 focus:text-green-600 focus:outline-none"
                   onClick={() => setCommercialDropdownOpen(false)}
+                  role="menuitem"
                 >
                   For Lease
                 </Link>
                 <Link
                   href="/properties/commercial/sale"
-                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 focus:bg-green-50 focus:text-green-600 focus:outline-none"
                   onClick={() => setCommercialDropdownOpen(false)}
+                  role="menuitem"
                 >
                   For Sale
                 </Link>
@@ -196,14 +216,14 @@ export default function Navbar() {
             <div className="space-y-1 ml-4">
               <Link
                 href="/properties/commercial/lease"
-                className="block text-purple-600 hover:text-purple-700 text-lg font-bold py-2 px-4"
+                className="block text-green-600 hover:text-green-700 text-lg font-bold py-2 px-4"
                 onClick={closeMenu}
               >
                 🏢 Commercial Lease
               </Link>
               <Link
                 href="/properties/commercial/sale"
-                className="block text-purple-600 hover:text-purple-700 text-lg font-bold py-2 px-4"
+                className="block text-green-600 hover:text-green-700 text-lg font-bold py-2 px-4"
                 onClick={closeMenu}
               >
                 🏢 Commercial Sale
