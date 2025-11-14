@@ -91,6 +91,7 @@ export default function Navbar() {
           >
             <button
               onClick={() => setCommercialDropdownOpen(!commercialDropdownOpen)}
+              onMouseEnter={() => setCommercialDropdownOpen(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
