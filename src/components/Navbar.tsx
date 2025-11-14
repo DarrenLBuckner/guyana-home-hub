@@ -87,11 +87,11 @@ export default function Navbar() {
           {/* Commercial Dropdown */}
           <div 
             className="relative"
+            onMouseEnter={() => setCommercialDropdownOpen(true)}
             onMouseLeave={() => setCommercialDropdownOpen(false)}
           >
             <button
               onClick={() => setCommercialDropdownOpen(!commercialDropdownOpen)}
-              onMouseEnter={() => setCommercialDropdownOpen(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -111,7 +111,7 @@ export default function Navbar() {
             </button>
             {commercialDropdownOpen && (
               <div 
-                className="absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg border min-w-[150px] z-50"
+                className="absolute left-0 top-full mt-1 bg-white rounded-md shadow-lg border min-w-[150px] z-50"
                 role="menu"
                 aria-label="Commercial properties submenu"
               >
