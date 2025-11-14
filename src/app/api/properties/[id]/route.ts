@@ -7,9 +7,10 @@ export async function GET(
   try {
     const { id } = await params
     
-    // Proxy request to backend portal with site context
-    const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
-    const response = await fetch(`${portalApiUrl}/api/public/properties/${id}`, {
+    const portalApiUrl = 'https://www.portalhomehub.com'
+    const fullUrl = `${portalApiUrl}/api/public/properties/${id}`
+    
+    const response = await fetch(fullUrl, {
       headers: {
         'Content-Type': 'application/json',
         'x-site-id': 'guyana',
@@ -21,6 +22,7 @@ export async function GET(
     }
 
     const data = await response.json()
+    
     return NextResponse.json(data)
   } catch (error) {
     console.error('Proxy error:', error)

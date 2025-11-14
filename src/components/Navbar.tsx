@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -11,6 +11,7 @@ import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [commercialDropdownOpen, setCommercialDropdownOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -83,6 +84,35 @@ export default function Navbar() {
           <Link href="/properties/rent" className="hover:text-green-600">
             Rent
           </Link>
+          {/* Commercial Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setCommercialDropdownOpen(!commercialDropdownOpen)}
+              onBlur={() => setTimeout(() => setCommercialDropdownOpen(false), 200)}
+              className="flex items-center hover:text-green-600"
+            >
+              Commercial
+              <ChevronDown className="ml-1 h-4 w-4" />
+            </button>
+            {commercialDropdownOpen && (
+              <div className="absolute left-0 top-full mt-2 bg-white rounded-md shadow-lg border min-w-[150px] z-50">
+                <Link
+                  href="/properties/commercial/lease"
+                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                  onClick={() => setCommercialDropdownOpen(false)}
+                >
+                  For Lease
+                </Link>
+                <Link
+                  href="/properties/commercial/sale"
+                  className="block px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600"
+                  onClick={() => setCommercialDropdownOpen(false)}
+                >
+                  For Sale
+                </Link>
+              </div>
+            )}
+          </div>
           <Link href="/business-directory" className="hover:text-green-600">
             Business Directory
           </Link>
@@ -161,6 +191,24 @@ export default function Navbar() {
             >
               🏠 Rent Properties
             </Link>
+            
+            {/* Commercial Properties Mobile */}
+            <div className="space-y-1 ml-4">
+              <Link
+                href="/properties/commercial/lease"
+                className="block text-purple-600 hover:text-purple-700 text-lg font-bold py-2 px-4"
+                onClick={closeMenu}
+              >
+                🏢 Commercial Lease
+              </Link>
+              <Link
+                href="/properties/commercial/sale"
+                className="block text-purple-600 hover:text-purple-700 text-lg font-bold py-2 px-4"
+                onClick={closeMenu}
+              >
+                🏢 Commercial Sale
+              </Link>
+            </div>
           </div>
           
           {/* === VISUAL DIVIDER LINE === */}

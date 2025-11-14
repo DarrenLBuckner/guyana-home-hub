@@ -53,13 +53,15 @@ interface Property {
 
 interface PropertiesListingProps {
   title: string
-  filterType?: 'sale' | 'rent' | 'all'
+  filterType?: 'sale' | 'rent' | 'lease' | 'all'
+  propertyCategory?: 'residential' | 'commercial' | 'all'
   showFilters?: boolean
 }
 
 function PropertiesListingContent({ 
   title, 
-  filterType = 'all', 
+  filterType = 'all',
+  propertyCategory = 'all', 
   showFilters = true
 }: PropertiesListingProps) {
   const searchParams = useSearchParams()
@@ -116,30 +118,50 @@ function PropertiesListingContent({
     fetchProperties();
   }, [fetchLikes]);
 
-  // Smart price ranges based on listing type
+  // Smart price ranges based on listing type and property category
   const getPriceRanges = () => {
-    if (filterType === 'rent') {
-      return [
-        { label: 'Under GYD 50K', value: '0-50000' },
-        { label: 'GYD 50K - 100K', value: '50000-100000' },
-        { label: 'GYD 100K - 200K', value: '100000-200000' },
-        { label: 'GYD 200K - 500K', value: '200000-500000' },
-        { label: 'GYD 500K+', value: '500000-999999999' }
-      ];
+    if (filterType === 'rent' || filterType === 'lease') {
+      if (propertyCategory === 'commercial') {
+        return [
+          { label: 'Under GYD 100K', value: '0-100000' },
+          { label: 'GYD 100K - 250K', value: '100000-250000' },
+          { label: 'GYD 250K - 500K', value: '250000-500000' },
+          { label: 'GYD 500K - 1M', value: '500000-1000000' },
+          { label: 'GYD 1M+', value: '1000000-999999999' }
+        ];
+      } else {
+        return [
+          { label: 'Under GYD 50K', value: '0-50000' },
+          { label: 'GYD 50K - 100K', value: '50000-100000' },
+          { label: 'GYD 100K - 200K', value: '100000-200000' },
+          { label: 'GYD 200K - 500K', value: '200000-500000' },
+          { label: 'GYD 500K+', value: '500000-999999999' }
+        ];
+      }
     } else {
-      return [
-        { label: 'Under GYD 10M', value: '0-10000000' },
-        { label: 'GYD 10M - 25M', value: '10000000-25000000' },
-        { label: 'GYD 25M - 50M', value: '25000000-50000000' },
-        { label: 'GYD 50M - 100M', value: '50000000-100000000' },
-        { label: 'GYD 100M+', value: '100000000-999999999' }
-      ];
+      if (propertyCategory === 'commercial') {
+        return [
+          { label: 'Under GYD 25M', value: '0-25000000' },
+          { label: 'GYD 25M - 50M', value: '25000000-50000000' },
+          { label: 'GYD 50M - 100M', value: '50000000-100000000' },
+          { label: 'GYD 100M - 250M', value: '100000000-250000000' },
+          { label: 'GYD 250M+', value: '250000000-999999999' }
+        ];
+      } else {
+        return [
+          { label: 'Under GYD 10M', value: '0-10000000' },
+          { label: 'GYD 10M - 25M', value: '10000000-25000000' },
+          { label: 'GYD 25M - 50M', value: '25000000-50000000' },
+          { label: 'GYD 50M - 100M', value: '50000000-100000000' },
+          { label: 'GYD 100M+', value: '100000000-999999999' }
+        ];
+      }
     }
   };
 
   const formatPrice = (price: number, type?: string) => {
     const formatted = price.toLocaleString()
-    return type === 'rent' ? `GYD ${formatted}/month` : `GYD ${formatted}`
+    return (type === 'rent' || type === 'lease') ? `GYD ${formatted}/month` : `GYD ${formatted}`
   }
 
   const handlePriceRangeChange = (value: string) => {
@@ -164,11 +186,20 @@ function PropertiesListingContent({
     const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms)
     const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
     
-    // Filter by listing type (sale/rent) based on page
+    // Filter by listing type (sale/rent/lease) based on page
     const listingType = property.listing_type || 'sale' // Default to sale if missing
     const matchesListingType = filterType === 'all' || 
       (filterType === 'sale' && listingType === 'sale') ||
-      (filterType === 'rent' && listingType === 'rent')
+      (filterType === 'rent' && listingType === 'rent') ||
+      (filterType === 'lease' && listingType === 'lease')
+    
+    // Filter by property category (residential/commercial) if specified
+    const propertyType = property.property_type?.toLowerCase() || ''
+    const commercialTypes = ['office', 'retail', 'warehouse', 'industrial', 'mixed use', 'commercial land', 'commercial']
+    const isCommercial = commercialTypes.some(type => propertyType.includes(type.toLowerCase()))
+    const matchesCategory = propertyCategory === 'all' || 
+      (propertyCategory === 'commercial' && isCommercial) ||
+      (propertyCategory === 'residential' && !isCommercial)
     
     // Handle price range filtering
     let matchesPrice = true
@@ -177,7 +208,7 @@ function PropertiesListingContent({
       matchesPrice = property.price >= min && property.price <= max
     }
 
-    return matchesSearch && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesListingType
+    return matchesSearch && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesListingType && matchesCategory
   }).sort((a, b) => {
     // Apply sorting
     switch (sortBy) {
