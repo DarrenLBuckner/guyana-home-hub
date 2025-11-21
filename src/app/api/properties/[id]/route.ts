@@ -15,6 +15,7 @@ export async function GET(
         'Content-Type': 'application/json',
         'x-site-id': 'guyana',
       },
+      cache: 'no-store', // Disable caching to always get fresh data
     })
 
     if (!response.ok) {

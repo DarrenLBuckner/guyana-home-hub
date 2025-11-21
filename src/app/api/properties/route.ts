@@ -32,6 +32,7 @@ export async function GET(request: Request) {
         'Content-Type': 'application/json',
         'x-site-id': siteName,
       },
+      cache: 'no-store', // Disable caching to always get fresh data
     })
 
     if (!response.ok) {
