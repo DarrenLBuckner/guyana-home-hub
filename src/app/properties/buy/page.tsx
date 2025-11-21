@@ -8,6 +8,7 @@ function BuyPropertiesContent() {
     <PropertiesListingFixed 
       title="Find Your Dream Home to Buy"
       filterType="sale"
+      propertyCategory="residential"
       showFilters={true}
     />
   );

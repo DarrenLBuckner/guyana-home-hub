@@ -53,7 +53,7 @@ interface Property {
 
 interface PropertiesListingProps {
   title: string
-  filterType?: 'sale' | 'rent' | 'lease' | 'all'
+  filterType?: 'sale' | 'rent' | 'lease' | 'all' | string[]
   propertyCategory?: 'residential' | 'commercial' | 'all'
   showFilters?: boolean
 }
@@ -96,7 +96,24 @@ function PropertiesListingContent({
     async function fetchProperties() {
       setLoading(true);
       try {
-        const response = await fetch('/api/properties');
+        // Build API URL with filters
+        const params = new URLSearchParams();
+        if (filterType !== 'all') {
+          if (Array.isArray(filterType)) {
+            // For multiple filter types, we'll handle this on the backend
+            params.append('listing_type_multiple', filterType.join(','));
+          } else {
+            params.append('listing_type', filterType);
+          }
+        }
+        if (propertyCategory !== 'all') {
+          params.append('property_category', propertyCategory);
+        }
+        
+        const apiUrl = `/api/properties${params.toString() ? '?' + params.toString() : ''}`;
+        console.log('Fetching properties with filters:', { filterType, propertyCategory, apiUrl });
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error('Failed to fetch properties');
         }
@@ -182,24 +199,44 @@ function PropertiesListingContent({
                          property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesType = !selectedType || property.property_type === selectedType
+    // Property type filter - handle special "commercial" case
+    let matchesType = !selectedType;
+    if (selectedType) {
+      if (selectedType.toLowerCase() === 'commercial') {
+        // If user selects "commercial" filter, match any commercial property
+        matchesType = (property as any).property_category === 'commercial';
+      } else {
+        // Otherwise match exact property type (case-insensitive)
+        matchesType = property.property_type?.toLowerCase() === selectedType.toLowerCase();
+      }
+    }
+    
     const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms)
     const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
     
     // Filter by listing type (sale/rent/lease) based on page
     const listingType = property.listing_type || 'sale' // Default to sale if missing
     const matchesListingType = filterType === 'all' || 
-      (filterType === 'sale' && listingType === 'sale') ||
-      (filterType === 'rent' && listingType === 'rent') ||
-      (filterType === 'lease' && listingType === 'lease')
+      (Array.isArray(filterType) ? filterType.includes(listingType) : filterType === listingType)
     
-    // Filter by property category (residential/commercial) if specified
-    const propertyType = property.property_type?.toLowerCase() || ''
-    const commercialTypes = ['office', 'retail', 'warehouse', 'industrial', 'mixed use', 'commercial land', 'commercial']
-    const isCommercial = commercialTypes.some(type => propertyType.includes(type.toLowerCase()))
-    const matchesCategory = propertyCategory === 'all' || 
-      (propertyCategory === 'commercial' && isCommercial) ||
-      (propertyCategory === 'residential' && !isCommercial)
+    // Filter by property category - backwards compatible approach
+    const databaseCategory = (property as any).property_category;
+    let matchesCategory = true;
+    
+    if (propertyCategory !== 'all') {
+      if (databaseCategory) {
+        // Use database field if available
+        matchesCategory = (propertyCategory === 'commercial' && databaseCategory === 'commercial') ||
+                         (propertyCategory === 'residential' && databaseCategory === 'residential');
+      } else {
+        // Fallback to property type inference for older properties
+        const propertyType = property.property_type?.toLowerCase() || ''
+        const commercialTypes = ['office', 'retail', 'warehouse', 'industrial', 'mixed use', 'commercial land', 'commercial']
+        const isCommercial = commercialTypes.some(type => propertyType.includes(type.toLowerCase()))
+        matchesCategory = (propertyCategory === 'commercial' && isCommercial) ||
+                         (propertyCategory === 'residential' && !isCommercial);
+      }
+    }
     
     // Handle price range filtering
     let matchesPrice = true

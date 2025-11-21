@@ -8,6 +8,7 @@ function RentPropertiesContent() {
     <PropertiesListingFixed 
       title="Find Your Rental Property"
       filterType="rent"
+      propertyCategory="residential"
       showFilters={true}
     />
   );

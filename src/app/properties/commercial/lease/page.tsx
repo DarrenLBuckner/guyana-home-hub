@@ -6,8 +6,8 @@ import PropertiesListingFixed from '@/components/PropertiesListingFixed';
 function CommercialLeasePropertiesContent() {
   return (
     <PropertiesListingFixed 
-      title="Find Your Commercial Lease Property"
-      filterType="lease"
+      title="Find Your Commercial Lease Properties"
+      filterType={["lease", "rent"]}
       propertyCategory="commercial"
       showFilters={true}
     />
