@@ -7,12 +7,16 @@ import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 import AdDisplay from "@/components/ads/AdDisplay";
+import { useFragmentFix } from "@/hooks/useFragmentFix";
 
 export default function HomePage() {
   const [showBrowseCards, setShowBrowseCards] = useState(false);
   const [showListCards, setShowListCards] = useState(false);
   const router = useRouter();
   const { theme, country } = useCountryTheme();
+  
+  // Fix Google search fragment navigation issues
+  useFragmentFix();
   
   // Dynamic country values for authentic branding
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';

@@ -1,9 +1,9 @@
 // src/components/layout/Navbar.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Heart, ChevronDown } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -11,10 +11,8 @@ import { useCountryTheme } from "@/components/CountryThemeProvider";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [commercialDropdownOpen, setCommercialDropdownOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const commercialDropdownRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const router = useRouter();
   const { favoritesCount } = useFavorites();
@@ -51,25 +49,6 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
-  // Handle click outside for commercial dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (commercialDropdownRef.current && !commercialDropdownRef.current.contains(event.target as Node)) {
-        setCommercialDropdownOpen(false);
-      }
-    };
-
-    if (commercialDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, [commercialDropdownOpen]);
-
   // Handle sign out
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -104,66 +83,11 @@ export default function Navbar() {
           <Link href="/properties/rent" className="hover:text-green-600">
             Rent
           </Link>
-          {/* Commercial Dropdown - Click Only */}
-          <div className="relative" ref={commercialDropdownRef}>
-            <button
-              type="button"
-              onClick={() => setCommercialDropdownOpen(!commercialDropdownOpen)}
-              onKeyDown={(e) => {
-                if (e.key === 'Escape') {
-                  setCommercialDropdownOpen(false);
-                }
-              }}
-              className="flex items-center hover:text-green-600 transition-colors duration-200 focus:outline-none focus:text-green-600"
-              aria-expanded={commercialDropdownOpen}
-              aria-haspopup="true"
-            >
-              Commercial
-              <ChevronDown 
-                className={`ml-1 h-4 w-4 transform transition-transform duration-200 ${
-                  commercialDropdownOpen ? 'rotate-180' : ''
-                }`} 
-              />
-            </button>
-            
-            {/* Dropdown Menu */}
-            <div 
-              className={`absolute left-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transform transition-all duration-200 origin-top ${
-                commercialDropdownOpen 
-                  ? 'opacity-100 scale-100 translate-y-0' 
-                  : 'opacity-0 scale-95 translate-y-1 pointer-events-none'
-              }`}
-              role="menu"
-            >
-              <Link
-                href="/properties/commercial/lease"
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200 focus:bg-green-50 focus:text-green-600 focus:outline-none"
-                onClick={() => setCommercialDropdownOpen(false)}
-                role="menuitem"
-              >
-                <div className="flex items-center">
-                  <span className="mr-2">🏢</span>
-                  For Lease
-                </div>
-              </Link>
-              
-              <div className="border-t border-gray-100 my-1"></div>
-              
-              <Link
-                href="/properties/commercial/sale"
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors duration-200 focus:bg-green-50 focus:text-green-600 focus:outline-none"
-                onClick={() => setCommercialDropdownOpen(false)}
-                role="menuitem"
-              >
-                <div className="flex items-center">
-                  <span className="mr-2">🏪</span>
-                  For Sale
-                </div>
-              </Link>
-            </div>
-          </div>
           <Link href="/business-directory" className="hover:text-green-600">
             Business Directory
+          </Link>
+          <Link href="/contact" className="hover:text-green-600">
+            Contact
           </Link>
         </div>
 
@@ -240,41 +164,6 @@ export default function Navbar() {
             >
               🏠 Rent Properties
             </Link>
-            
-            {/* Commercial Properties Mobile - Enhanced */}
-            <div className="bg-green-50 rounded-lg p-2 ml-2 mr-2">
-              <div className="text-green-800 font-semibold text-sm mb-2 px-2">
-                🏢 Commercial Properties
-              </div>
-              <div className="space-y-1">
-                <Link
-                  href="/properties/commercial/lease"
-                  className="block text-green-700 hover:text-green-800 hover:bg-green-100 rounded-md py-2 px-3 transition-all duration-200"
-                  onClick={closeMenu}
-                >
-                  <div className="flex items-center">
-                    <span className="mr-2 text-lg">🏢</span>
-                    <div>
-                      <div className="font-medium">For Lease</div>
-                      <div className="text-xs text-green-600">Office, Retail & More</div>
-                    </div>
-                  </div>
-                </Link>
-                <Link
-                  href="/properties/commercial/sale"
-                  className="block text-green-700 hover:text-green-800 hover:bg-green-100 rounded-md py-2 px-3 transition-all duration-200"
-                  onClick={closeMenu}
-                >
-                  <div className="flex items-center">
-                    <span className="mr-2 text-lg">🏪</span>
-                    <div>
-                      <div className="font-medium">For Sale</div>
-                      <div className="text-xs text-green-600">Investment Properties</div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
           </div>
           
           {/* === VISUAL DIVIDER LINE === */}
@@ -317,6 +206,14 @@ export default function Navbar() {
               onClick={closeMenu}
             >
               👤 Agent Portal
+            </Link>
+            
+            <Link
+              href="/contact"
+              className="block text-gray-500 hover:text-green-600 text-sm py-2 px-4"
+              onClick={closeMenu}
+            >
+              📞 Contact Us
             </Link>
           </div>
 

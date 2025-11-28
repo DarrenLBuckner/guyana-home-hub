@@ -85,6 +85,11 @@ export default function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/safety-tips" className="hover:text-green-700">
+                Safety Tips
+              </Link>
+            </li>
+            <li>
               <a 
                 href="https://portalhomehub.com/franchise" 
                 className="hover:text-green-700"

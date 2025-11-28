@@ -28,6 +28,8 @@ import { Property } from '@/types/property'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { CurrencyFormatter, convertGydToUsd } from '@/lib/currency'
+import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
+import { FSBOBadge } from '@/components/FSBOBadge'
 
 interface PropertyCardProps {
   property: Property
@@ -74,15 +76,6 @@ export function PropertyCard({
     }
   }
 
-  const getStatusColor = (status: Property['status']) => {
-    switch (status) {
-      case 'available': return 'bg-green-100 text-green-800'
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'sold': return 'bg-red-100 text-red-800'
-      case 'rented': return 'bg-primary/10 text-primary'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   const handleFavorite = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -101,6 +94,76 @@ export function PropertyCard({
     e.preventDefault()
     e.stopPropagation()
     contactAction?.(property)
+  }
+
+  // Helper function to render contact buttons based on property status
+  const renderContactButtons = (className?: string) => {
+    if (!showContactButtons) return null
+
+    // Sold properties - no contact
+    if (property.status === 'sold') {
+      return (
+        <div className={className}>
+          <Button
+            disabled
+            variant="outline"
+            size="sm"
+            className="flex-1 bg-gray-400 text-white cursor-not-allowed"
+          >
+            Property Sold
+          </Button>
+        </div>
+      )
+    }
+
+    // Under contract - backup offers
+    if (property.status === 'under_contract' || property.status === 'pending') {
+      return (
+        <div className={className}>
+          <Button
+            onClick={handleContact}
+            variant="default"
+            size="sm"
+            className="flex-1 bg-orange-500 hover:bg-orange-600"
+          >
+            <Phone className="h-4 w-4 mr-1" />
+            Backup Offers Welcome
+          </Button>
+        </div>
+      )
+    }
+
+    // Active/Available/Approved - normal contact (adjust text based on listed_by_type)
+    if (property.status === 'active' || property.status === 'available' || property.status === 'approved') {
+      const isOwnerListed = property.listed_by_type === 'owner'
+      const contactText = isOwnerListed ? 'Contact Owner' : 'Contact Agent'
+      
+      return (
+        <div className={className}>
+          <Button
+            onClick={handleContact}
+            variant="default"
+            size="sm"
+            className="flex-1"
+          >
+            <Phone className="h-4 w-4 mr-1" />
+            {contactText}
+          </Button>
+          <Button
+            onClick={handleContact}
+            variant="outline"
+            size="sm"
+            className="flex-1"
+          >
+            <Mail className="h-4 w-4 mr-1" />
+            Email
+          </Button>
+        </div>
+      )
+    }
+
+    // Default case - no contact buttons for other statuses
+    return null
   }
 
   const PropertyTypeIcon = getPropertyTypeIcon(property.property_type)
@@ -126,13 +189,11 @@ export function PropertyCard({
                 onLoad={() => setImageLoading(false)}
               />
               
-              {/* Status Badge */}
-              <div className={cn(
-                "absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium",
-                getStatusColor(property.status)
-              )}>
-                {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
-              </div>
+              {/* Property Status Ribbon - Replaces old status badge */}
+              <PropertyStatusRibbon 
+                status={property.status} 
+                listingType={property.listing_type}
+              />
 
               {/* Image Count */}
               {property.images && property.images.length > 1 && (
@@ -181,6 +242,9 @@ export function PropertyCard({
                     {formatPriceWithUSD(property.price).usdPrice}
                     {property.listing_type === 'rent' && '/month'}
                   </p>
+                  
+                  {/* FSBO Badge - Separate from status ribbon */}
+                  <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
                 </div>
                 <PropertyTypeIcon className="h-6 w-6 text-gray-400" />
               </div>
@@ -245,28 +309,7 @@ export function PropertyCard({
               </p>
 
               {/* Contact Buttons */}
-              {showContactButtons && (
-                <div className="flex space-x-3">
-                  <Button
-                    onClick={handleContact}
-                    variant="default"
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <Phone className="h-4 w-4 mr-2" />
-                    Contact Agent
-                  </Button>
-                  <Button
-                    onClick={handleContact}
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                  >
-                    <Mail className="h-4 w-4 mr-2" />
-                    Email
-                  </Button>
-                </div>
-              )}
+              {renderContactButtons("flex space-x-3")}
 
               {/* Stats */}
               {showStats && property.metadata.views && (
@@ -312,17 +355,15 @@ export function PropertyCard({
             onLoad={() => setImageLoading(false)}
           />
           
-          {/* Status Badge */}
-          <div className={cn(
-            "absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-medium",
-            getStatusColor(property.status)
-          )}>
-            {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
-          </div>
+          {/* Property Status Ribbon - Replaces old status badge */}
+          <PropertyStatusRibbon 
+            status={property.status} 
+            listingType={property.listing_type}
+          />
 
-          {/* Featured Badge */}
+          {/* Featured Badge - Positioned below status ribbon */}
           {variant === 'featured' && (
-            <div className="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+            <div className="absolute top-12 left-0 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-r-lg text-xs font-medium z-10">
               Featured
             </div>
           )}
@@ -400,6 +441,9 @@ export function PropertyCard({
               )}>
                 {property.title}
               </h3>
+              
+              {/* FSBO Badge for grid and featured variants */}
+              <FSBOBadge listedByType={property.listed_by_type} className="mt-1" />
             </div>
             <PropertyTypeIcon className="h-5 w-5 text-gray-400 ml-2 flex-shrink-0" />
           </div>
@@ -460,28 +504,7 @@ export function PropertyCard({
           )}
 
           {/* Contact Buttons */}
-          {showContactButtons && (
-            <div className="flex space-x-2 mb-4">
-              <Button
-                onClick={handleContact}
-                variant="default"
-                size="sm"
-                className="flex-1"
-              >
-                <Phone className="h-4 w-4 mr-1" />
-                Call
-              </Button>
-              <Button
-                onClick={handleContact}
-                variant="outline"
-                size="sm"
-                className="flex-1"
-              >
-                <Mail className="h-4 w-4 mr-1" />
-                Email
-              </Button>
-            </div>
-          )}
+          {renderContactButtons("flex space-x-2 mb-4")}
 
           {/* Stats */}
           {showStats && (

@@ -54,7 +54,7 @@ export interface Property extends BaseProperty {
   // Basic Info
   property_type: 'house' | 'apartment' | 'commercial' | 'land' | 'condo'
   listing_type: 'sale' | 'rent'
-  status: 'available' | 'pending' | 'sold' | 'rented' | 'off_market'
+  status: 'draft' | 'pending' | 'active' | 'available' | 'approved' | 'rejected' | 'expired' | 'off_market' | 'sold' | 'rented' | 'suspended' | 'under_contract'
   
   // Physical Characteristics
   features: PropertyFeatures

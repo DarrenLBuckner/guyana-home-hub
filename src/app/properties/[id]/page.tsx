@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation'
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home } from 'lucide-react'
 import VideoEmbed from '@/components/VideoEmbed'
 import RequestViewingModal from '@/components/RequestViewingModal'
+import { PrivateListingDisclaimer } from '@/components/PrivateListingDisclaimer'
 
 
 interface Property {
@@ -231,6 +232,12 @@ export default function PropertyDetailPage() {
             No images found or images array is empty
           </div>
         )}
+        
+        {/* Private Listing Disclaimer */}
+        <PrivateListingDisclaimer 
+          listedByType={property.listed_by_type} 
+          listingType={property.listing_type} 
+        />
         
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-6">

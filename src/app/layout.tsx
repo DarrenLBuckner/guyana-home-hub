@@ -26,6 +26,19 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     other: {
       "facebook-domain-verification": "f6dqrciz798c8xtuauxdmdquuq1g0y",
+      // Help prevent unwanted Google fragment navigation
+      "fragment-redirect": "top",
+    },
+    robots: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+    },
+    openGraph: {
+      title: siteName,
+      description: description,
+      type: 'website',
+      locale: 'en_US',
     },
   };
 }

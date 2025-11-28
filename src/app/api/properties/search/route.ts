@@ -40,30 +40,11 @@ export async function GET(request: Request) {
     // Set site filter
     queryParams.set('site', siteName)
     
-    // Add comprehensive search parameters
-    queryParams.set('search', searchQuery)
-    queryParams.set('location', searchQuery) // Also search in location field
+    // Use search parameter now that Portal API is fixed
+    queryParams.set('search', searchQuery) // Full text search across title, description, location
     queryParams.set('limit', '20') // More results for search
     
-    // Special handling for known Guyanese locations
-    const guyanLocations = {
-      'diamond': 'Diamond, East Bank Demerara',
-      'georgetown': 'Georgetown',
-      'providence': 'Providence, East Bank Demerara', 
-      'eccles': 'Eccles, East Bank Demerara',
-      'new amsterdam': 'New Amsterdam, Region 6',
-      'linden': 'Linden, Region 10',
-      'anna regina': 'Anna Regina, Region 2',
-      'berbice': 'Berbice, Region 6',
-      'demerara': 'Demerara',
-      'essequibo': 'Essequibo'
-    }
-    
-    // Check if search query matches a known location
-    const searchLower = searchQuery.toLowerCase()
-    if (guyanLocations[searchLower as keyof typeof guyanLocations]) {
-      queryParams.set('location_exact', guyanLocations[searchLower as keyof typeof guyanLocations])
-    }
+    // Portal API's 'q' parameter handles all search intelligently - no need for complex mapping
     
     console.log(`🔍 Fetching from: ${portalApiUrl}/api/public/properties?${queryParams.toString()}`)
     
@@ -85,35 +66,7 @@ export async function GET(request: Request) {
     // Log search results for debugging
     console.log(`🔍 Search results: ${data.properties?.length || 0} properties found`)
     
-    // If no results from exact search, try broader search
-    if ((!data.properties || data.properties.length === 0) && searchQuery.length > 3) {
-      console.log('🔍 No exact matches, trying broader search...')
-      
-      // Try property type search
-      const propertyTypes = ['house', 'apartment', 'land', 'villa', 'commercial', 'townhouse', 'condo']
-      const matchedType = propertyTypes.find(type => searchLower.includes(type))
-      
-      if (matchedType) {
-        queryParams.set('property_type', matchedType)
-        queryParams.delete('location_exact')
-        
-        const broaderResponse = await fetch(`${portalApiUrl}/api/public/properties?${queryParams.toString()}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-site-id': siteName,
-            'x-search-query': searchQuery
-          },
-        })
-        
-        if (broaderResponse.ok) {
-          const broaderData = await broaderResponse.json()
-          if (broaderData.properties && broaderData.properties.length > 0) {
-            console.log(`🔍 Broader search found: ${broaderData.properties.length} properties`)
-            return NextResponse.json(broaderData)
-          }
-        }
-      }
-    }
+    // Portal API's 'q' parameter already handles broad search - no manual fallback needed
     
     return NextResponse.json(data)
   } catch (error) {

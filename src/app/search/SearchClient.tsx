@@ -115,43 +115,115 @@ export default function SearchClient() {
         </div>
       )}
 
-      {/* Error State */}
+      {/* Error State - Improved UX */}
       {!loading && error && (
         <div className="text-center py-12">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
-            <h3 className="text-lg font-semibold text-red-800 mb-2">Search Error</h3>
-            <p className="text-red-600 mb-4">{error}</p>
-            <Link 
-              href="/properties"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-            >
-              Browse All Properties
-            </Link>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-8 max-w-xl mx-auto">
+            <div className="flex justify-center mb-4">
+              <div className="bg-blue-100 rounded-full p-3">
+                <Search className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-blue-900 mb-3">Search Temporarily Unavailable</h3>
+            <p className="text-blue-700 mb-6">
+              We're having trouble connecting to our property database right now. Please try again in a few moments.
+            </p>
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                >
+                  Try Again
+                </button>
+                <Link 
+                  href="/properties"
+                  className="inline-flex items-center px-6 py-3 border border-blue-300 text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50"
+                >
+                  Browse All Properties
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* No Results */}
+      {/* No Results - Enhanced with Marketing Flow */}
       {!loading && !error && results.length === 0 && (
         <div className="text-center py-12">
-          <Search className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No properties found</h3>
-          <p className="text-gray-600 mb-6">
-            We couldn't find any properties matching "{q}". Try searching with different keywords or browse our available properties.
-          </p>
-          <div className="space-x-4">
-            <Link 
-              href="/properties/buy"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-            >
-              Browse Properties for Sale
-            </Link>
-            <Link 
-              href="/properties/rent"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Browse Properties for Rent
-            </Link>
+          <div className="max-w-2xl mx-auto">
+            {/* Icon and Main Message */}
+            <div className="flex justify-center mb-6">
+              <div className="bg-gradient-to-br from-emerald-100 to-green-100 rounded-full p-4">
+                <MapPin className="h-12 w-12 text-emerald-600" />
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              No properties currently available in "{q}"
+            </h3>
+            
+            <p className="text-lg text-gray-600 mb-8">
+              But don't worry! We're constantly expanding our listings across Guyana. 
+              <span className="font-semibold text-emerald-700"> Properties in this area will be available soon.</span>
+            </p>
+            
+            {/* Primary CTA - List Your Property */}
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-6 mb-8">
+              <h4 className="text-xl font-semibold text-emerald-800 mb-3">
+                🏡 Do you own property in {q}?
+              </h4>
+              <p className="text-emerald-700 mb-4">
+                Be the first to list in this area and capture all the interested buyers and renters!
+              </p>
+              <a
+                href="https://portalhomehub.com/register/select-country"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-lg hover:from-emerald-700 hover:to-green-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
+              >
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"/>
+                </svg>
+                List Your Property (Free)
+              </a>
+            </div>
+            
+            {/* Secondary Options */}
+            <div className="space-y-4">
+              <p className="text-gray-600 font-medium">Or browse our current listings:</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link 
+                  href="/properties/buy"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                >
+                  Browse Properties for Sale
+                </Link>
+                <Link 
+                  href="/properties/rent"
+                  className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  Browse Properties for Rent
+                </Link>
+              </div>
+              
+              {/* Notification Signup */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-600 mb-3">
+                  Want to be notified when properties become available in {q}?
+                </p>
+                <Link 
+                  href="/register"
+                  className="inline-flex items-center px-4 py-2 border border-emerald-300 text-sm font-medium rounded-md text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                  </svg>
+                  Get Email Alerts
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       )}
