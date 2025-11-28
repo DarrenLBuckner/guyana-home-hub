@@ -21,6 +21,8 @@ import {
   ChevronDown
 } from 'lucide-react'
 import { usePropertyEngagement } from '@/hooks/usePropertyEngagement'
+import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
+import { FSBOBadge } from '@/components/FSBOBadge'
 
 interface Property {
   id: string
@@ -454,11 +456,11 @@ function PropertiesListingContent({
                   <div className={`w-full h-full bg-gray-200 flex items-center justify-center ${property.images && property.images.length > 0 ? 'hidden' : ''}`}>
                     <Home className="h-12 w-12 text-gray-400" />
                   </div>
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-medium">
-                      {property.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
-                    </span>
-                  </div>
+                  {/* Property Status Ribbon - Replaces hardcoded status */}
+                  <PropertyStatusRibbon 
+                    status={property.status} 
+                    listingType={property.listing_type as 'sale' | 'rent'}
+                  />
                   {/* Improved Engagement Buttons - Better UX & Spacing */}
                   <div className="absolute top-2 right-2 flex flex-col gap-4 items-end">
                     {/* Anonymous Like Button - Clear & Prominent */}
@@ -595,8 +597,12 @@ function PropertiesListingContent({
 
                   {/* Price and Actions */}
                   <div className="flex justify-between items-center">
-                    <div className="text-2xl font-bold text-green-600">
-                      {formatPrice(property.price, property.price_type)}
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {formatPrice(property.price, property.price_type)}
+                      </div>
+                      {/* FSBO Badge */}
+                      <FSBOBadge listedByType={property.listed_by_type} className="mt-1" />
                     </div>
                     <div className="flex">
                       <Link 

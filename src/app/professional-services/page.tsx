@@ -10,7 +10,7 @@ export default function ProfessionalServicesAgreementPage() {
     <main className="max-w-4xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold text-green-700 mb-2">GUYANA HOME HUB</h1>
       <h2 className="text-2xl font-bold text-gray-800 mb-4">PROFESSIONAL SERVICES AGREEMENT</h2>
-      <p className="text-gray-600 mb-4">Last Updated: November 6, 2025</p>
+      <p className="text-gray-600 mb-4">Last Updated: November 28, 2025</p>
       
       <div className="bg-red-50 border border-red-200 p-4 rounded-lg mb-8">
         <p className="text-red-800 font-bold text-center">IMPORTANT: READ CAREFULLY BEFORE PURCHASING</p>
@@ -268,6 +268,10 @@ export default function ProfessionalServicesAgreementPage() {
           <li>Specific search result positioning</li>
           <li>Transaction completion or success</li>
         </ul>
+        
+        <p className="text-gray-700 mb-4">
+          <strong>Private Listing Verification:</strong> For properties listed by private sellers (For Sale By Owner) or private landlords, the Platform (including Portal Home Hub, Caribbean Home Hub LLC, and all affiliated country-specific sites) does not verify ownership, accuracy of information, or identity of the listing party. Buyers and renters must conduct their own due diligence. The Platform is not liable for any losses resulting from transactions with private sellers or landlords.
+        </p>
 
         <h4 className="text-lg font-medium text-gray-800 mb-3">7.3 Limitation of Liability</h4>
         <p className="text-gray-700 mb-6">
