@@ -4,29 +4,15 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Bed, Bath, Square, Search } from 'lucide-react'
-
-/** ---------- 1. Shape of a property card ---------- */
-interface PropertyCard {
-  id: string
-  title: string
-  price: number
-  status: string
-  images?: string[]
-  hero_index?: number
-  location?: string
-  bedrooms?: number
-  bathrooms?: number
-  home_size?: string
-  property_type?: string
-  listing_type?: 'sale' | 'rent'
-}
+import { PropertyCard } from '@/components/PropertyCard'
+import { Property } from '@/types/property'
 
 /** ---------- 2. Client component ---------- */
 export default function SearchClient() {
   const params = useSearchParams()
   const q = params.get('q')?.trim() ?? ''
 
-  const [results, setResults] = useState<PropertyCard[]>([])
+  const [results, setResults] = useState<Property[]>([])
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [totalCount, setTotalCount] = useState<number>(0)
@@ -231,108 +217,15 @@ export default function SearchClient() {
       {/* Search Results */}
       {!loading && !error && results.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {results.map((property) => {
-            // Fix image loading - use images array with hero_index or first image
-            const imageUrl = property.images && property.images.length > 0 
-              ? property.images[property.hero_index || 0] 
-              : null
-              
-            // Fix currency formatting to match site (GYD instead of $)
-            const priceFormatted = property.listing_type === 'rent' 
-              ? `GYD ${property.price.toLocaleString()}/month` 
-              : `GYD ${property.price.toLocaleString()}`
-            
-            return (
-              <Link key={property.id} href={`/properties/${property.id}`}>
-                <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 overflow-hidden cursor-pointer">
-                  <div className="relative">
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={property.title}
-                        className="w-full h-48 object-cover transition-opacity duration-300"
-                        loading="lazy"
-                        onLoad={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.style.opacity = '1'
-                        }}
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          // Hide broken image and show placeholder
-                          target.style.display = 'none'
-                          const placeholder = target.nextElementSibling as HTMLElement
-                          if (placeholder) placeholder.style.display = 'flex'
-                        }}
-                        style={{ opacity: 0 }}
-                      />
-                    ) : null}
-                    <div 
-                      className={`w-full h-48 bg-gray-200 flex items-center justify-center ${imageUrl ? 'hidden' : 'flex'}`}
-                    >
-                      <div className="text-center">
-                        <div className="text-4xl text-gray-400 mb-2">🏠</div>
-                        <p className="text-gray-500 text-sm">No image available</p>
-                      </div>
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        property.listing_type === 'rent' 
-                          ? 'bg-blue-100 text-blue-800' 
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {property.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">
-                      {property.title}
-                    </h3>
-                    
-                    {property.location && (
-                      <div className="flex items-center text-gray-600 mb-2">
-                        <MapPin className="h-4 w-4 mr-1" />
-                        <span className="text-sm">{property.location}</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xl font-bold text-green-600">
-                        {priceFormatted}
-                      </span>
-                      {property.property_type && (
-                        <span className="text-sm text-gray-500 capitalize">
-                          {property.property_type}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center text-gray-600 text-sm space-x-4">
-                      {property.bedrooms && (
-                        <div className="flex items-center">
-                          <Bed className="h-4 w-4 mr-1" />
-                          <span>{property.bedrooms} bed</span>
-                        </div>
-                      )}
-                      {property.bathrooms && (
-                        <div className="flex items-center">
-                          <Bath className="h-4 w-4 mr-1" />
-                          <span>{property.bathrooms} bath</span>
-                        </div>
-                      )}
-                      {property.home_size && (
-                        <div className="flex items-center">
-                          <Square className="h-4 w-4 mr-1" />
-                          <span>{property.home_size} sq ft</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            )
-          })}
+          {results.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              variant="grid"
+              showStats={true}
+              showContactButtons={false}
+            />
+          ))}
         </div>
       )}
 
