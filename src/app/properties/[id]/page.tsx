@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home } from 'lucide-
 import VideoEmbed from '@/components/VideoEmbed'
 import RequestViewingModal from '@/components/RequestViewingModal'
 import { PrivateListingDisclaimer } from '@/components/PrivateListingDisclaimer'
+import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
+import { FSBOBadge } from '@/components/FSBOBadge'
 
 
 interface Property {
@@ -37,6 +39,7 @@ interface Property {
 
   listing_type?: 'sale' | 'rent'
   property_type?: string
+  status?: string
   agent_profile?: {
     id: string
     first_name: string
@@ -175,6 +178,12 @@ export default function PropertyDetailPage() {
                 <Home className="h-16 w-16 text-gray-400" />
               </div>
               
+              {/* Property Status Ribbon */}
+              <PropertyStatusRibbon 
+                status={property.status || 'available'} 
+                listingType={property.listing_type}
+              />
+              
               {property.images.length > 1 && (
                 <>
                   <button
@@ -234,6 +243,14 @@ export default function PropertyDetailPage() {
         )}
         
         {/* Private Listing Disclaimer */}
+        {/* DEBUG: Show property data for debugging */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-yellow-100 border border-yellow-400 p-2 mb-4 text-xs">
+            DEBUG: listed_by_type: {property.listed_by_type || 'undefined'}, 
+            listing_type: {property.listing_type || 'undefined'}, 
+            status: {property.status || 'undefined'}
+          </div>
+        )}
         <PrivateListingDisclaimer 
           listedByType={property.listed_by_type} 
           listingType={property.listing_type} 
@@ -243,11 +260,15 @@ export default function PropertyDetailPage() {
           <div className="p-6">
             {/* Large Price and Key Details */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-              <div className="text-5xl font-bold text-green-600">
-                ${property.price?.toLocaleString()}
-                {property.listing_type === 'rent' && (
-                  <span className="text-2xl text-gray-600">/month</span>
-                )}
+              <div>
+                <div className="text-5xl font-bold text-green-600">
+                  ${property.price?.toLocaleString()}
+                  {property.listing_type === 'rent' && (
+                    <span className="text-2xl text-gray-600">/month</span>
+                  )}
+                </div>
+                {/* FSBO Badge */}
+                <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
               </div>
               <div className="flex flex-wrap items-center gap-6">
                 {property.bedrooms && (
