@@ -9,6 +9,7 @@ import { CountryThemeProvider } from "@/components/CountryThemeProvider";
 import { getCountryFromHeaders } from "@/lib/country-detection";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { FloatingWhatsAppButton } from "@/components/WhatsAppButton";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -93,6 +94,7 @@ export default async function RootLayout({
             {children}
             <Footer />
             <FloatingWhatsAppButton />
+            <ExitIntentPopup />
           </AppProviders>
         </CountryThemeProvider>
       </body>
