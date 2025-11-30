@@ -1698,9 +1698,9 @@ Twenty-five founding agent spots. A platform built for Guyana. Your chance to ge
 
 Use code **FOUNDERS-AGENT-GY** when you sign up.
 
-**[Sign Up as an Agent →](https://www.portalhomehub.com/register/select-country)** 
+<a href="https://www.portalhomehub.com/register/select-country" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #059669; color: white; font-weight: 600; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">Sign Up as an Agent →</a>
 
-Questions? **Text us on WhatsApp** (fastest response): **[+592 762 9797](https://wa.me/5927629797?text=Hi%2C%20I%27m%20interested%20in%20becoming%20a%20Founding%20Agent)**
+Questions? **Text us on WhatsApp** (fastest response): <a href="https://wa.me/5927629797?text=Hi,%20I'm%20interested%20in%20becoming%20a%20Founding%20Agent" target="_blank" rel="noopener noreferrer" style="color: #059669; font-weight: 600; text-decoration: none;">+592 762 9797</a>
 
 *(Please text, don't call — our team responds faster to messages)*
 `,
@@ -1897,7 +1897,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                     🏠 Browse Properties
                   </Link>
                   <a
-                    href="https://wa.me/5927629797?text=Hi%20Guyana%20Home%20Hub!%20I%20read%20your%20guides%20and%20need%20help%20finding%20property%20in%20Guyana."
+                    href="https://wa.me/5927629797?text=Hi Guyana Home Hub! I read your guides and need help finding property in Guyana."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center border-2 border-white text-white font-semibold py-3 px-6 rounded-lg hover:bg-white hover:text-green-700 transition-all duration-200"

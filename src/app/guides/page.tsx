@@ -225,7 +225,7 @@ export default async function GuidesPage() {
           <div className="mt-8 pt-8 border-t border-gray-700">
             <p className="text-lg mb-4">Need personalized assistance?</p>
             <a 
-              href="https://wa.me/5927629797?text=Hi%20Guyana%20Home%20Hub!%20I%20read%20your%20property%20guides%20and%20need%20help%20with%20buying%20property%20in%20Guyana." 
+              href="https://wa.me/5927629797?text=Hi Guyana Home Hub! I read your property guides and need help with buying property in Guyana." 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
