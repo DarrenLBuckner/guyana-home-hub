@@ -74,6 +74,15 @@ const guides = [
     category: 'Diaspora',
     priority: 6,
     comingSoon: false
+  },
+  {
+    slug: 'why-agents-choose-homehub',
+    title: 'Why Smart Agents Are Looking Beyond Facebook',
+    description: 'Facebook groups are holding your real estate business back. Be one of the first 25 founding agents on Guyana HomeHub and reach serious buyers.',
+    readTime: '8 min read',
+    category: 'For Agents',
+    priority: 7,
+    comingSoon: false
   }
 ];
 

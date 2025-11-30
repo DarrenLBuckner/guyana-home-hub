@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCountryFromHeaders } from '@/lib/country-detection';
+import { ShareButtons } from './ShareButtons';
 
 interface GuideData {
   slug: string;
@@ -1520,6 +1521,213 @@ Read our [complete guide to buying property in Guyana from abroad](/guides/buyin
         description: 'Protect yourself from fraud and scams when buying property.'
       }
     ]
+  },
+  'why-agents-choose-homehub': {
+    slug: 'why-agents-choose-homehub',
+    title: 'Why Smart Agents Are Looking Beyond Facebook',
+    description: 'Facebook groups are holding your real estate business back. Be one of the first 25 founding agents on Guyana HomeHub and reach serious buyers.',
+    readTime: '8 min read',
+    category: 'For Agents',
+    lastUpdated: 'December 1, 2024',
+    content: `
+# Why Smart Agents Are Looking Beyond Facebook
+
+*By Guyana HomeHub Team*
+
+Let's have an honest conversation.
+
+If you're a real estate agent in Guyana, you're using Facebook to market your properties. Everyone does. You post in the buy/sell groups, maybe boost a listing here and there, and wait for inquiries to hit your inbox.
+
+It works. Sort of.
+
+But here's what you already know: Facebook is chaos. Your listing sits between someone selling a used refrigerator and another person looking for a house helper. [Scammers](/guides/avoid-property-scams) run rampant. Buyers can't tell who's legitimate. And your professional reputation gets lost in the noise.
+
+You've probably thought: *there has to be a better way.*
+
+There is. And we're building it.
+
+---
+
+## The Problem With Facebook Real Estate Marketing
+
+Facebook wasn't built for real estate. It was built for sharing photos of your cousin's birthday party. The fact that it became Guyana's de facto property marketplace is an accident of history, not a feature.
+
+**Here's what that means for you as an agent:**
+
+**No verification.** Anyone can claim to be an agent. Scammers create fake profiles, post stolen photos, and collect deposits from [overseas buyers](/guides/buying-from-abroad) who never see their money again. Every time that happens, it makes legitimate agents like you look bad by association.
+
+**No search functionality.** When a buyer wants a 3-bedroom house in Eccles under $30 million, they can't search for it. They scroll endlessly, hoping to spot something. Most give up. Your perfect listing never reaches them.
+
+**No professional presence.** Your listings appear in the same feed as used cars, job postings, and political arguments. There's no way to showcase your portfolio, your experience, or your track record. You're just another post in an endless scroll.
+
+**No qualified leads.** You get inquiries from people who aren't serious, can't afford the property, or are just curious. You spend hours responding to messages that go nowhere. Meanwhile, real buyers — especially diaspora with actual money — don't trust Facebook enough to reach out.
+
+**No protection.** If someone screenshots your listing and reposts it as their own, there's nothing you can do. If a scammer uses your photos to run a con, your reputation takes the hit.
+
+Sound familiar?
+
+---
+
+## What Serious Buyers Actually Want
+
+Put yourself in the buyer's shoes for a moment — especially the [diaspora buyer](/guides/buying-from-abroad) sitting in New York, Toronto, or London with money to invest back home.
+
+They want to buy property in Guyana. They open Facebook. What do they see?
+
+- Listings with no prices
+- Agents who don't respond to messages
+- Properties that might already be sold
+- No way to verify if the seller is real
+- Horror stories from friends who got scammed
+
+**So what do they do?** They hesitate. They delay. Or they only buy through family connections, which cuts you out entirely.
+
+Now imagine instead they find a professional platform. Clean listings with real photos, actual prices, verified agents with contact information. They can browse by location, filter by price, see multiple properties from the same agent.
+
+**That buyer is ready to act.** And they want to work with an agent who presents themselves professionally — not someone they found between posts about lost dogs and used furniture.
+
+---
+
+## The Guyana Real Estate Market Is Changing
+
+You've noticed it. The [oil boom](/guides/investment-guide) has changed everything.
+
+Foreign investment is flooding in. The diaspora is paying attention to Guyana in a way they haven't for decades. Property values in Georgetown have surged. New developments are popping up along the East Bank and East Coast.
+
+This is the biggest opportunity Guyanese real estate agents have ever seen.
+
+But here's the thing: **bigger opportunity means more competition**. More agents are entering the market. Regional players like RE/MAX and Century 21 have set up shop. And buyers — especially international buyers — have higher expectations.
+
+The agents who will win in this new market are the ones who present themselves professionally. The ones who make it easy for buyers to find them, trust them, and do business with them.
+
+Facebook isn't built for that. It's where agents go to compete on who can post the most, not who can serve clients the best.
+
+---
+
+## What Guyana HomeHub Gives You
+
+Guyana HomeHub was built specifically for the Guyanese real estate market. Not adapted from some foreign template. Built here, for here.
+
+**Here's what you get:**
+
+**Your listings are searchable.** Buyers can filter by location, price, property type, and more. When someone wants a house in Berbice under $25 million, your listing shows up — instead of getting buried in a Facebook feed.
+
+**You look professional.** Your agent profile showcases your listings, your contact information, and your credentials. Buyers see you as a professional, not just another Facebook poster.
+
+**You reach the diaspora.** Guyanese abroad are searching Google for "buy property in Guyana." They're finding Guyana HomeHub, reading our guides, and looking for agents they can trust. When they see your verified listing with professional photos and clear pricing, they reach out.
+
+**Verified means trusted.** We verify our agents. That badge next to your name tells buyers you're legitimate. In a market flooded with scammers, that trust is worth money.
+
+**Your work stays yours.** Your listings are protected. Nobody screenshots your post and claims it as their own. Your professional presence is yours to build.
+
+---
+
+## "But This Platform Is New"
+
+You're right. It is.
+
+Guyana HomeHub just launched. We're not going to pretend we've been here for years or that thousands of agents are already using it. That would be dishonest, and you'd see through it anyway.
+
+Here's what we are: a platform built specifically for the Guyanese market, at exactly the right time.
+
+The oil boom is bringing unprecedented attention to Guyana. Diaspora buyers are searching Google for property back home. Foreign investors are looking for opportunities. And they're all landing on Facebook groups full of scammers and chaos.
+
+**Someone is going to build the professional platform for Guyana real estate.** We decided it should be us.
+
+That means the agents who get in now aren't just early adopters — they're **founders**. The ones who help shape what this becomes. The ones who'll have established profiles and reviews while everyone else is still figuring it out.
+
+---
+
+## Be a Founding Agent
+
+We're looking for the first 25 agents in Guyana to build this with us.
+
+**What founding agents get:**
+- **Founding Agent badge** on your profile (permanent — shows you were here from the start)
+- **Priority support** — direct WhatsApp line for any issues
+- **Input on features** — tell us what you need, we'll build it
+- **First mover advantage** — established presence before the wave hits
+
+**Use code: FOUNDERS-AGENT-GY** when you sign up.
+
+This isn't a gimmick. We need agents who believe in what we're building and want to be part of it. If that's you, we want you in.
+
+If you'd rather wait and see, that's fine too. But the founding agent spots won't last forever.
+
+---
+
+## The New Regulatory Environment
+
+You may have heard: Guyana passed the Real Estate Agents and Brokers Bill in August 2023. The Guyana Real Estate Agents Authority was established in January 2024. The industry is formalizing.
+
+This is a good thing for professional agents. It means licensing, standards, and accountability. It means the cowboys and scammers will eventually get pushed out.
+
+But it also means buyers — especially institutional buyers and overseas investors — will increasingly look for agents who operate professionally. They'll want to see licenses, credentials, and a real business presence.
+
+A Facebook page won't cut it anymore.
+
+Guyana HomeHub gives you that professional presence. It shows buyers and regulators alike that you take your business seriously.
+
+---
+
+## What It Costs
+
+For founding agents: **nothing to start.**
+
+Sign up, get verified, post your listings. We're not here to nickel-and-dime you while we're all building this together.
+
+Down the road, there may be premium features for agents who want more visibility or tools. But right now, the goal is simple: get great agents on the platform, get quality listings up, and prove this works.
+
+You bring the listings. We bring the buyers. Let's build something.
+
+---
+
+## The Bottom Line
+
+Facebook isn't going anywhere. You'll probably keep posting there — most agents will.
+
+But the ones who also establish themselves on a professional platform now? They'll be ahead when the market shifts. And with the oil money flowing and diaspora attention growing, that shift is already starting.
+
+We're not asking you to abandon what works. We're inviting you to be part of building what's next.
+
+Twenty-five founding agent spots. A platform built for Guyana. Your chance to get in early.
+
+---
+
+## Ready to Be a Founding Agent?
+
+Use code **FOUNDERS-AGENT-GY** when you sign up.
+
+**[Sign Up as an Agent →](https://www.portalhomehub.com/register/select-country)** 
+
+Questions? **Text us on WhatsApp** (fastest response): **[+592 762 9797](https://wa.me/5927629797?text=Hi%2C%20I%27m%20interested%20in%20becoming%20a%20Founding%20Agent)**
+
+*(Please text, don't call — our team responds faster to messages)*
+`,
+    tableOfContents: [
+      { id: 'the-problem-with-facebook-real-estate-marketing', title: 'The Problem With Facebook Real Estate Marketing', level: 2 },
+      { id: 'what-serious-buyers-actually-want', title: 'What Serious Buyers Actually Want', level: 2 },
+      { id: 'the-guyana-real-estate-market-is-changing', title: 'The Guyana Real Estate Market Is Changing', level: 2 },
+      { id: 'what-guyana-homehub-gives-you', title: 'What Guyana HomeHub Gives You', level: 2 },
+      { id: 'but-this-platform-is-new', title: '"But This Platform Is New"', level: 2 },
+      { id: 'be-a-founding-agent', title: 'Be a Founding Agent', level: 2 },
+      { id: 'the-new-regulatory-environment', title: 'The New Regulatory Environment', level: 2 },
+      { id: 'what-it-costs', title: 'What It Costs', level: 2 },
+      { id: 'the-bottom-line', title: 'The Bottom Line', level: 2 },
+      { id: 'ready-to-be-a-founding-agent', title: 'Ready to Be a Founding Agent?', level: 2 }
+    ],
+    relatedGuides: [
+      {
+        slug: 'avoid-property-scams',
+        title: 'How to Avoid Property Scams in Guyana',
+        description: 'Protect yourself from fraud and scams when buying property. Red flags, verification steps, and safety tips.'
+      },
+      {
+        slug: 'buying-from-abroad',
+        title: 'The Complete Guide to Buying Property in Guyana from Abroad',
+        description: 'Everything diaspora buyers need to know about purchasing property in Guyana safely and legally from overseas.'
+      }
+    ]
   }
   // Additional guides would be added here
 };
@@ -1734,17 +1942,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
                 </div>
 
                 {/* Share */}
-                <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg">
-                  <h3 className="font-semibold text-gray-800 mb-3">Share This Guide</h3>
-                  <div className="flex gap-2">
-                    <button className="flex-1 bg-blue-600 text-white text-center py-2 px-3 rounded text-sm hover:bg-blue-700 transition-colors">
-                      Facebook
-                    </button>
-                    <button className="flex-1 bg-green-600 text-white text-center py-2 px-3 rounded text-sm hover:bg-green-700 transition-colors">
-                      WhatsApp
-                    </button>
-                  </div>
-                </div>
+                <ShareButtons guide={guide} />
               </div>
             </div>
           </div>
