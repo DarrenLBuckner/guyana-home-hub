@@ -7,6 +7,8 @@ import Footer from "@/components/Footer";
 import { AppProviders } from "@/providers/AppProviders";
 import { CountryThemeProvider } from "@/components/CountryThemeProvider";
 import { getCountryFromHeaders } from "@/lib/country-detection";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { FloatingWhatsAppButton } from "@/components/WhatsAppButton";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -15,12 +17,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
   const description = country === 'JM' 
-    ? 'Your Gateway to Jamaica Real Estate' 
-    : 'Your Gateway to Guyana Real Estate';
+    ? 'Find verified properties, trusted agents, and secure real estate transactions in Jamaica. Safe property buying for locals and diaspora.' 
+    : 'Find verified properties, trusted agents, and secure real estate transactions in Guyana. Safe property buying for locals and diaspora.';
+  
+  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
   
   return {
     title: siteName,
     description: description,
+    keywords: `${countryName} real estate, property for sale ${countryName}, ${countryName} homes, diaspora property investment, verified agents ${countryName}, safe property buying`,
     icons: {
       icon: "/favicon.ico",
     },
@@ -33,12 +38,37 @@ export async function generateMetadata(): Promise<Metadata> {
       index: true,
       follow: true,
       "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
     },
     openGraph: {
       title: siteName,
       description: description,
       type: 'website',
       locale: 'en_US',
+      url: baseUrl,
+      siteName: siteName,
+      images: [
+        {
+          url: `${baseUrl}/images/social-share-default.jpg`,
+          width: 1200,
+          height: 630,
+          alt: `${siteName} - Your Gateway to ${countryName} Real Estate`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: siteName,
+      description: description,
+      images: [`${baseUrl}/images/social-share-default.jpg`],
+      creator: `@${siteName.replace(' ', '').toLowerCase()}`,
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+      other: {
+        "facebook-domain-verification": "f6dqrciz798c8xtuauxdmdquuq1g0y",
+      },
     },
   };
 }
@@ -49,17 +79,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const country = await getCountryFromHeaders();
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
   
   return (
     <html lang="en">
       <body
         className={`${inter.variable} antialiased`}
       >
+        {GA_ID && <GoogleAnalytics GA_TRACKING_ID={GA_ID} />}
         <CountryThemeProvider initialCountry={country}>
           <AppProviders>
             <Navbar />
             {children}
             <Footer />
+            <FloatingWhatsAppButton />
           </AppProviders>
         </CountryThemeProvider>
       </body>

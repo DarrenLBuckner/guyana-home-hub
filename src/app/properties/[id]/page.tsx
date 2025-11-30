@@ -8,6 +8,7 @@ import RequestViewingModal from '@/components/RequestViewingModal'
 import { PrivateListingDisclaimer } from '@/components/PrivateListingDisclaimer'
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
 import { FSBOBadge } from '@/components/FSBOBadge'
+import PropertySchemaClient from '@/components/PropertySchemaClient'
 
 
 interface Property {
@@ -615,6 +616,36 @@ export default function PropertyDetailPage() {
           property={property}
           isOpen={showViewingModal}
           onClose={() => setShowViewingModal(false)}
+        />
+      )}
+
+      {/* Property Schema for Rich Search Results */}
+      {property && (
+        <PropertySchemaClient 
+          property={{
+            id: property.id,
+            title: property.title,
+            description: property.description,
+            price: property.price,
+            currency: 'GYD',
+            propertyType: property.listing_type || 'sale',
+            category: property.property_type,
+            location: property.city,
+            address: property.location || property.city,
+            bedrooms: property.bedrooms,
+            bathrooms: property.bathrooms,
+            area: property.house_size_value,
+            images: property.images,
+            agent: property.agent_profile ? {
+              name: `${property.agent_profile.first_name} ${property.agent_profile.last_name}`,
+              phone: property.agent_profile.phone,
+              company: property.agent_profile.company
+            } : undefined,
+            features: property.features || property.amenities,
+            yearBuilt: property.year_built,
+            listingDate: new Date().toISOString(),
+            listedByType: property.listed_by_type as 'agent' | 'owner' | 'developer'
+          }}
         />
       )}
     </div>

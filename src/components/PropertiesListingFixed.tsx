@@ -289,6 +289,27 @@ function PropertiesListingContent({
         </div>
       </div>
 
+      {/* Guide Banner for Diaspora Buyers */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="text-2xl">📚</div>
+              <div>
+                <p className="text-green-800 font-semibold">New to buying property in Guyana?</p>
+                <p className="text-green-700 text-sm">Learn how to buy safely and avoid scams with our expert guides.</p>
+              </div>
+            </div>
+            <Link
+              href="/guides/buying-from-abroad"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Read Guide
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Clean Filter Bar - Zillow Style */}
         {showFilters && (
