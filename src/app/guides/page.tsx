@@ -42,8 +42,8 @@ const guides = [
   {
     slug: 'investment-guide',
     title: 'Guyana Real Estate Investment Guide for the Diaspora',
-    description: 'Investment strategies, market analysis, and ROI considerations for overseas property investors.',
-    readTime: '12 min read',
+    description: 'Why Guyana real estate is one of the best investment opportunities for diaspora buyers. Oil boom impact, rental income potential, and how to invest from abroad.',
+    readTime: '18 min read',
     category: 'Investment',
     priority: 3,
     comingSoon: false
@@ -51,8 +51,8 @@ const guides = [
   {
     slug: 'buying-locally',
     title: 'Buying Property in Guyana — A Guide for Locals',
-    description: 'Complete guide for Guyanese residents looking to purchase their first home or investment property.',
-    readTime: '8 min read',
+    description: 'A complete guide for Guyanese residents buying property locally. Step-by-step process, mortgage options, government housing programs, and how to verify any property.',
+    readTime: '12 min read',
     category: 'Local Buyers',
     priority: 4,
     comingSoon: false
@@ -60,10 +60,19 @@ const guides = [
   {
     slug: 'property-titles-explained',
     title: 'Understanding Property Titles in Guyana',
-    description: 'Transport vs. Certificate of Title explained. What each document means and why it matters.',
-    readTime: '6 min read',
+    description: 'Learn the difference between Transport and Certificate of Title in Guyana. How to verify property ownership at the Deeds Registry and Land Registry.',
+    readTime: '8 min read',
     category: 'Legal',
     priority: 5,
+    comingSoon: false
+  },
+  {
+    slug: 'diaspora-buyer-mistakes',
+    title: 'Top 5 Mistakes Diaspora Buyers Make When Purchasing Property in Guyana',
+    description: 'Avoid these common mistakes when buying property in Guyana from abroad. Learn from others\' errors and protect your investment.',
+    readTime: '7 min read',
+    category: 'Diaspora',
+    priority: 6,
     comingSoon: false
   }
 ];
