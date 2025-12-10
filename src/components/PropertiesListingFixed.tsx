@@ -60,6 +60,25 @@ interface PropertiesListingProps {
   showFilters?: boolean
 }
 
+// Property type options based on category
+const RESIDENTIAL_PROPERTY_TYPES = [
+  { value: 'house', label: 'House' },
+  { value: 'apartment', label: 'Apartment' },
+  { value: 'condo', label: 'Condo' },
+  { value: 'townhouse', label: 'Townhouse' },
+  { value: 'land', label: 'Land' },
+]
+
+const COMMERCIAL_PROPERTY_TYPES = [
+  { value: 'office', label: 'Office' },
+  { value: 'retail', label: 'Retail' },
+  { value: 'warehouse', label: 'Warehouse' },
+  { value: 'industrial', label: 'Industrial' },
+  { value: 'mixed use', label: 'Mixed Use' },
+  { value: 'commercial land', label: 'Commercial Land' },
+  { value: 'agricultural land', label: 'Agricultural Land' },
+]
+
 function PropertiesListingContent({ 
   title, 
   filterType = 'all',
@@ -369,10 +388,9 @@ function PropertiesListingContent({
                   className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
                 >
                   <option value="">Property Type</option>
-                  <option value="house">House</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="land">Land</option>
-                  <option value="commercial">Commercial</option>
+                  {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
                 </select>
               </div>
 
@@ -691,10 +709,9 @@ function PropertiesListingContent({
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   >
                     <option value="">All Types</option>
-                    <option value="house">House</option>
-                    <option value="apartment">Apartment</option>
-                    <option value="land">Land</option>
-                    <option value="commercial">Commercial</option>
+                    {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
+                      <option key={type.value} value={type.value}>{type.label}</option>
+                    ))}
                   </select>
                 </div>
                 
