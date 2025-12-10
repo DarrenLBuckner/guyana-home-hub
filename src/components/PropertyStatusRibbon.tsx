@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 interface PropertyStatusRibbonProps {
   status: string
-  listingType?: 'sale' | 'rent'
+  listingType?: 'sale' | 'rent' | 'lease' | 'short_term_rent'
   className?: string
 }
 
@@ -38,16 +38,30 @@ export function PropertyStatusRibbon({ status, listingType, className }: Propert
     // Active/Available — show listing type
     if (status === 'active' || status === 'available' || status === 'approved') {
       if (listingType === 'rent') {
-        return { 
-          text: 'FOR RENT', 
+        return {
+          text: 'FOR RENT',
           color: 'bg-blue-500 text-white',
-          priority: 3 
+          priority: 3
         }
       }
-      return { 
-        text: 'FOR SALE', 
+      if (listingType === 'lease') {
+        return {
+          text: 'FOR LEASE',
+          color: 'bg-purple-600 text-white',
+          priority: 3
+        }
+      }
+      if (listingType === 'short_term_rent') {
+        return {
+          text: 'SHORT-TERM',
+          color: 'bg-teal-500 text-white',
+          priority: 3
+        }
+      }
+      return {
+        text: 'FOR SALE',
         color: 'bg-green-600 text-white',
-        priority: 4 
+        priority: 4
       }
     }
     
@@ -91,22 +105,34 @@ export function PropertyStatusRibbonDiagonal({ status, listingType, className }:
     
     if (status === 'active' || status === 'available' || status === 'approved') {
       if (listingType === 'rent') {
-        return { 
-          text: 'FOR RENT', 
+        return {
+          text: 'FOR RENT',
           color: 'bg-blue-500 text-white',
         }
       }
-      return { 
-        text: 'FOR SALE', 
+      if (listingType === 'lease') {
+        return {
+          text: 'FOR LEASE',
+          color: 'bg-purple-600 text-white',
+        }
+      }
+      if (listingType === 'short_term_rent') {
+        return {
+          text: 'SHORT-TERM',
+          color: 'bg-teal-500 text-white',
+        }
+      }
+      return {
+        text: 'FOR SALE',
         color: 'bg-green-600 text-white',
       }
     }
-    
+
     return null
   }
 
   const config = getRibbonConfig()
-  
+
   if (!config) return null
 
   return (

@@ -478,9 +478,9 @@ function PropertiesListingContent({
                     <Home className="h-12 w-12 text-gray-400" />
                   </div>
                   {/* Property Status Ribbon - Replaces hardcoded status */}
-                  <PropertyStatusRibbon 
-                    status={property.status} 
-                    listingType={property.listing_type as 'sale' | 'rent'}
+                  <PropertyStatusRibbon
+                    status={property.status}
+                    listingType={property.listing_type as 'sale' | 'rent' | 'lease' | 'short_term_rent'}
                   />
                   {/* Improved Engagement Buttons - Better UX & Spacing */}
                   <div className="absolute top-2 right-2 flex flex-col gap-4 items-end">

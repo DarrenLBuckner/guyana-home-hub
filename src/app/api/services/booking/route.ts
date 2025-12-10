@@ -69,8 +69,9 @@ export async function POST(request: NextRequest) {
     };
 
     // Submit to Portal Home Hub API
+    const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
     const portalResponse = await fetch(
-      `${process.env.PORTAL_API_URL}/api/public/services/inquiries`,
+      `${portalApiUrl}/api/public/services/inquiries`,
       {
         method: 'POST',
         headers: {

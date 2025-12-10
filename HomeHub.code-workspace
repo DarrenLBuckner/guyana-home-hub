@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Portal-home-hub"
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "node_modules\\typescript\\lib"
+	}
+}

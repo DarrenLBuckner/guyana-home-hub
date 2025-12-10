@@ -14,11 +14,14 @@ interface BookingPageProps {
   };
 }
 
+// Portal API base URL with fallback
+const PORTAL_API_URL = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
+
 // Fetch service data from Portal Home Hub
 async function getService(slug: string) {
   try {
     const response = await fetch(
-      `${process.env.PORTAL_API_URL}/api/public/services/GY?slug=${slug}`,
+      `${PORTAL_API_URL}/api/public/services/GY?slug=${slug}`,
       {
         next: { revalidate: 3600 }, // Revalidate every hour
       }
@@ -29,7 +32,7 @@ async function getService(slug: string) {
     }
 
     const data = await response.json();
-    
+
     // Find the specific service by slug
     const service = [...data.services, ...data.packages.flatMap((p: any) => p.services)]
       .find((s: any) => s.slug === slug);
@@ -44,9 +47,9 @@ async function getService(slug: string) {
 export async function generateStaticParams() {
   try {
     const response = await fetch(
-      `${process.env.PORTAL_API_URL}/api/public/services/GY`
+      `${PORTAL_API_URL}/api/public/services/GY`
     );
-    
+
     if (!response.ok) {
       return [];
     }
@@ -54,7 +57,7 @@ export async function generateStaticParams() {
     const data = await response.json();
     const slugs = [
       ...data.services.map((service: any) => ({ slug: service.slug })),
-      ...data.packages.flatMap((pkg: any) => 
+      ...data.packages.flatMap((pkg: any) =>
         pkg.services.map((service: any) => ({ slug: service.slug }))
       )
     ];

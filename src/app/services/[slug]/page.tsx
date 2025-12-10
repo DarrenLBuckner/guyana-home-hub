@@ -18,7 +18,7 @@ interface ServiceDetailPageProps {
 export async function generateMetadata({ params }: ServiceDetailPageProps): Promise<Metadata> {
   try {
     // Get Portal Home Hub base URL from environment
-    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portal-home-p09uk6ou7-darren-lb-uckner-s-projects.vercel.app';
+    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
     
     const response = await fetch(`${portalBaseUrl}/api/public/services/GY`, {
       next: { revalidate: 3600 } // Revalidate every hour
@@ -63,16 +63,16 @@ export async function generateMetadata({ params }: ServiceDetailPageProps): Prom
 // Generate static params for build optimization
 export async function generateStaticParams() {
   try {
-    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portal-home-p09uk6ou7-darren-lb-uckner-s-projects.vercel.app';
-    
+    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
+
     const response = await fetch(`${portalBaseUrl}/api/public/services/GY`);
-    
+
     if (!response.ok) {
       return [];
     }
-    
+
     const data = await response.json();
-    
+
     return data.services.map((service: any) => ({
       slug: service.slug,
     }));
@@ -83,7 +83,7 @@ export async function generateStaticParams() {
 
 export default async function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   try {
-    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portal-home-p09uk6ou7-darren-lb-uckner-s-projects.vercel.app';
+    const portalBaseUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com';
     
     const response = await fetch(`${portalBaseUrl}/api/public/services/GY`, {
       next: { revalidate: 3600 } // Revalidate every hour

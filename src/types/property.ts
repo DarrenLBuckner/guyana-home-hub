@@ -53,7 +53,7 @@ export interface PriceHistory {
 export interface Property extends BaseProperty {
   // Basic Info
   property_type: 'house' | 'apartment' | 'commercial' | 'land' | 'condo'
-  listing_type: 'sale' | 'rent'
+  listing_type: 'sale' | 'rent' | 'lease' | 'short_term_rent'
   status: 'draft' | 'pending' | 'active' | 'available' | 'approved' | 'rejected' | 'expired' | 'off_market' | 'sold' | 'rented' | 'suspended' | 'under_contract'
   
   // Physical Characteristics
