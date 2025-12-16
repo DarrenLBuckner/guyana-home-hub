@@ -6,19 +6,14 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { 
-  Heart, 
-  Share2, 
-  MapPin, 
-  Bed, 
-  Bath, 
-  Square, 
+import {
+  Bed,
+  Bath,
+  Square,
   Car,
   Eye,
   Phone,
   Mail,
-  Calendar,
-  TrendingUp,
   Home as HomeIcon,
   Building2,
   Warehouse,
@@ -30,30 +25,26 @@ import { cn } from '@/lib/utils'
 import { CurrencyFormatter, convertGydToUsd } from '@/lib/currency'
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
 import { FSBOBadge } from '@/components/FSBOBadge'
+import { WatchButton } from '@/components/WatchButton'
 
 interface PropertyCardProps {
   property: Property
   variant?: 'grid' | 'list' | 'featured'
   showStats?: boolean
   showContactButtons?: boolean
-  favoriteAction?: (propertyId: string) => void
-  shareAction?: (property: Property) => void
   contactAction?: (property: Property) => void
   className?: string
 }
 
-export function PropertyCard({ 
-  property, 
+export function PropertyCard({
+  property,
   variant = 'grid',
   showStats = true,
   showContactButtons = false,
-  favoriteAction,
-  shareAction,
   contactAction,
-  className 
+  className
 }: PropertyCardProps) {
   const [imageLoading, setImageLoading] = useState(true)
-  const [isFavorited, setIsFavorited] = useState(false)
 
   const formatPrice = (price: number) => {
     return CurrencyFormatter.property(price)
@@ -77,17 +68,24 @@ export function PropertyCard({
   }
 
 
-  const handleFavorite = (e: React.MouseEvent) => {
+  const handleWhatsAppShare = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setIsFavorited(!isFavorited)
-    favoriteAction?.(property.id)
-  }
 
-  const handleShare = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    shareAction?.(property)
+    const url = `https://www.guyanahomehub.com/properties/${property.id}`
+    const priceFormatted = property.price?.toLocaleString() || 'Contact for price'
+    const isRental = property.listing_type === 'rent'
+    const priceDisplay = isRental ? `G$${priceFormatted}/month` : `G$${priceFormatted}`
+    const listingType = isRental ? 'For Rent' : 'For Sale'
+    const location = property.location || ''
+
+    const whatsappText = `Check out this property on Guyana Home Hub!\n\n${property.title}\n${listingType} • ${priceDisplay}${location ? ` • ${location}` : ''}\n\n${url}`
+
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(whatsappText)}`,
+      '_blank',
+      'noopener,noreferrer'
+    )
   }
 
   const handleContact = (e: React.MouseEvent) => {
@@ -198,29 +196,37 @@ export function PropertyCard({
               {/* Image Count */}
               {property.images && property.images.length > 1 && (
                 <div className="absolute bottom-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
-                  <Eye className="h-3 w-3 mr-1" />
-                  {property.images.length}
+                  {property.images.length} photos
                 </div>
               )}
 
-              {/* Actions */}
+              {/* View Count Badge - Prominent */}
+              {property.metadata?.views && (
+                <div className="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center shadow-sm">
+                  <Eye className="h-3 w-3 mr-1" />
+                  {property.metadata.views.toLocaleString()}
+                </div>
+              )}
+
+              {/* Actions - Mobile optimized: Watch + WhatsApp */}
               <div className="absolute top-3 right-3 flex space-x-2">
+                <WatchButton propertyId={property.id} variant="icon" />
                 <button
-                  onClick={handleFavorite}
-                  className={cn(
-                    "p-2 rounded-full transition-colors",
-                    isFavorited 
-                      ? "bg-red-500 text-white" 
-                      : "bg-white/90 text-gray-700 hover:bg-red-50 hover:text-red-500"
-                  )}
+                  onClick={handleWhatsAppShare}
+                  className="relative p-2 rounded-full bg-white/90 text-gray-700 hover:bg-gray-100 transition-colors"
+                  aria-label="Share on WhatsApp"
+                  title="Share on WhatsApp"
                 >
-                  <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} />
-                </button>
-                <button
-                  onClick={handleShare}
-                  className="p-2 rounded-full bg-white/90 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  <Share2 className="h-4 w-4" />
+                  {/* Share icon */}
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  {/* Small WhatsApp badge */}
+                  <span className="absolute -bottom-0.5 -right-0.5 bg-green-500 rounded-full p-0.5">
+                    <svg className="h-2 w-2 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                  </span>
                 </button>
               </div>
             </div>
@@ -247,11 +253,6 @@ export function PropertyCard({
                   <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
                 </div>
                 <PropertyTypeIcon className="h-6 w-6 text-gray-400" />
-              </div>
-
-              <div className="flex items-center text-gray-600 mb-4">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span className="text-sm">{property.location}</span>
               </div>
 
               {/* Property Features */}
@@ -310,20 +311,6 @@ export function PropertyCard({
 
               {/* Contact Buttons */}
               {renderContactButtons("flex space-x-3")}
-
-              {/* Stats */}
-              {showStats && property.metadata.views && (
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex items-center text-xs text-gray-500">
-                    <Eye className="h-3 w-3 mr-1" />
-                    <span>{property.metadata.views} views</span>
-                  </div>
-                  <div className="flex items-center text-xs text-gray-500">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    <span>Listed {new Date(property.created_at).toLocaleDateString()}</span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -371,29 +358,37 @@ export function PropertyCard({
           {/* Image Count */}
           {property.images && property.images.length > 1 && (
             <div className="absolute bottom-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
-              <Eye className="h-3 w-3 mr-1" />
-              {property.images.length}
+              {property.images.length} photos
             </div>
           )}
 
-          {/* Actions */}
+          {/* View Count Badge - Prominent */}
+          {property.metadata?.views && (
+            <div className="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center shadow-sm">
+              <Eye className="h-3 w-3 mr-1" />
+              {property.metadata.views.toLocaleString()}
+            </div>
+          )}
+
+          {/* Actions - Mobile optimized: Watch + WhatsApp Share */}
           <div className="absolute top-3 right-3 flex space-x-2">
+            <WatchButton propertyId={property.id} variant="icon" />
             <button
-              onClick={handleFavorite}
-              className={cn(
-                "p-2 rounded-full transition-colors",
-                isFavorited 
-                  ? "bg-red-500 text-white" 
-                  : "bg-white/90 text-gray-700 hover:bg-red-50 hover:text-red-500"
-              )}
+              onClick={handleWhatsAppShare}
+              className="relative p-2 rounded-full bg-white/90 text-gray-700 hover:bg-gray-100 transition-colors"
+              aria-label="Share on WhatsApp"
+              title="Share on WhatsApp"
             >
-              <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} />
-            </button>
-            <button
-              onClick={handleShare}
-              className="p-2 rounded-full bg-white/90 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors"
-            >
-              <Share2 className="h-4 w-4" />
+              {/* Share icon */}
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+              {/* Small WhatsApp badge */}
+              <span className="absolute -bottom-0.5 -right-0.5 bg-green-500 rounded-full p-0.5">
+                <svg className="h-2 w-2 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </span>
             </button>
           </div>
 
@@ -448,11 +443,6 @@ export function PropertyCard({
             <PropertyTypeIcon className="h-5 w-5 text-gray-400 ml-2 flex-shrink-0" />
           </div>
 
-          <div className="flex items-center text-gray-600 mb-3">
-            <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-            <span className="text-sm line-clamp-1">{property.location}</span>
-          </div>
-
           {/* Property Features */}
           <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
             {property.features.bedrooms && (
@@ -505,22 +495,6 @@ export function PropertyCard({
 
           {/* Contact Buttons */}
           {renderContactButtons("flex space-x-2 mb-4")}
-
-          {/* Stats */}
-          {showStats && (
-            <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-gray-200">
-              {property.metadata.views && (
-                <div className="flex items-center">
-                  <Eye className="h-3 w-3 mr-1" />
-                  <span>{property.metadata.views} views</span>
-                </div>
-              )}
-              <div className="flex items-center">
-                <Calendar className="h-3 w-3 mr-1" />
-                <span>Listed {new Date(property.created_at).toLocaleDateString()}</span>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </Link>
