@@ -76,6 +76,7 @@ export interface Property extends BaseProperty {
   
   // Analytics
   metadata: PropertyMetadata
+  views?: number // Direct views count from database (used by API responses)
   
   // SEO
   seo: {

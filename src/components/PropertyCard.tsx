@@ -201,10 +201,10 @@ export function PropertyCard({
               )}
 
               {/* View Count Badge - Prominent */}
-              {property.metadata?.views && (
+              {property.views !== undefined && property.views > 0 && (
                 <div className="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center shadow-sm">
                   <Eye className="h-3 w-3 mr-1" />
-                  {property.metadata.views.toLocaleString()}
+                  {property.views.toLocaleString()}
                 </div>
               )}
 
@@ -363,10 +363,10 @@ export function PropertyCard({
           )}
 
           {/* View Count Badge - Prominent */}
-          {property.metadata?.views && (
+          {property.views !== undefined && property.views > 0 && (
             <div className="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center shadow-sm">
               <Eye className="h-3 w-3 mr-1" />
-              {property.metadata.views.toLocaleString()}
+              {property.views.toLocaleString()}
             </div>
           )}
 
