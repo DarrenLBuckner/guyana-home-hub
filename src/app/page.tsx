@@ -105,8 +105,8 @@ export default function HomePage() {
                   <p className="text-sm sm:text-base md:text-lg mb-4 opacity-90">
                     Reach thousands of property seekers across Guyana
                   </p>
-                  <a 
-                    href="/contact" 
+                  <a
+                    href="/advertise"
                     className="inline-block bg-white text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
                   >
                     Get Started Today
