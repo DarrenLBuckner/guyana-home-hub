@@ -11,7 +11,8 @@
       "Bash(grep:*)",
       "Bash(npx tsx:*)",
       "Bash(cat:*)",
-      "Bash(cmd.exe /c \"del C:\\Dev\\guyana-home-hub\\src\\components\\ui\\Toast.tsx\")"
+      "Bash(cmd.exe /c \"del C:\\Dev\\guyana-home-hub\\src\\components\\ui\\Toast.tsx\")",
+      "Bash(npm update:*)"
     ],
     "deny": [],
     "ask": []
