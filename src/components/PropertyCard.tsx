@@ -56,6 +56,13 @@ export function PropertyCard({
     return { gydPrice, usdPrice }
   }
 
+  // Helper to handle both image formats: string[] or { url: string }[]
+  const getImageUrl = (images: any[] | undefined, index: number = 0): string => {
+    const image = images?.[index]
+    if (!image) return '/images/placeholder-property.jpg'
+    return typeof image === 'string' ? image : image.url || '/images/placeholder-property.jpg'
+  }
+
   const getPropertyTypeIcon = (type: Property['property_type']) => {
     switch (type) {
       case 'apartment': return Building2
@@ -177,7 +184,7 @@ export function PropertyCard({
             {/* Image Section */}
             <div className="relative w-64 h-48 flex-shrink-0">
               <Image
-                src={property.images?.[0]?.url || '/images/placeholder-property.jpg'}
+                src={getImageUrl(property.images, 0)}
                 alt={property.title}
                 fill
                 className={cn(
@@ -332,7 +339,7 @@ export function PropertyCard({
           variant === 'featured' ? "lg:w-1/2 h-64 lg:h-80" : "h-48"
         )}>
           <Image
-            src={property.images?.[0]?.url || '/images/placeholder-property.jpg'}
+            src={getImageUrl(property.images, 0)}
             alt={property.title}
             fill
             className={cn(
