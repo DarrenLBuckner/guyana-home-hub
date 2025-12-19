@@ -2,6 +2,9 @@
 import { redirect } from 'next/navigation'
 import { getUserWithRole } from '@/lib/supabaseServer'
 
+// Force dynamic rendering - this page uses cookies for auth
+export const dynamic = 'force-dynamic'
+
 export default async function Dashboard() {
   const { user, role } = await getUserWithRole()
 
