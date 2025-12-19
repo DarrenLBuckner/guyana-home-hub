@@ -1,441 +1,314 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
-const industries = [
-  // Property Listing Services - Revenue Generators (Top Priority)
-  {
-    title: 'For Sale by Owner (FSBO)',
-    subtitle: 'List your home without an agent',
-    image: '/images/list-my-home.jpg',
-    href: 'https://portalhomehub.com/register/select-country?type=fsbo',
-    badge: 'Most Popular',
-    description: 'Sell your property directly and save on commission fees',
-    isPrimary: true,
-    external: true
-  },
-  {
-    title: 'List My Rental Property',
-    subtitle: 'For landlords and property owners',
-    image: '/images/list-my-rental.jpg',
-    href: 'https://portalhomehub.com/register/select-country?type=landlord',
-    badge: 'Flat Fee',
-    description: 'Advertise your rental property to qualified tenants',
-    isPrimary: true,
-    external: true
-  },
-  {
-    title: 'Join Our Premier Agent Network',
-    subtitle: 'Exclusive agent opportunities',
-    image: '/images/agent-list-property.jpg',
-    href: 'https://portalhomehub.com/register/select-country?type=agent',
-    badge: 'Up to 2 Months Free',
-    description: 'Professional listing tools and lead generation',
-    isPrimary: true,
-    external: true
-  },
-  
-  // Professional Services
-  {
-    title: 'I am an agent or broker',
-    subtitle: 'Real estate professional services',
-    image: '/images/agent-broker.jpg',
-    href: '/coming-soon/agent-broker',
-    description: 'Connect with buyers and sellers across Guyana'
-  },
-  {
-    title: 'I am a property manager',
-    subtitle: 'Property management services',
-    image: '/images/property-manager.jpg',
-    href: '/coming-soon/property-manager',
-    description: 'Manage multiple properties and tenant relationships'
-  },
-  {
-    title: 'I am a landlord',
-    subtitle: 'Property rental services',
-    image: '/images/landlord.jpg',
-    href: '/coming-soon/landlord',
-    description: 'Find reliable tenants for your properties'
-  },
-  {
-    title: 'I am a lender or loan officer',
-    subtitle: 'Financial services',
-    image: '/images/loan-officer.jpg',
-    href: '/coming-soon/lender',
-    description: 'Offer mortgage and financing solutions'
-  },
-  {
-    title: 'I am a builder',
-    subtitle: 'Construction and development',
-    image: '/images/builder.jpg',
-    href: '/coming-soon/builder',
-    description: 'Showcase new developments and projects'
-  },
-  {
-    title: 'I am a local business',
-    subtitle: 'Get listed for FREE',
-    image: '/images/local-business.jpg',
-    href: '/free-listing',
-    badge: '100% FREE',
-    description: 'Start with a FREE listing, upgrade for premium visibility',
-    isPrimary: false
-  },
-];
-
-// Paid Advertising Options
-const advertisingOptions = [
-  {
-    title: 'Banner Advertising',
-    subtitle: 'Premium display ads',
-    image: '/images/local-business.jpg', // Using existing image
-    href: '/contact?service=banner-advertising',
-    price: 'From G$5,000/month',
-    features: ['Prime website locations', 'Desktop & mobile optimized', 'Detailed analytics'],
-    badge: 'Most Visible',
-    isPremium: true
-  },
-  {
-    title: 'Featured Listings',
-    subtitle: 'Promote specific properties',
-    image: '/images/list-my-home.jpg', // Using existing image
-    href: '/contact?service=featured-listings',
-    price: 'G$2,500 per property',
-    features: ['Top of search results', '30-day promotion', 'Enhanced property details'],
-    badge: 'High Conversion',
-    isPremium: true
-  },
-  {
-    title: 'Search Promotions',
-    subtitle: 'Target specific searches',
-    image: '/images/agent-broker.jpg', // Using existing image
-    href: '/contact?service=search-promotions',
-    price: 'G$25 per click',
-    features: ['Targeted by location', 'Property type targeting', 'Pay per click model'],
-    badge: 'Targeted',
-    isPremium: true
-  },
-  {
-    title: 'Newsletter Sponsorship',
-    subtitle: 'Reach subscribers directly',
-    image: '/images/loan-officer.jpg', // Using existing image
-    href: '/contact?service=newsletter-sponsorship',
-    price: 'G$15,000 per issue',
-    features: ['10,000+ subscribers', 'Weekly newsletter', 'Brand recognition'],
-    badge: 'Direct Reach',
-    isPremium: true
-  }
-];
-
 export default function AdvertisePage() {
-  const primaryServices = industries.filter(service => service.isPrimary);
-  const professionalServices = industries.filter(service => !service.isPrimary);
-
   return (
-    <div className="px-4 md:px-16 py-12 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl md:text-4xl font-bold text-center text-gray-900">
-        List Your Property & Grow Your Business
-      </h1>
-      <p className="text-center text-gray-700 mt-4 max-w-3xl mx-auto">
-        Reach Guyanese locals and diaspora — buyers, sellers, and renters — on the only real estate network of its kind in Guyana.
-      </p>
-
-      {/* FREE Business Listing Hero */}
-      <div className="mt-12 mb-16">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-200 shadow-lg">
-          <div className="text-center">
-            <div className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-full text-sm font-bold mb-4">
-              🎉 NEW: 100% FREE Business Listings
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Start with a <span className="text-green-600">FREE</span> Business Directory Listing
-            </h2>
-            <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-              Get discovered by thousands of property seekers! List your business in our directory completely FREE. 
-              Upgrade to premium options when you're ready for maximum visibility.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link 
-                href="/free-listing"
-                className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-colors font-bold text-lg flex items-center space-x-2 shadow-lg"
-              >
-                <span>🆓</span>
-                <span>Get FREE Listing Now</span>
-              </Link>
-              <Link 
-                href="/business-directory"
-                className="text-green-600 hover:text-green-700 font-medium flex items-center space-x-1"
-              >
-                <span>👀 See Directory Examples</span>
-              </Link>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center justify-center text-gray-600">
-                <span className="text-green-500 mr-2">✓</span>
-                No payment required
-              </div>
-              <div className="flex items-center justify-center text-gray-600">
-                <span className="text-green-500 mr-2">✓</span>
-                Live within 24 hours
-              </div>
-              <div className="flex items-center justify-center text-gray-600">
-                <span className="text-green-500 mr-2">✓</span>
-                Upgrade options available
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Paid Advertising Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2 text-blue-700">
-          Advertise Your Business
-        </h2>
-        <p className="text-center text-gray-600 mb-8">
-          Promote your real estate services to thousands of active property seekers
+    <div className="bg-gray-50 min-h-screen">
+      {/* SECTION 1: HERO */}
+      <section className="text-center py-12 px-4 md:px-16">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+          List Your Property. Grow Your Business.
+        </h1>
+        <p className="text-gray-600 mt-4 text-lg">
+          Join Guyana's dedicated real estate platform
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-8">
-          {advertisingOptions.map((option, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-blue-100 hover:border-blue-300 transition-all duration-300 transform hover:scale-105"
-            >
-              {option.badge && (
-                <div className="bg-blue-600 text-white text-center py-2 font-semibold text-sm">
-                  {option.badge}
-                </div>
-              )}
-              <div className="relative w-full h-40">
-                <Image
-                  src={option.image}
-                  alt={option.title}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-bold mb-1 text-gray-900">
-                  {option.title}
-                </h3>
-                <p className="text-blue-600 font-medium mb-2 text-sm">
-                  {option.subtitle}
-                </p>
-                <p className="text-green-600 font-bold mb-3 text-lg">
-                  {option.price}
-                </p>
-                <ul className="text-gray-600 mb-4 text-xs space-y-1">
-                  {option.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-center">
-                      <span className="text-green-500 mr-1">✓</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href={option.href}>
-                  <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition font-medium text-sm">
-                    Get Started
-                  </button>
-                </Link>
-              </div>
-            </div>
-          ))}
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+          <a
+            href="#agents"
+            className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+          >
+            For Agents
+          </a>
+          <a
+            href="#property-owners"
+            className="bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-900 transition"
+          >
+            For Property Owners
+          </a>
+          <a
+            href="#businesses"
+            className="border-2 border-gray-800 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 hover:text-white transition"
+          >
+            For Businesses
+          </a>
         </div>
+      </section>
 
-        {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg p-8 text-white text-center max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold mb-4">Ready to Reach More Customers?</h3>
-          <p className="mb-6 opacity-90">
-            Join successful businesses already advertising on Guyana's premier real estate platform. 
-            Over 50,000 monthly visitors looking for properties and services.
+      {/* SECTION 2: AGENTS - GREEN THEME, MOST PROMINENT */}
+      <section id="agents" className="bg-gradient-to-br from-green-600 to-green-700 py-16 px-4 md:px-16 relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur text-white rounded-full text-sm font-bold mb-6">
+            Only 25 Founding Agent Spots Available
+          </div>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Join Our Premier Agent Network
+          </h2>
+          <p className="text-green-100 text-lg mb-8">
+            Reach local buyers and the Guyanese diaspora worldwide
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact?service=advertising-consultation">
-              <button className="bg-white text-blue-600 px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition">
-                Free Consultation
-              </button>
-            </Link>
-            <Link href="tel:+592-762-9797">
-              <button className="border-2 border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-blue-600 transition">
-                Call +592-762-9797
-              </button>
-            </Link>
-          </div>
-        </div>
 
-        {/* Success Stories */}
-        <div className="mt-16 bg-white rounded-lg p-8 max-w-6xl mx-auto">
-          <h3 className="text-xl font-bold text-center mb-8 text-gray-900">Success Stories</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-blue-600 mb-2">350%</div>
-              <div className="text-gray-600 text-sm">Increase in leads for Premier Realty after banner advertising campaign</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">📋</span>
+              <span>List up to 25 properties</span>
             </div>
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-green-600 mb-2">2.5x</div>
-              <div className="text-gray-600 text-sm">Faster property sales with featured listing promotions</div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">💰</span>
+              <span>20% lifetime discount</span>
             </div>
-            <div className="text-center p-4">
-              <div className="text-3xl font-bold text-purple-600 mb-2">89%</div>
-              <div className="text-gray-600 text-sm">of advertisers renewed their campaigns within 3 months</div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">🎬</span>
+              <span>Video uploads enabled</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">🔝</span>
+              <span>Priority placement in search</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">📊</span>
+              <span>Professional agent dashboard</span>
             </div>
           </div>
-        </div>
 
-        {/* Why Advertise With Us */}
-        <div className="mt-12 max-w-4xl mx-auto">
-          <h3 className="text-xl font-bold text-center mb-8 text-gray-900">Why Choose Guyana Home Hub?</h3>
+          <a
+            href="https://www.portalhomehub.com/register"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-white text-green-700 px-10 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg"
+          >
+            Become a Founding Agent
+          </a>
+
+          <p className="text-green-200 text-sm mt-4">
+            Limited spots remaining &bull; Use code <span className="font-mono font-bold text-white">FOUNDING-AGENT-GY</span>
+          </p>
+        </div>
+      </section>
+
+      {/* SECTION 3: PROPERTY OWNERS */}
+      <section id="property-owners" className="py-16 px-4 md:px-16 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">
+            List Your Property
+          </h2>
+          <p className="text-center text-gray-600 mb-10">
+            Choose the option that fits your needs
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 p-3 rounded-full flex-shrink-0">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+            {/* FSBO Card */}
+            <div className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200 hover:border-green-400 transition relative">
+              <div className="absolute -top-3 left-6 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                Most Popular
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Largest Audience</h4>
-                <p className="text-gray-600 text-sm">Over 50,000 monthly visitors actively searching for properties and real estate services in Guyana.</p>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900 mt-2">Selling Your Home</h3>
+              <p className="text-green-600 font-medium mb-4">For Sale By Owner</p>
+              <p className="text-2xl font-bold text-gray-900 mb-2">
+                From G$20,592
+              </p>
+              <p className="text-gray-600 mb-6">
+                Sell without paying agent commission
+              </p>
+              <a
+                href="https://www.portalhomehub.com/register/fsbo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-green-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+              >
+                List Your Property
+              </a>
             </div>
-            <div className="flex items-start space-x-4">
-              <div className="bg-green-100 p-3 rounded-full flex-shrink-0">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+
+            {/* Landlord Card */}
+            <div className="bg-gray-50 rounded-xl p-8 border-2 border-gray-200 hover:border-blue-400 transition relative">
+              <div className="absolute -top-3 left-6 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                Flat Fee
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Detailed Analytics</h4>
-                <p className="text-gray-600 text-sm">Track impressions, clicks, and conversions with comprehensive reporting dashboard.</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="bg-purple-100 p-3 rounded-full flex-shrink-0">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Cost Effective</h4>
-                <p className="text-gray-600 text-sm">Competitive pricing with flexible payment options and no hidden fees.</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="bg-yellow-100 p-3 rounded-full flex-shrink-0">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Local Expertise</h4>
-                <p className="text-gray-600 text-sm">Deep understanding of the Guyana real estate market and customer behavior.</p>
-              </div>
+              <h3 className="text-xl font-bold text-gray-900 mt-2">Listing a Rental</h3>
+              <p className="text-blue-600 font-medium mb-4">For Landlords</p>
+              <p className="text-2xl font-bold text-gray-900 mb-2">
+                From G$10,400
+              </p>
+              <p className="text-gray-600 mb-6">
+                Find quality tenants fast
+              </p>
+              <a
+                href="https://www.portalhomehub.com/register/landlord"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-blue-600 text-white text-center py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              >
+                List Your Rental
+              </a>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Primary Listing Services */}
-      <div className="mt-12">
-        <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2 text-green-700">
-          List Your Property
-        </h2>
-        <p className="text-center text-gray-600 mb-8">
-          Choose the best option for your property listing needs
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {primaryServices.map((service, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg overflow-hidden shadow-lg border-2 border-green-100 hover:border-green-300 transition-all duration-300 transform hover:scale-105"
-            >
-              {service.badge && (
-                <div className="bg-green-600 text-white text-center py-2 font-semibold text-sm">
-                  {service.badge}
-                </div>
-              )}
-              <div className="relative w-full h-48">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-900">
-                  {service.title}
-                </h3>
-                <p className="text-green-600 font-medium mb-3">
-                  {service.subtitle}
-                </p>
-                <p className="text-gray-600 mb-4 text-sm">
-                  {service.description}
-                </p>
-                {service.external ? (
-                  <a
-                    href={service.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition font-semibold">
-                      Get Started
-                    </button>
-                  </a>
-                ) : (
-                  <Link href={service.href}>
-                    <button className="w-full bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition font-semibold">
-                      Get Started
-                    </button>
-                  </Link>
-                )}
-              </div>
-            </div>
-          ))}
+      {/* SECTION 4: BUSINESSES */}
+      <section id="businesses" className="py-16 px-4 md:px-16 bg-gray-100">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            List Your Business
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Connect with property seekers looking for contractors, builders, and home services
+          </p>
+          <p className="text-gray-500 mb-8">
+            Get discovered by homeowners and investors searching for trusted local professionals.
+          </p>
+          <Link
+            href="/business-directory"
+            className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition"
+          >
+            View Business Directory
+          </Link>
         </div>
-      </div>
+      </section>
 
-      {/* Professional Services */}
-      <div className="mt-16">
-        <h2 className="text-xl md:text-2xl font-semibold text-center mb-6 text-gray-800">
-          Professional Services & Partnerships
-        </h2>
+      {/* SECTION 5: PROFESSIONAL SERVICES */}
+      <section className="py-16 px-4 md:px-16 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900 mb-2">
+            Boost Your Listing
+          </h2>
+          <p className="text-center text-gray-600 mb-10">
+            Professional marketing services to help your property stand out
+          </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {professionalServices.map((service, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="relative w-full h-40">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2 text-gray-900">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 mb-3 text-sm">
-                  {service.description}
-                </p>
-                <Link href={service.href}>
-                  <button className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition">
-                    Learn More
-                  </button>
-                </Link>
-              </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <div className="bg-gray-50 rounded-lg p-6 text-center border border-gray-200">
+              <div className="text-3xl mb-3">📸</div>
+              <h3 className="font-semibold text-gray-900 mb-1">Property Photography</h3>
+              <p className="text-green-600 font-bold">G$20,000</p>
             </div>
-          ))}
+            <div className="bg-gray-50 rounded-lg p-6 text-center border border-gray-200">
+              <div className="text-3xl mb-3">🚁</div>
+              <h3 className="font-semibold text-gray-900 mb-1">Drone Photography</h3>
+              <p className="text-green-600 font-bold">G$25,000</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-6 text-center border border-gray-200">
+              <div className="text-3xl mb-3">🏠</div>
+              <h3 className="font-semibold text-gray-900 mb-1">3D Virtual Tours</h3>
+              <p className="text-green-600 font-bold">G$35,000</p>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-6 text-center border border-gray-200">
+              <div className="text-3xl mb-3">🔐</div>
+              <h3 className="font-semibold text-gray-900 mb-1">Lockbox Installation</h3>
+              <p className="text-green-600 font-bold">G$15,000</p>
+            </div>
+          </div>
+
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center mb-8">
+            <p className="text-gray-900">
+              <span className="font-bold">Complete Package:</span>{' '}
+              <span className="text-green-700 font-bold text-xl">G$75,000</span>{' '}
+              <span className="text-gray-600">(Save G$20,000)</span>
+            </p>
+          </div>
+
+          <div className="text-center">
+            <a
+              href="https://www.portalhomehub.com/services"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+            >
+              View All Services
+            </a>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* SECTION 6: WHY GUYANA HOME HUB */}
+      <section className="py-12 px-4 md:px-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl font-bold text-center text-gray-900 mb-8">
+            Why Choose Us
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div>
+              <div className="w-12 h-8 mx-auto mb-3 rounded overflow-hidden shadow-sm" style={{
+                background: 'linear-gradient(90deg, #009E49 0%, #009E49 100%)',
+                position: 'relative'
+              }}>
+                {/* Guyana flag golden arrow */}
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: 0,
+                  height: 0,
+                  borderTop: '16px solid transparent',
+                  borderBottom: '16px solid transparent',
+                  borderLeft: '24px solid #FFD100'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: '25%',
+                  width: 0,
+                  height: 0,
+                  borderTop: '8px solid transparent',
+                  borderBottom: '8px solid transparent',
+                  borderLeft: '12px solid #CE1126'
+                }} />
+              </div>
+              <p className="font-medium text-gray-800">Local Expertise</p>
+            </div>
+            <div>
+              <div className="text-4xl mb-2">🌍</div>
+              <p className="font-medium text-gray-800">Diaspora Reach</p>
+            </div>
+            <div>
+              <div className="text-4xl mb-2">✨</div>
+              <p className="font-medium text-gray-800">Easy to Use</p>
+            </div>
+            <div>
+              <div className="text-4xl mb-2">📈</div>
+              <p className="font-medium text-gray-800">Growing Network</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 7: CONTACT CTA */}
+      <section className="py-16 px-4 md:px-16 bg-gray-800">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            Questions? Let's Talk
+          </h2>
+          <p className="text-gray-300 mb-8">
+            We're here to help you get started
+          </p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="/contact"
+              className="bg-white text-gray-800 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+            >
+              Contact Us
+            </Link>
+            <a
+              href="tel:+5927629797"
+              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-gray-800 transition"
+            >
+              Call +592-762-9797
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
