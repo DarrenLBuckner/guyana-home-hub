@@ -55,10 +55,13 @@ export async function generateStaticParams() {
     }
 
     const data = await response.json();
+    const services = data?.services || [];
+    const packages = data?.packages || [];
+
     const slugs = [
-      ...data.services.map((service: any) => ({ slug: service.slug })),
-      ...data.packages.flatMap((pkg: any) =>
-        pkg.services.map((service: any) => ({ slug: service.slug }))
+      ...services.map((service: any) => ({ slug: service.slug })),
+      ...packages.flatMap((pkg: any) =>
+        (pkg?.services || []).map((service: any) => ({ slug: service.slug }))
       )
     ];
 

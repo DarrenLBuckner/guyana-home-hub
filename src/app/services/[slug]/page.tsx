@@ -72,8 +72,9 @@ export async function generateStaticParams() {
     }
 
     const data = await response.json();
+    const services = data?.services || [];
 
-    return data.services.map((service: any) => ({
+    return services.map((service: any) => ({
       slug: service.slug,
     }));
   } catch {
