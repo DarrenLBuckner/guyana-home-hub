@@ -122,9 +122,16 @@ export default function FeaturedProperties() {
 
         const data = await response.json()
 
-        // Filter for properties with at least one image, take first 3
+        // Filter for valid properties with required fields and at least one image
         const propertiesWithImages = (data.properties || [])
-          .filter((p: FeaturedProperty) => p.images && p.images.length > 0)
+          .filter((p: FeaturedProperty) =>
+            p &&
+            p.id &&
+            p.title &&
+            p.price !== undefined &&
+            p.images &&
+            p.images.length > 0
+          )
           .slice(0, 3)
 
         setProperties(propertiesWithImages)
@@ -155,17 +162,31 @@ export default function FeaturedProperties() {
     return <StaticFallbackCards country={country} />
   }
 
-  // Render live property cards
+  // Render live property cards with defensive defaults
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {properties.map((property) => (
-        <PropertyCard
-          key={property.id}
-          property={property as any}
-          variant="grid"
-          showStats={false}
-        />
-      ))}
+      {properties.map((property) => {
+        if (!property) return null
+
+        // Normalize property with defensive defaults
+        const normalizedProperty = {
+          ...property,
+          bedrooms: property.bedrooms ?? 0,
+          bathrooms: property.bathrooms ?? 0,
+          description: property.description || '',
+          location: property.location || 'Location not specified',
+          features: property.features || {},
+        }
+
+        return (
+          <PropertyCard
+            key={property.id}
+            property={normalizedProperty as any}
+            variant="grid"
+            showStats={false}
+          />
+        )
+      })}
     </div>
   )
 }
