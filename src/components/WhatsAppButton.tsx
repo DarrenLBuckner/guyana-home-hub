@@ -102,7 +102,8 @@ export default function WhatsAppButton({
 
     switch (variant) {
       case 'floating':
-        return `${baseStyles} ${sizeStyles[size]} fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105`
+        // Hidden on mobile/tablet to avoid overlapping with CTAs, visible on md+ screens
+        return `${baseStyles} ${sizeStyles[size]} hidden md:inline-flex fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105`
       
       case 'cta':
         return `${baseStyles} ${sizeStyles[size]} bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white rounded-lg`
