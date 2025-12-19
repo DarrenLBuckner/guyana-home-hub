@@ -86,11 +86,11 @@ export default function Navbar() {
           <Link href="/properties/commercial" className="hover:text-green-600">
             Commercial
           </Link>
-          <Link href="/guides" className="hover:text-green-600">
-            Guides
-          </Link>
           <Link href="/business-directory" className="hover:text-green-600">
             Business Directory
+          </Link>
+          <Link href="/guides" className="hover:text-green-600">
+            Guides
           </Link>
           <Link href="/contact" className="hover:text-green-600">
             Contact
@@ -178,11 +178,11 @@ export default function Navbar() {
               🏢 Commercial Properties
             </Link>
             <Link
-              href="/guides"
-              className="block text-green-600 hover:text-green-700 text-lg font-bold py-3 px-4"
+              href="/business-directory"
+              className="block text-blue-600 hover:text-blue-700 text-lg font-bold py-3 px-4"
               onClick={closeMenu}
             >
-              📚 Property Guides
+              🏢 Business Directory
             </Link>
           </div>
           
@@ -202,14 +202,14 @@ export default function Navbar() {
               📝 List Your Property Here
               <div className="text-sm font-normal opacity-90 mt-1">Sell or Rent Your Property</div>
             </Link>
-            
+
             <Link
-              href="/business-directory"
+              href="/guides"
               className="block text-gray-700 hover:text-green-600 py-2 px-4"
               onClick={closeMenu}
             >
-              🏢 Business Directory
-              <div className="text-sm text-gray-500">Find Local Businesses</div>
+              📚 Property Guides
+              <div className="text-sm text-gray-500">Tips for Buying & Renting</div>
             </Link>
           </div>
           
