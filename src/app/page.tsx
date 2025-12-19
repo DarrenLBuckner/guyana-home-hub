@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
+import FeaturedProperties from "../components/FeaturedProperties";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 import AdDisplay from "@/components/ads/AdDisplay";
 import { useFragmentFix } from "@/hooks/useFragmentFix";
@@ -123,67 +124,10 @@ export default function HomePage() {
         {!showBrowseCards && !showListCards && (
           <div className="w-full max-w-6xl space-y-16">
             
-            {/* Featured Properties Showcase */}
+            {/* Featured Properties Showcase - Live from database */}
             <section className="text-center">
               <h2 className="text-3xl font-bold text-gray-800 mb-8">Discover Beautiful Properties Across {countryName}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <img 
-                    src="/images/hero-house-desktop.jpg" 
-                    alt="Georgetown Villa"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">
-                      {country === 'JM' ? 'Kingston Properties' : 'Georgetown Luxury Homes'}
-                    </h3>
-                    <p className="text-gray-600">
-                      {country === 'JM' 
-                        ? 'Capital city homes and apartments for locals'
-                        : 'Prime locations in the capital city'
-                      }
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <img 
-                    src="/images/villa-beachfront.jpg" 
-                    alt="Beachfront Property"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">
-                      {country === 'JM' ? 'Family Homes' : 'Coastal Properties'}
-                    </h3>
-                    <p className="text-gray-600">
-                      {country === 'JM' 
-                        ? 'Quality homes for Jamaican families'
-                        : 'Stunning beachfront and waterfront homes'
-                      }
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <img 
-                    src="/images/land-berbice.jpg" 
-                    alt="Development Land"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-800">
-                      {country === 'JM' ? 'Affordable Housing' : 'Investment Opportunities'}
-                    </h3>
-                    <p className="text-gray-600">
-                      {country === 'JM'
-                        ? 'Budget-friendly options for first-time buyers'
-                        : 'Prime land for development projects'
-                      }
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <FeaturedProperties />
             </section>
 
             {/* Why Choose Us Section */}
