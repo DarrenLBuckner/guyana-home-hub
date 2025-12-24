@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
+import DemandCaptureForm from '@/components/DemandCaptureForm';
 
 /**
  * Business Directory Page
@@ -34,6 +36,13 @@ interface DirectoryCategory {
 }
 
 const directoryCategories: DirectoryCategory[] = [
+  {
+    id: 'real-estate-agents',
+    name: 'Real Estate Agents',
+    icon: '🏠',
+    description: 'Licensed real estate agents and property brokers',
+    businessCount: 0
+  },
   {
     id: 'renovations',
     name: 'Renovations & Repairs',
@@ -176,21 +185,36 @@ export default function BusinessDirectoryPage() {
       <div className="bg-gradient-to-br from-blue-600 to-green-600 py-16 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-4xl font-bold sm:text-5xl lg:text-6xl"
             >
-              Guyana Business Directory
+              Find Trusted Professionals in Guyana
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="mt-6 text-xl text-blue-100 sm:text-2xl"
             >
-              Your complete guide to real estate professionals and services in Guyana
+              Connect with verified contractors, lawyers, and service providers — whether you're local or abroad.
             </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-8"
+            >
+              <p className="text-blue-100 mb-2">Own a business?</p>
+              <Link
+                href="/business-directory/list-your-business"
+                className="inline-flex items-center gap-2 bg-white text-green-700 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors shadow-lg"
+              >
+                List Your Business - Free
+                <span>&rarr;</span>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -402,25 +426,41 @@ export default function BusinessDirectoryPage() {
         {!loading && filteredBusinesses.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🏗️</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">Coming Soon!</h3>
-            <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              We're building our comprehensive business directory. 
-              {selectedCategory !== 'all' 
-                ? ` Check back soon for businesses in ${directoryCategories.find(c => c.id === selectedCategory)?.name}.`
-                : ' Check back soon for local business listings.'
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              {selectedCategory !== 'all'
+                ? `No ${directoryCategories.find(c => c.id === selectedCategory)?.name} businesses listed yet`
+                : 'No businesses listed yet'
               }
+            </h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              Be one of the first! Property buyers and diaspora are actively searching.
             </p>
-            <div className="bg-blue-50 rounded-lg p-6 max-w-lg mx-auto">
-              <h4 className="font-semibold text-blue-900 mb-2">Want to be listed?</h4>
-              <p className="text-blue-700 text-sm mb-4">
-                Join our business directory and reach thousands of property owners and buyers.
-              </p>
-              <a 
-                href="/advertise" 
-                className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            <div className="mb-12">
+              <Link
+                href="/business-directory/list-your-business"
+                className="inline-flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md"
               >
-                List Your Business
-              </a>
+                List Your Business - Free
+                <span>&rarr;</span>
+              </Link>
+            </div>
+
+            <div className="border-t border-gray-200 pt-8 max-w-xl mx-auto">
+              <h4 className="font-semibold text-gray-900 mb-2">
+                Looking for a {selectedCategory !== 'all'
+                  ? directoryCategories.find(c => c.id === selectedCategory)?.name
+                  : 'service provider'}?
+              </h4>
+              <p className="text-gray-600 mb-4">
+                We'll notify you when businesses join.
+              </p>
+              <DemandCaptureForm
+                preselectedCategory={
+                  selectedCategory !== 'all'
+                    ? directoryCategories.find(c => c.id === selectedCategory)?.name
+                    : undefined
+                }
+              />
             </div>
           </div>
         )}

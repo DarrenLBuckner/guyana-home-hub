@@ -168,10 +168,10 @@ export default function AdvertisePage() {
             Get discovered by homeowners and investors searching for trusted local professionals.
           </p>
           <Link
-            href="/business-directory"
+            href="/business-directory/list-your-business"
             className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-900 transition"
           >
-            View Business Directory
+            List Your Business - Free
           </Link>
         </div>
       </section>
