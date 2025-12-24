@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -12,6 +13,10 @@ import { FloatingWhatsAppButton } from "@/components/WhatsAppButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+export const viewport: Viewport = {
+  themeColor: "#059669",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const country = await getCountryFromHeaders();
@@ -29,6 +34,13 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: `${countryName} real estate, property for sale ${countryName}, ${countryName} homes, diaspora property investment, verified agents ${countryName}, safe property buying`,
     icons: {
       icon: "/favicon.ico",
+      apple: "/icons/icon-192x192.png",
+    },
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "GY HomeHub",
     },
     other: {
       "facebook-domain-verification": "f6dqrciz798c8xtuauxdmdquuq1g0y",
@@ -87,6 +99,15 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} antialiased`}
       >
+        <Script id="service-worker-registration" strategy="afterInteractive">
+          {`
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+              });
+            }
+          `}
+        </Script>
         {GA_ID && <GoogleAnalytics GA_TRACKING_ID={GA_ID} />}
         <CountryThemeProvider initialCountry={country}>
           <AppProviders>

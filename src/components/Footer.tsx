@@ -25,8 +25,8 @@ export default function Footer() {
             </p>
             <p>
               <strong>Email:</strong>{" "}
-              <a href="mailto:info@caribbeanhomehub.com" style={{ color: theme.colors.primary }} className="hover:opacity-80">
-                info@caribbeanhomehub.com
+              <a href="mailto:info@guyanahomehub.com" style={{ color: theme.colors.primary }} className="hover:opacity-80">
+                info@guyanahomehub.com
               </a>
             </p>
             <p>
