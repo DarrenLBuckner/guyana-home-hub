@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import DemandCaptureForm from '@/components/DemandCaptureForm';
+import { useCountryTheme } from '@/components/CountryThemeProvider';
 
 /**
  * Business Directory Page
@@ -130,6 +131,7 @@ const directoryCategories: DirectoryCategory[] = [
 ];
 
 export default function BusinessDirectoryPage() {
+  const { country } = useCountryTheme();
   const [businesses, setBusinesses] = useState<BusinessListing[]>([]);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
@@ -138,7 +140,7 @@ export default function BusinessDirectoryPage() {
 
   useEffect(() => {
     fetchBusinesses();
-  }, [selectedCategory]);
+  }, [selectedCategory, country]);
 
   const fetchBusinesses = async () => {
     try {
@@ -149,10 +151,10 @@ export default function BusinessDirectoryPage() {
         ? 'https://www.portalhomehub.com'
         : (process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://www.portalhomehub.com');
       
-      // Fetch business directory listings
-      const url = selectedCategory === 'all' 
-        ? `${portalBaseUrl}/api/public/services/GY?type=directory`
-        : `${portalBaseUrl}/api/public/services/GY?type=directory&category=${selectedCategory}`;
+      // Fetch business directory listings (use dynamic country code)
+      const url = selectedCategory === 'all'
+        ? `${portalBaseUrl}/api/public/services/${country}?type=directory`
+        : `${portalBaseUrl}/api/public/services/${country}?type=directory&category=${selectedCategory}`;
         
       const response = await fetch(url);
       
