@@ -131,6 +131,7 @@ const directoryCategories: DirectoryCategory[] = [
 
 export default function BusinessDirectoryPage() {
   const [businesses, setBusinesses] = useState<BusinessListing[]>([]);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -158,6 +159,14 @@ export default function BusinessDirectoryPage() {
       if (response.ok) {
         const data = await response.json();
         setBusinesses(data.businesses || []);
+        // Update category counts from API response
+        if (data.categories) {
+          const counts: Record<string, number> = {};
+          for (const cat of data.categories) {
+            counts[cat.id] = cat.count;
+          }
+          setCategoryCounts(counts);
+        }
       } else {
         // For now, show empty state
         setBusinesses([]);
@@ -290,7 +299,7 @@ export default function BusinessDirectoryPage() {
               <div className={`mt-2 text-sm font-medium ${
                 selectedCategory === category.id ? 'text-blue-200' : 'text-gray-500'
               }`}>
-                {category.businessCount} businesses
+                {categoryCounts[category.id] || 0} businesses
               </div>
             </motion.div>
           ))}
