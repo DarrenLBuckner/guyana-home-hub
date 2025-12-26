@@ -250,7 +250,7 @@ export default function HomePage() {
               WhatsApp Us (Faster)
             </a>
             <a
-              href="mailto:info@caribbeanhomehub.com"
+              href="mailto:info@guyanahomehub.com"
               className="border-2 px-6 py-3 rounded-lg font-semibold hover:text-white transition flex items-center gap-2"
               style={{ 
                 borderColor: theme.colors.primary,
