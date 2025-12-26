@@ -126,10 +126,7 @@ export default function HomePage() {
           <div className="w-full max-w-6xl space-y-16">
             
             {/* Featured Properties Showcase - Live from database */}
-            <section className="text-center">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8">Discover Beautiful Properties Across {countryName}</h2>
-              <FeaturedProperties />
-            </section>
+            <FeaturedProperties countryName={countryName} />
 
             {/* Why Choose Us Section */}
             <section className="bg-gray-50 rounded-lg p-8">

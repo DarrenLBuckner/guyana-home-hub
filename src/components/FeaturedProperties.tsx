@@ -37,75 +37,18 @@ function PropertyCardSkeleton() {
   )
 }
 
-// Static fallback cards (original design)
-function StaticFallbackCards({ country }: { country: string }) {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <img
-          src="/images/hero-house-desktop.jpg"
-          alt="Georgetown Villa"
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <h3 className="font-semibold text-lg text-gray-800">
-            {country === 'JM' ? 'Kingston Properties' : 'Georgetown Luxury Homes'}
-          </h3>
-          <p className="text-gray-600">
-            {country === 'JM'
-              ? 'Capital city homes and apartments for locals'
-              : 'Prime locations in the capital city'
-            }
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <img
-          src="/images/villa-beachfront.jpg"
-          alt="Beachfront Property"
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <h3 className="font-semibold text-lg text-gray-800">
-            {country === 'JM' ? 'Family Homes' : 'Coastal Properties'}
-          </h3>
-          <p className="text-gray-600">
-            {country === 'JM'
-              ? 'Quality homes for Jamaican families'
-              : 'Stunning beachfront and waterfront homes'
-            }
-          </p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <img
-          src="/images/land-berbice.jpg"
-          alt="Development Land"
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <h3 className="font-semibold text-lg text-gray-800">
-            {country === 'JM' ? 'Affordable Housing' : 'Investment Opportunities'}
-          </h3>
-          <p className="text-gray-600">
-            {country === 'JM'
-              ? 'Budget-friendly options for first-time buyers'
-              : 'Prime land for development projects'
-            }
-          </p>
-        </div>
-      </div>
-    </div>
-  )
+interface FeaturedPropertiesProps {
+  countryName?: string
 }
 
-export default function FeaturedProperties() {
+export default function FeaturedProperties({ countryName }: FeaturedPropertiesProps) {
   const [properties, setProperties] = useState<FeaturedProperty[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const { country } = useCountryTheme()
+
+  // Use provided countryName or derive from country code
+  const displayCountryName = countryName || (country === 'JM' ? 'Jamaica' : 'Guyana')
 
   useEffect(() => {
     async function fetchProperties() {
@@ -146,47 +89,57 @@ export default function FeaturedProperties() {
     fetchProperties()
   }, [])
 
-  // Show loading skeletons
+  // Show loading skeletons (brief loading state during fetch)
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <PropertyCardSkeleton />
-        <PropertyCardSkeleton />
-        <PropertyCardSkeleton />
-      </div>
+      <section className="text-center">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">
+          Discover Beautiful Properties Across {displayCountryName}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <PropertyCardSkeleton />
+          <PropertyCardSkeleton />
+          <PropertyCardSkeleton />
+        </div>
+      </section>
     )
   }
 
-  // Fallback to static cards if error or fewer than 3 properties with images
-  if (error || properties.length < 3) {
-    return <StaticFallbackCards country={country} />
+  // Hide section entirely if no properties or error (Phase 1 - limited inventory)
+  if (error || properties.length === 0) {
+    return null
   }
 
-  // Render live property cards with defensive defaults
+  // Render live property cards with section heading
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {properties.map((property) => {
-        if (!property) return null
+    <section className="text-center">
+      <h2 className="text-3xl font-bold text-gray-800 mb-8">
+        Discover Beautiful Properties Across {displayCountryName}
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {properties.map((property) => {
+          if (!property) return null
 
-        // Normalize property with defensive defaults
-        const normalizedProperty = {
-          ...property,
-          bedrooms: property.bedrooms ?? 0,
-          bathrooms: property.bathrooms ?? 0,
-          description: property.description || '',
-          location: property.location || 'Location not specified',
-          features: property.features || {},
-        }
+          // Normalize property with defensive defaults
+          const normalizedProperty = {
+            ...property,
+            bedrooms: property.bedrooms ?? 0,
+            bathrooms: property.bathrooms ?? 0,
+            description: property.description || '',
+            location: property.location || 'Location not specified',
+            features: property.features || {},
+          }
 
-        return (
-          <PropertyCard
-            key={property.id}
-            property={normalizedProperty as any}
-            variant="grid"
-            showStats={false}
-          />
-        )
-      })}
-    </div>
+          return (
+            <PropertyCard
+              key={property.id}
+              property={normalizedProperty as any}
+              variant="grid"
+              showStats={false}
+            />
+          )
+        })}
+      </div>
+    </section>
   )
 }
