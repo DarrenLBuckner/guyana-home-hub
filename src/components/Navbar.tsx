@@ -101,9 +101,7 @@ export default function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          {loading ? (
-            <div className="text-gray-500">Loading...</div>
-          ) : user ? (
+          {loading ? null : user ? (
             <div className="flex items-center space-x-4">
               <Link 
                 href="/favorites" 
@@ -238,9 +236,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Auth Section */}
-          {loading ? (
-            <div className="text-gray-500 text-center py-2">Loading...</div>
-          ) : user ? (
+          {loading ? null : user ? (
             <div className="pt-3 border-t border-gray-200 mt-3">
               <div className="text-sm text-gray-600 mb-2 px-4">
                 Welcome, {user.email?.split('@')[0]}
