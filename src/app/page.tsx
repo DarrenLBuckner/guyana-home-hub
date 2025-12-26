@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Home, Users, MapPin, Briefcase } from "lucide-react";
 import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
@@ -136,7 +137,7 @@ export default function HomePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="text-center">
                   <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">🏠</span>
+                    <Home className="w-8 h-8 text-green-600" aria-hidden="true" />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Verified Properties</h3>
                   <p className="text-gray-600">All listings verified by our professional team</p>
@@ -144,7 +145,7 @@ export default function HomePage() {
                 
                 <div className="text-center">
                   <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">👥</span>
+                    <Users className="w-8 h-8 text-green-600" aria-hidden="true" />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Expert Agents</h3>
                   <p className="text-gray-600">Licensed and vetted real estate professionals</p>
@@ -152,7 +153,7 @@ export default function HomePage() {
                 
                 <div className="text-center">
                   <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">📍</span>
+                    <MapPin className="w-8 h-8 text-green-600" aria-hidden="true" />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Local Expertise</h3>
                   <p className="text-gray-600">
@@ -165,7 +166,7 @@ export default function HomePage() {
                 
                 <div className="text-center">
                   <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">💼</span>
+                    <Briefcase className="w-8 h-8 text-green-600" aria-hidden="true" />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Full Service</h3>
                   <p className="text-gray-600">From browsing to closing, we're with you</p>
