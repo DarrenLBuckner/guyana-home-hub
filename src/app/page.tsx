@@ -173,26 +173,22 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* Testimonials */}
+            {/* Be Part of Something New */}
             <section className="text-center">
-              <h2 className="text-3xl font-bold text-gray-800 mb-8">What Our Clients Say</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <p className="text-gray-600 italic mb-4">"Found my dream home in {country === 'JM' ? 'Kingston' : 'Georgetown'} through {theme.name}. The agent was professional and the process was seamless!"</p>
-                  <div className="font-semibold text-gray-800">- Sarah M., Georgetown</div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <p className="text-gray-600 italic mb-4">"As an investor, I appreciate the verified listings and professional service. Great platform for serious buyers."</p>
-                  <div className="font-semibold text-gray-800">- David P., New Amsterdam</div>
-                </div>
-              </div>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Be Part of Something New</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto mb-6">
+                {theme.name} is building a better way to buy and sell property.
+                No more scrolling through Facebook chaos. No more wondering if a listing is real.
+              </p>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                We're just getting started, and we'd love for you to join us.
+              </p>
             </section>
 
             {/* Call to Action */}
             <section className="bg-green-700 text-white rounded-lg p-8 text-center">
               <h2 className="text-3xl font-bold mb-4">Ready to Find Your Perfect Property?</h2>
-              <p className="text-xl mb-6">Join thousands of satisfied customers who found their homes through {theme.name}</p>
+              <p className="text-xl mb-6">Join {countryName}'s newest professional property platform</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => router.push('/properties')}
