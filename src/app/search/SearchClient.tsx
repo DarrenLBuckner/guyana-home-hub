@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { MapPin, Bed, Bath, Square, Search } from 'lucide-react'
+import { MapPin, Bed, Bath, Square, Search, Info } from 'lucide-react'
 import { PropertyCard } from '@/components/PropertyCard'
 import { Property } from '@/types/property'
 
@@ -16,18 +16,24 @@ export default function SearchClient() {
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [totalCount, setTotalCount] = useState<number>(0)
+  const [regionMessage, setRegionMessage] = useState<string | null>(null)
+  const [regionCode, setRegionCode] = useState<string | null>(null)
 
   useEffect(() => {
     // if no search term, clear results
     if (!q) {
       setResults([])
       setTotalCount(0)
+      setRegionMessage(null)
+      setRegionCode(null)
       return
     }
 
     setLoading(true)
     setError('')
-    
+    setRegionMessage(null)
+    setRegionCode(null)
+
     fetch(`/api/properties/search?q=${encodeURIComponent(q)}`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -46,7 +52,15 @@ export default function SearchClient() {
           setResults([])
           setTotalCount(0)
         }
-        
+
+        // Set region messaging if available
+        if (data.regionMessage) {
+          setRegionMessage(data.regionMessage)
+        }
+        if (data.regionCode) {
+          setRegionCode(data.regionCode)
+        }
+
         if (data.message && (!data.properties || data.properties.length === 0)) {
           setError(data.message)
         }
@@ -89,6 +103,13 @@ export default function SearchClient() {
           <p className="text-gray-600">
             Found {totalCount} {totalCount === 1 ? 'property' : 'properties'}
           </p>
+        )}
+        {/* Region Message - Show when we matched a location alias */}
+        {!loading && regionMessage && totalCount > 0 && (
+          <div className="mt-3 flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-2">
+            <Info className="h-5 w-5 flex-shrink-0" />
+            <p className="text-sm font-medium">{regionMessage}</p>
+          </div>
         )}
       </div>
 
