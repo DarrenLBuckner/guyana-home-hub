@@ -3,12 +3,15 @@ import { cookies } from 'next/headers'
 import {
   resolveLocationAlias,
   getRegionDisplayMessage,
-  getRegionDisplayName,
-  findMatchingRegions
 } from '@/lib/location-aliases'
 
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic'
+
+// TODO: Portal API filtering is broken in production. This client-side filtering
+// is a temporary Phase 1 solution. Before scaling past 100 properties, fix the
+// Portal API's search/location parameters to filter server-side.
+// See: Portal-home-hub/src/app/api/public/properties/route.ts
 
 export async function GET(request: Request) {
   try {
@@ -37,6 +40,7 @@ export async function GET(request: Request) {
       })
     }
 
+    const searchLower = searchQuery.toLowerCase()
     console.log(`🔍 Searching for: "${searchQuery}"`)
 
     // Step 1: Check for location alias match
@@ -46,92 +50,75 @@ export async function GET(request: Request) {
     if (regionCode) {
       console.log(`🔍 Location alias matched: "${searchQuery}" -> ${regionCode}`)
       regionMessage = getRegionDisplayMessage(regionCode, searchQuery)
-    } else {
-      // Try partial matching for autocomplete-style searches
-      const partialMatches = findMatchingRegions(searchQuery)
-      if (partialMatches.length > 0) {
-        console.log(`🔍 Partial location matches found: ${partialMatches.join(', ')}`)
-      }
     }
 
-    // Proxy request to backend portal with search parameters
+    // Step 2: Fetch ALL properties from Portal API (filtering is broken server-side)
     const portalApiUrl = process.env.NEXT_PUBLIC_PORTAL_API_URL || 'https://portalhomehub.com'
     const queryParams = new URLSearchParams()
-
-    // Set site filter
     queryParams.set('site', siteName)
+    queryParams.set('limit', '100') // Fetch all for client-side filtering
 
-    // If we have a region code match, search by region AND the original search term
-    // This ensures we find properties in that region even if they don't have the exact text
-    if (regionCode) {
-      // Search by region code for exact region match
-      queryParams.set('region', regionCode)
-      // Also include text search for broader matching
-      queryParams.set('search', searchQuery)
-    } else {
-      // No alias match - do full text search across all fields
-      queryParams.set('search', searchQuery)
-    }
-
-    queryParams.set('limit', '20') // More results for search
-
-    console.log(`🔍 Fetching from: ${portalApiUrl}/api/public/properties?${queryParams.toString()}`)
+    console.log(`🔍 Fetching all properties from: ${portalApiUrl}/api/public/properties?${queryParams.toString()}`)
 
     const response = await fetch(`${portalApiUrl}/api/public/properties?${queryParams.toString()}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-site-id': siteName,
-        'x-search-query': searchQuery
       },
     })
 
     if (!response.ok) {
-      console.error('Backend search request failed:', response.status, response.statusText)
+      console.error('Backend request failed:', response.status, response.statusText)
       throw new Error(`Backend returned ${response.status}`)
     }
 
     const data = await response.json()
+    const allProperties = data.properties || []
 
-    // Log search results for debugging
-    console.log(`🔍 Search results: ${data.properties?.length || 0} properties found`)
+    console.log(`🔍 Fetched ${allProperties.length} total properties, now filtering...`)
 
-    // If region search returned no results, try text-only search as fallback
-    if (regionCode && (!data.properties || data.properties.length === 0)) {
-      console.log(`🔍 Region search returned 0 results, trying text-only fallback...`)
+    // Step 3: Client-side filtering
+    let filteredProperties = []
 
-      const fallbackParams = new URLSearchParams()
-      fallbackParams.set('site', siteName)
-      fallbackParams.set('search', searchQuery)
-      fallbackParams.set('limit', '20')
+    if (regionCode) {
+      // Filter by region code match
+      filteredProperties = allProperties.filter((p: any) => {
+        const propRegion = (p.region || '').toLowerCase()
+        const propCity = (p.city || '').toLowerCase()
+        const propLocation = (p.location || '').toLowerCase()
+        const regionLower = regionCode.toLowerCase()
 
-      const fallbackResponse = await fetch(
-        `${portalApiUrl}/api/public/properties?${fallbackParams.toString()}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-site-id': siteName,
-            'x-search-query': searchQuery
-          },
-        }
-      )
+        return propRegion === regionLower ||
+               propCity === regionLower ||
+               propLocation === regionLower
+      })
+      console.log(`🔍 Region filter (${regionCode}): ${filteredProperties.length} matches`)
+    } else {
+      // Text search across multiple fields
+      filteredProperties = allProperties.filter((p: any) => {
+        const title = (p.title || '').toLowerCase()
+        const description = (p.description || '').toLowerCase()
+        const location = (p.location || '').toLowerCase()
+        const city = (p.city || '').toLowerCase()
+        const neighborhood = (p.neighborhood || '').toLowerCase()
+        const region = (p.region || '').toLowerCase()
 
-      if (fallbackResponse.ok) {
-        const fallbackData = await fallbackResponse.json()
-        if (fallbackData.properties?.length > 0) {
-          console.log(`🔍 Fallback search found ${fallbackData.properties.length} results`)
-          return NextResponse.json({
-            ...fallbackData,
-            regionCode: regionCode,
-            regionMessage: regionMessage,
-            searchTerm: searchQuery
-          })
-        }
-      }
+        return title.includes(searchLower) ||
+               description.includes(searchLower) ||
+               location.includes(searchLower) ||
+               city.includes(searchLower) ||
+               neighborhood.includes(searchLower) ||
+               region.includes(searchLower)
+      })
+      console.log(`🔍 Text search: ${filteredProperties.length} matches`)
     }
 
-    // Return results with region messaging
+    // Step 4: Return filtered results with messaging
+    console.log(`🔍 Final result: ${filteredProperties.length} properties`)
+
     return NextResponse.json({
-      ...data,
+      properties: filteredProperties,
+      total: filteredProperties.length,
       regionCode: regionCode,
       regionMessage: regionMessage,
       searchTerm: searchQuery
