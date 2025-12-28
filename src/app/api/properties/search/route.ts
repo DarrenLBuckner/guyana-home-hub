@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: Request) {
   try {
     // Get country from cookies for site-specific filtering
-    const cookieStore = await cookies()
+    const cookieStore = cookies()
     const countryCode = cookieStore.get('country-code')?.value || 'GY'
 
     // Map country codes to site names
