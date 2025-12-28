@@ -113,12 +113,29 @@ export async function GET(request: Request) {
       console.log(`🔍 Text search: ${filteredProperties.length} matches`)
     }
 
-    // Step 4: Return filtered results with messaging
-    console.log(`🔍 Final result: ${filteredProperties.length} properties`)
+    // Step 4: Transform properties to match expected frontend format
+    // Portal API returns flat structure, but PropertyCard expects nested features object
+    const transformedProperties = filteredProperties.map((p: any) => ({
+      ...p,
+      features: {
+        bedrooms: p.bedrooms ?? null,
+        bathrooms: p.bathrooms ?? null,
+        square_footage: p.square_footage ?? p.floor_size_sqft ?? null,
+        lot_length: p.lot_length ?? null,
+        lot_width: p.lot_width ?? null,
+        lot_dimension_unit: p.lot_dimension_unit ?? 'ft',
+        land_size_value: p.land_size_value ?? null,
+        land_size_unit: p.land_size_unit ?? 'sq ft',
+        parking_spaces: p.parking_spaces ?? null,
+        year_built: p.year_built ?? null,
+      }
+    }))
+
+    console.log(`🔍 Final result: ${transformedProperties.length} properties`)
 
     return NextResponse.json({
-      properties: filteredProperties,
-      total: filteredProperties.length,
+      properties: transformedProperties,
+      total: transformedProperties.length,
       regionCode: regionCode,
       regionMessage: regionMessage,
       searchTerm: searchQuery

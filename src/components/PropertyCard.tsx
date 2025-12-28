@@ -173,6 +173,9 @@ export function PropertyCard({
 
   const PropertyTypeIcon = getPropertyTypeIcon(property.property_type)
 
+  // Defensive: ensure features object exists to prevent null access errors
+  const features = property.features || {}
+
   if (variant === 'list') {
     return (
       <Link href={`/properties/${property.id}`}>
@@ -264,49 +267,49 @@ export function PropertyCard({
 
               {/* Property Features */}
               <div className="flex items-center space-x-6 text-sm text-gray-600 mb-4">
-                {property.features.bedrooms && (
+                {features.bedrooms && (
                   <div className="flex items-center">
                     <Bed className="h-4 w-4 mr-1" />
-                    <span>{property.features.bedrooms} bed{property.features.bedrooms !== 1 ? 's' : ''}</span>
+                    <span>{features.bedrooms} bed{features.bedrooms !== 1 ? 's' : ''}</span>
                   </div>
                 )}
-                {property.features.bathrooms && (
+                {features.bathrooms && (
                   <div className="flex items-center">
                     <Bath className="h-4 w-4 mr-1" />
-                    <span>{property.features.bathrooms} bath{property.features.bathrooms !== 1 ? 's' : ''}</span>
+                    <span>{features.bathrooms} bath{features.bathrooms !== 1 ? 's' : ''}</span>
                   </div>
                 )}
-                {property.features.square_footage && (
+                {features.square_footage && (
                   <div className="flex items-center">
                     <Square className="h-4 w-4 mr-1" />
-                    <span>{property.features.square_footage.toLocaleString()} sq ft</span>
+                    <span>{features.square_footage.toLocaleString()} sq ft</span>
                   </div>
                 )}
                 {/* Lot Size Display - Show both dimensions and total area */}
-                {(property.features.lot_length && property.features.lot_width) || (property.features.land_size_value) ? (
+                {(features.lot_length && features.lot_width) || (features.land_size_value) ? (
                   <div className="flex items-center">
                     <Square className="h-4 w-4 mr-1" />
                     <span>
                       {/* Show dimensions if available (familiar to Guyanese locals) */}
-                      {property.features.lot_length && property.features.lot_width && (
+                      {features.lot_length && features.lot_width && (
                         <span>
-                          {property.features.lot_length}×{property.features.lot_width}{property.features.lot_dimension_unit || 'ft'}
-                          {property.features.land_size_value && ' • '}
+                          {features.lot_length}×{features.lot_width}{features.lot_dimension_unit || 'ft'}
+                          {features.land_size_value && ' • '}
                         </span>
                       )}
                       {/* Show total area (familiar to international users) */}
-                      {property.features.land_size_value && (
+                      {features.land_size_value && (
                         <span>
-                          {property.features.land_size_value.toLocaleString()} {property.features.land_size_unit || 'sq ft'}
+                          {features.land_size_value.toLocaleString()} {features.land_size_unit || 'sq ft'}
                         </span>
                       )}
                     </span>
                   </div>
                 ) : null}
-                {property.features.parking_spaces && (
+                {features.parking_spaces && (
                   <div className="flex items-center">
                     <Car className="h-4 w-4 mr-1" />
-                    <span>{property.features.parking_spaces} car{property.features.parking_spaces !== 1 ? 's' : ''}</span>
+                    <span>{features.parking_spaces} car{features.parking_spaces !== 1 ? 's' : ''}</span>
                   </div>
                 )}
               </div>
@@ -452,40 +455,40 @@ export function PropertyCard({
 
           {/* Property Features */}
           <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-            {property.features.bedrooms && (
+            {features.bedrooms && (
               <div className="flex items-center">
                 <Bed className="h-4 w-4 mr-1" />
-                <span>{property.features.bedrooms}</span>
+                <span>{features.bedrooms}</span>
               </div>
             )}
-            {property.features.bathrooms && (
+            {features.bathrooms && (
               <div className="flex items-center">
                 <Bath className="h-4 w-4 mr-1" />
-                <span>{property.features.bathrooms}</span>
+                <span>{features.bathrooms}</span>
               </div>
             )}
-            {property.features.square_footage && (
+            {features.square_footage && (
               <div className="flex items-center">
                 <Square className="h-4 w-4 mr-1" />
-                <span>{property.features.square_footage.toLocaleString()}</span>
+                <span>{features.square_footage.toLocaleString()}</span>
               </div>
             )}
             {/* Lot Size Display - Show dimensions for locals, area for international */}
-            {(property.features.lot_length && property.features.lot_width) || (property.features.land_size_value) ? (
+            {(features.lot_length && features.lot_width) || (features.land_size_value) ? (
               <div className="flex items-center">
                 <Square className="h-4 w-4 mr-1" />
                 <span className="text-xs">
                   {/* Show dimensions if available (familiar to Guyanese locals) */}
-                  {property.features.lot_length && property.features.lot_width && (
+                  {features.lot_length && features.lot_width && (
                     <span>
-                      {property.features.lot_length}×{property.features.lot_width}{property.features.lot_dimension_unit || 'ft'}
-                      {property.features.land_size_value && ' • '}
+                      {features.lot_length}×{features.lot_width}{features.lot_dimension_unit || 'ft'}
+                      {features.land_size_value && ' • '}
                     </span>
                   )}
                   {/* Show total area (familiar to international users) */}
-                  {property.features.land_size_value && (
+                  {features.land_size_value && (
                     <span>
-                      {property.features.land_size_value.toLocaleString()}{property.features.land_size_unit || 'sf'}
+                      {features.land_size_value.toLocaleString()}{features.land_size_unit || 'sf'}
                     </span>
                   )}
                 </span>
