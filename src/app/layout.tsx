@@ -9,6 +9,7 @@ import { AppProviders } from "@/providers/AppProviders";
 import { CountryThemeProvider } from "@/components/CountryThemeProvider";
 import { getCountryFromHeaders } from "@/lib/country-detection";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import FacebookPixel from "@/components/FacebookPixel";
 import { FloatingWhatsAppButton } from "@/components/WhatsAppButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
@@ -93,6 +94,7 @@ export default async function RootLayout({
 }) {
   const country = await getCountryFromHeaders();
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+  const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
   
   return (
     <html lang="en">
@@ -109,6 +111,7 @@ export default async function RootLayout({
           `}
         </Script>
         {GA_ID && <GoogleAnalytics GA_TRACKING_ID={GA_ID} />}
+        {FB_PIXEL_ID && <FacebookPixel pixelId={FB_PIXEL_ID} />}
         <CountryThemeProvider initialCountry={country}>
           <AppProviders>
             <Navbar />
