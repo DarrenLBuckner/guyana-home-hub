@@ -10,7 +10,7 @@ export default function PrivacyPolicyPage() {
     <main className="max-w-4xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold text-green-700 mb-2">GUYANA HOME HUB</h1>
       <h2 className="text-2xl font-bold text-gray-800 mb-4">PRIVACY POLICY</h2>
-      <p className="text-gray-600 mb-8">Last Updated: November 6, 2025</p>
+      <p className="text-gray-600 mb-8">Last Updated: December 29, 2025</p>
 
       <div className="prose prose-lg max-w-none">
         <p className="text-gray-700 mb-6">
@@ -36,14 +36,42 @@ export default function PrivacyPolicyPage() {
           <li><strong>Account Information:</strong> Login credentials and profile preferences if you create an account</li>
         </ul>
 
-        <h4 className="text-lg font-medium text-gray-800 mb-3">1.2 Information from Social Login Services</h4>
+        <h4 className="text-lg font-medium text-gray-800 mb-3">1.2 Third-Party Authentication (Google and Facebook Sign-In)</h4>
         <p className="text-gray-700 mb-3">
-          When you sign in using Google or Facebook, we receive:
+          When you choose to sign in using Google or Facebook, we collect the following information from your account:
         </p>
+        <p className="text-gray-700 mb-2"><strong>Information Collected:</strong></p>
         <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
-          <li>Name and email address</li>
-          <li>Profile picture and public profile information</li>
-          <li>Other information you authorize these services to share</li>
+          <li>Your name (as displayed on your Google/Facebook profile)</li>
+          <li>Your email address from your Google or Facebook account</li>
+          <li>Your profile picture (if available)</li>
+        </ul>
+        <p className="text-gray-700 mb-2"><strong>How We Use This Information:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>To create and manage your Guyana Home Hub account</li>
+          <li>To authenticate your identity when you sign in</li>
+          <li>To communicate with you about your account and saved properties</li>
+          <li>To provide customer support</li>
+        </ul>
+        <p className="text-gray-700 mb-2"><strong>What We Do NOT Do With Google and Facebook User Data:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>We do not access your Google or Facebook contacts, posts, or other personal data</li>
+          <li>We do not post anything to your Google or Facebook account</li>
+          <li>We do not sell your Google or Facebook user data to third parties</li>
+          <li>We do not use your Google or Facebook data for targeted advertising</li>
+          <li>We do not share your Google or Facebook authentication data with data brokers or information resellers</li>
+        </ul>
+        <p className="text-gray-700 mb-2"><strong>Data Storage and Protection:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>Your authentication data is stored securely using industry-standard encryption</li>
+          <li>We use Supabase, a secure database platform, to store your account information</li>
+          <li>Access to your data is restricted to authorized personnel only</li>
+        </ul>
+        <p className="text-gray-700 mb-2"><strong>Data Retention and Deletion:</strong></p>
+        <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
+          <li>We retain your account information for as long as your account is active</li>
+          <li>You may request deletion of your account and associated data at any time by contacting us at info@guyanahomehub.com</li>
+          <li>Upon account deletion, your Google or Facebook authentication data will be permanently removed from our systems within 30 days</li>
         </ul>
         <p className="text-gray-700 mb-4">
           You can control information sharing through your privacy settings on Google and Facebook.
