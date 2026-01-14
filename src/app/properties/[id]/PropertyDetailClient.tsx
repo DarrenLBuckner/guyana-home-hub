@@ -54,6 +54,7 @@ interface Property {
     profile_image?: string
     company?: string
     user_type?: string
+    is_founding_member?: boolean
   }
 }
 
@@ -449,6 +450,11 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     <div className="text-xl font-bold text-gray-800">
                       {property.agent_profile.first_name} {property.agent_profile.last_name}
                     </div>
+                    {property.agent_profile.is_founding_member && (
+                      <div className="inline-flex items-center gap-1 text-sm text-amber-600 font-medium mb-1">
+                        🏅 Founding Agent
+                      </div>
+                    )}
                     {property.agent_profile.company && (
                       <div className="text-gray-600 mb-2">{property.agent_profile.company}</div>
                     )}
