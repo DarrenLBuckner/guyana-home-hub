@@ -55,6 +55,7 @@ interface Property {
     company?: string
     user_type?: string
     is_founding_member?: boolean
+    is_founding_advisor?: boolean
   }
 }
 
@@ -450,9 +451,19 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     <div className="text-xl font-bold text-gray-800">
                       {property.agent_profile.first_name} {property.agent_profile.last_name}
                     </div>
-                    {property.agent_profile.is_founding_member && (
-                      <div className="inline-flex items-center gap-1 text-sm text-amber-600 font-medium mb-1">
-                        🏅 Founding Agent
+                    {/* Founding Badges */}
+                    {(property.agent_profile.is_founding_member || property.agent_profile.is_founding_advisor) && (
+                      <div className="flex flex-col gap-0.5 mb-1">
+                        {property.agent_profile.is_founding_member && (
+                          <span className="inline-flex items-center gap-1 text-sm text-amber-600 font-medium">
+                            🏅 Founding Agent
+                          </span>
+                        )}
+                        {property.agent_profile.is_founding_advisor && (
+                          <span className="inline-flex items-center gap-1 text-sm text-purple-600 font-medium">
+                            ⭐ Founding Advisor
+                          </span>
+                        )}
                       </div>
                     )}
                     {property.agent_profile.company && (
