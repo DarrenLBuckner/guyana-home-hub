@@ -84,7 +84,7 @@ export function PropertyCard({
     const isRental = property.listing_type === 'rent'
     const priceDisplay = isRental ? `G$${priceFormatted}/month` : `G$${priceFormatted}`
     const listingType = isRental ? 'For Rent' : 'For Sale'
-    const location = property.location || ''
+    const location = property.neighborhood || property.city || ''
 
     const whatsappText = `Check out this property on Guyana Home Hub!\n\n${property.title}\n${listingType} • ${priceDisplay}${location ? ` • ${location}` : ''}\n\n${url}`
 

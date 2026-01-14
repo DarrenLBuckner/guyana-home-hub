@@ -20,6 +20,9 @@ interface Property {
   location?: string | null
   city?: string
   region?: string
+  neighborhood?: string
+  address?: string
+  show_address?: boolean
   bedrooms?: number
   bathrooms?: number
   house_size_value?: number
@@ -363,10 +366,27 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
 
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Location</h2>
-              <p className="text-gray-600">
-                {property.city && property.region ? `${property.city}, ${property.region}` :
-                 property.city || property.region || property.location || 'Location not specified'}
-              </p>
+              {property.neighborhood ? (
+                <div>
+                  <p className="text-gray-700 font-medium">
+                    {property.show_address && property.address
+                      ? `${property.address}, ${property.neighborhood}`
+                      : property.neighborhood}
+                  </p>
+                  {property.city && (
+                    <p className="text-gray-500 text-sm">{property.city}</p>
+                  )}
+                  {!property.show_address && (
+                    <p className="text-gray-500 text-sm mt-1 italic">
+                      Contact agent for exact address
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-600">
+                  {property.city || 'Location details available upon request'}
+                </p>
+              )}
             </div>
 
             {property.description && (
@@ -458,7 +478,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                             // Create WhatsApp message for backup offers
                             const propertyTitle = property?.title || 'this property';
                             const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
-                            const propertyLocation = property?.city && property?.region ? `${property.city}, ${property.region}` : (property?.location || '');
+                            const propertyLocation = property?.neighborhood || property?.city || '';
                             const listingType = property.listing_type || 'sale';
                             const contactName = property.agent_profile ? `${property.agent_profile.first_name} ${property.agent_profile.last_name}` : 'agent';
 
@@ -501,7 +521,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                               // Create WhatsApp message
                               const propertyTitle = property?.title || 'this property';
                               const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
-                              const propertyLocation = property?.city && property?.region ? `${property.city}, ${property.region}` : (property?.location || '');
+                              const propertyLocation = property?.neighborhood || property?.city || '';
                               const listingType = property.listing_type || 'sale';
                               const contactName = property.agent_profile ? `${property.agent_profile.first_name} ${property.agent_profile.last_name}` : 'agent';
 
@@ -599,7 +619,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                         // Create WhatsApp message with dynamic contact person
                         const propertyTitle = property?.title || 'this property';
                         const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
-                        const propertyLocation = property?.location || '';
+                        const propertyLocation = property?.neighborhood || property?.city || '';
                         const listingType = property.listing_type || 'sale';
 
                         const message = encodeURIComponent(
