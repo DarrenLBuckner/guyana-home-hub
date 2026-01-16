@@ -81,7 +81,7 @@ export default function AdvertisePage() {
           </div>
 
           <a
-            href="https://www.portalhomehub.com/register"
+            href="https://www.portalhomehub.com/register?code=FOUNDING-AGENT-GY"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-white text-green-700 px-10 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg"
