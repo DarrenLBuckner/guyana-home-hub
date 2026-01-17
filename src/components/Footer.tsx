@@ -111,14 +111,12 @@ export default function Footer() {
               <div className="text-xs font-semibold text-green-700 mb-1">
                 For Agents
               </div>
-              <a
-                href="https://portalhomehub.com/register/select-country?type=agent"
+              <Link
+                href="/advertise#agents"
                 className="text-sm hover:text-green-700 block"
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                Agent Registration (Portal)
-              </a>
+                Agent Registration
+              </Link>
               <a
                 href="https://portalhomehub.com/login"
                 className="text-sm text-gray-500 hover:text-green-700 block mt-1"

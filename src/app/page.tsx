@@ -74,9 +74,7 @@ export default function HomePage() {
           {/* Secondary CTA - List Property */}
           <div className="flex justify-center">
             <a
-              href="https://portalhomehub.com/register/select-country"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/advertise"
               className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl text-base"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -195,9 +193,7 @@ export default function HomePage() {
                   Start Browsing Now
                 </button>
                 <a
-                  href="https://portalhomehub.com/register/select-country"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/advertise"
                   className="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-green-700 transition"
                 >
                   List Your Property

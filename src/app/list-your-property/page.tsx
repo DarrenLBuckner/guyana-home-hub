@@ -22,7 +22,7 @@ const PRICING = {
         "Email support",
       ],
       ctaLabel: "Start Basic",
-      href: "https://portalhomehub.com/register?audience=fsbo&plan=basic",
+      href: "/advertise#property-owners",
       popular: false,
     },
     {
@@ -37,7 +37,7 @@ const PRICING = {
         "Social boost across GHH channels",
       ],
       ctaLabel: "Choose Plus",
-      href: "https://portalhomehub.com/register?audience=fsbo&plan=plus",
+      href: "/advertise#property-owners",
       popular: true,
     },
     {
@@ -52,7 +52,7 @@ const PRICING = {
         "Concierge onboarding call",
       ],
       ctaLabel: "Go Premium",
-      href: "https://portalhomehub.com/register?audience=fsbo&plan=premium",
+      href: "/advertise#property-owners",
       popular: false,
     },
   ],
@@ -69,7 +69,7 @@ const PRICING = {
         "Email support",
       ],
       ctaLabel: "Start Basic",
-      href: "https://portalhomehub.com/register?audience=landlord&plan=basic",
+      href: "/advertise#property-owners",
       popular: false,
     },
     {
@@ -84,7 +84,7 @@ const PRICING = {
         "Priority review (24–48h)",
       ],
       ctaLabel: "Choose Plus",
-      href: "https://portalhomehub.com/register?audience=landlord&plan=plus",
+      href: "/advertise#property-owners",
       popular: true,
     },
     {
@@ -99,7 +99,7 @@ const PRICING = {
         "Concierge onboarding call",
       ],
       ctaLabel: "Start Portfolio",
-      href: "https://portalhomehub.com/register?audience=landlord&plan=premium",
+      href: "/advertise#property-owners",
       popular: false,
     },
   ],
@@ -149,9 +149,9 @@ export default function EnterpriseListingFunnel() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">List on a trusted marketplace. <span style={{ color: BRAND.primary }}>No agent fees.</span></h1>
           <div className="mt-6 flex flex-wrap gap-3">
-            <PrimaryButton href={`https://portalhomehub.com/register?audience=${audience}&plan=basic`}>Get Started</PrimaryButton>
-            <OutlineButton href={`https://portalhomehub.com/register?audience=${audience}`}>Compare Plans</OutlineButton>
-            <OutlineButton href={`https://portalhomehub.com/register?audience=${audience}&plan=premium`}>Talk to Onboarding</OutlineButton>
+            <PrimaryButton href="/advertise#property-owners">Get Started</PrimaryButton>
+            <OutlineButton href="/advertise">Compare Plans</OutlineButton>
+            <OutlineButton href="/advertise#property-owners">Talk to Onboarding</OutlineButton>
           </div>
         </div>
       </section>

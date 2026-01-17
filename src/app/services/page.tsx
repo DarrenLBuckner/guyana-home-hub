@@ -33,14 +33,12 @@ export default function ServicesPage() {
             >
               View Professional Services →
             </a>
-            <a
-              href="https://portalhomehub.com/register"
-              target="_blank" 
-              rel="noopener noreferrer"
+            <Link
+              href="/advertise#agents"
               className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-green-600 transition-colors"
             >
               Join as Real Estate Professional
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -124,53 +122,45 @@ export default function ServicesPage() {
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="text-xl font-semibold text-gray-900 mb-3">🏢 Real Estate Agents</h3>
               <p className="text-gray-600 mb-4">Professional platform for managing clients, listings, and accessing marketing services.</p>
-              <a
-                href="https://portalhomehub.com/register"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/advertise#agents"
                 className="text-green-600 font-medium hover:text-green-700"
               >
                 Join as Agent →
-              </a>
+              </Link>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="text-xl font-semibold text-gray-900 mb-3">🏠 Landlords</h3>
               <p className="text-gray-600 mb-4">Manage rental properties, screen tenants, and access professional photography services.</p>
-              <a
-                href="https://portalhomehub.com/register/landlord"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/advertise#property-owners"
                 className="text-green-600 font-medium hover:text-green-700"
               >
                 Join as Landlord →
-              </a>
+              </Link>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="text-xl font-semibold text-gray-900 mb-3">🔑 Property Owners</h3>
               <p className="text-gray-600 mb-4">For Sale By Owner tools, professional services, and direct buyer connections.</p>
-              <a
-                href="https://portalhomehub.com/register/fsbo"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/advertise#property-owners"
                 className="text-green-600 font-medium hover:text-green-700"
               >
                 Join as Owner →
-              </a>
+              </Link>
             </div>
           </div>
 
           <div className="text-center">
-            <a
-              href="https://portalhomehub.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/advertise"
               className="inline-flex items-center bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors"
             >
-              Access Portal Home Hub
+              View All Listing Options
               <span className="ml-2">🚀</span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -225,14 +215,12 @@ export default function ServicesPage() {
             >
               View Services & Pricing
             </a>
-            <a
-              href="https://portalhomehub.com/register"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/advertise"
               className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-green-600 transition-colors"
             >
               Start Your Professional Account
-            </a>
+            </Link>
           </div>
         </div>
       </div>

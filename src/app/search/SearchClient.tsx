@@ -183,17 +183,15 @@ export default function SearchClient() {
               <p className="text-emerald-700 mb-4">
                 Be the first to list in this area and capture all the interested buyers and renters!
               </p>
-              <a
-                href="https://portalhomehub.com/register/select-country"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/advertise"
                 className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-lg hover:from-emerald-700 hover:to-green-700 transform hover:scale-105 transition-all duration-200 shadow-lg"
               >
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"/>
                 </svg>
                 List Your Property (Free)
-              </a>
+              </Link>
             </div>
             
             {/* Secondary Options */}

@@ -130,14 +130,12 @@ export default function Navbar() {
               Sign In
             </Link>
           )}
-          <a
-            href="https://portalhomehub.com/register/select-country"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/advertise"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-semibold"
           >
             List Your Property
-          </a>
+          </Link>
         </div>
 
         {/* Mobile menu button */}
@@ -191,9 +189,7 @@ export default function Navbar() {
           <div className="space-y-3">
             {/* Emphasized CTA for List Property */}
             <Link
-              href="https://portalhomehub.com/register/select-country"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/advertise"
               className="block bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-5 rounded-lg text-center shadow-md my-2"
               onClick={closeMenu}
             >

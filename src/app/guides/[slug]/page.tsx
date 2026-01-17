@@ -1162,7 +1162,7 @@ Your home is within reach. Let's help you find it.
     description: 'Learn the difference between Transport and Certificate of Title in Guyana. How to verify property ownership at the Deeds Registry and Land Registry.',
     readTime: '8 min read',
     category: 'Legal',
-    lastUpdated: 'December 1, 2024',
+    lastUpdated: 'December, 2024',
     content: `
 # Understanding Property Titles in Guyana
 
@@ -1371,7 +1371,7 @@ Browse verified listings on Guyana HomeHub to start your property search with co
     description: 'Avoid these common mistakes when buying property in Guyana from abroad. Learn from others\' errors and protect your investment.',
     readTime: '7 min read',
     category: 'Diaspora',
-    lastUpdated: 'December 1, 2024',
+    lastUpdated: 'December 2024',
     content: `
 # Top 5 Mistakes Diaspora Buyers Make When Purchasing Property in Guyana
 
@@ -1528,7 +1528,7 @@ Read our [complete guide to buying property in Guyana from abroad](/guides/buyin
     description: 'Facebook groups are holding your real estate business back. Be one of the first 25 founding agents on Guyana HomeHub and reach serious buyers.',
     readTime: '8 min read',
     category: 'For Agents',
-    lastUpdated: 'December 1, 2024',
+    lastUpdated: 'January, 2025',
     content: `
 # Why Smart Agents Are Looking Beyond Facebook
 
@@ -1698,7 +1698,7 @@ Twenty-five founding agent spots. A platform built for Guyana. Your chance to ge
 
 Use code **FOUNDERS-AGENT-GY** when you sign up.
 
-<a href="https://www.portalhomehub.com/register/select-country" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #059669; color: white; font-weight: 600; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">Sign Up as an Agent →</a>
+<a href="/advertise#agents" style="display: inline-block; background: #059669; color: white; font-weight: 600; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">Sign Up as an Agent →</a>
 
 Questions? **Text us on WhatsApp** (fastest response): <a href="https://wa.me/5927629797?text=Hi,%20I'm%20interested%20in%20becoming%20a%20Founding%20Agent" target="_blank" rel="noopener noreferrer" style="color: #059669; font-weight: 600; text-decoration: none;">+592 762 9797</a>
 

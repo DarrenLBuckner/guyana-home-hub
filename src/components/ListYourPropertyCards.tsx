@@ -7,20 +7,20 @@ export default function ListYourPropertyCards() {
     {
       title: "List My Home – Flat fee, no agent fees",
       image: "/images/list-my-home.jpg",
-      link: "https://portalhomehub.com/register/fsbo",
-      external: true,
+      link: "/advertise#property-owners",
+      external: false,
     },
     {
       title: "Agents Only – Agent Registration",
       image: "/images/agent-list-property.jpg",
-      link: "https://portalhomehub.com/register",
-      external: true,
+      link: "/advertise#agents",
+      external: false,
     },
     {
       title: "List My Rental – Flat rate listing",
       image: "/images/list-my-rental.jpg",
-      link: "https://portalhomehub.com/register/landlord",
-      external: true,
+      link: "/advertise#property-owners",
+      external: false,
     },
     {
       title: "Submit My Development – Email us your project",
@@ -32,13 +32,8 @@ export default function ListYourPropertyCards() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-6xl mx-auto px-4 py-12">
-      {cards.map((card, index) => (
-        <a
-          key={index}
-          href={card.link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+      {cards.map((card, index) => {
+        const CardContent = (
           <div className="rounded-lg overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-transform">
             <Image
               src={card.image}
@@ -51,8 +46,23 @@ export default function ListYourPropertyCards() {
               {card.title}
             </div>
           </div>
-        </a>
-      ))}
+        );
+
+        return card.external ? (
+          <a
+            key={index}
+            href={card.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {CardContent}
+          </a>
+        ) : (
+          <Link key={index} href={card.link}>
+            {CardContent}
+          </Link>
+        );
+      })}
     </div>
   );
 }

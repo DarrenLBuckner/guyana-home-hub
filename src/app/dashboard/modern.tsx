@@ -79,7 +79,7 @@ export default async function ModernDashboard() {
             </p>
             <div className="space-y-3">
               <Button asChild className="w-full sm:w-auto">
-                <a href="https://portalhomehub.com/register" target="_blank" rel="noopener noreferrer">
+                <a href="/advertise#agents">
                   Become an Agent
                 </a>
               </Button>
