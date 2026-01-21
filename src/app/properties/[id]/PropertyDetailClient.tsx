@@ -204,11 +204,11 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
         {/* Image Gallery */}
         {property.images && property.images.length > 0 ? (
           <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative h-96">
+            <div className="relative w-full max-h-[600px] min-h-[300px] bg-gray-100 flex items-center justify-center">
               <img
                 src={property.images[currentImageIndex]}
                 alt={`${property.title} - Image ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-[600px] w-auto h-auto object-contain"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                   const fallback = e.currentTarget.nextElementSibling as HTMLElement;
