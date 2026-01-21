@@ -22,13 +22,23 @@ export async function generateMetadata(): Promise<Metadata> {
 // Blog posts data structure - in production this would come from a CMS
 const blogPosts = [
   {
+    slug: 'real-estate-chaos-costing-millions',
+    title: 'The Real Estate Chaos Costing Diaspora Buyers Millions — And How to Avoid It',
+    excerpt: 'The exposed underbelly of Guyana\'s emerging real estate market — and what diaspora buyers can do to protect themselves.',
+    readTime: '7 min read',
+    category: 'Diaspora Buyers',
+    publishedDate: 'January 21, 2025',
+    featured: true,
+    comingSoon: false
+  },
+  {
     slug: 'diaspora-buyer-mistakes',
     title: 'Top 5 Mistakes Diaspora Buyers Make When Buying Property in Guyana',
     excerpt: 'Learn from the common pitfalls that overseas Guyanese buyers encounter and how to avoid them.',
     readTime: '6 min read',
     category: 'Diaspora Tips',
     publishedDate: 'November 30, 2024',
-    featured: true,
+    featured: false,
     comingSoon: false
   },
   {
