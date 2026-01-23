@@ -98,7 +98,7 @@ export default function ExitIntentPopup() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('https://www.portalhomehub.com/api/email-signup', {
+      const response = await fetch('/api/email-signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
