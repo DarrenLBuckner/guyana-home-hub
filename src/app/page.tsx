@@ -21,8 +21,8 @@ export default function HomePage() {
   useFragmentFix();
   
   // Dynamic country values for authentic branding
-  const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
-  const countryAdjective = country === 'JM' ? 'Jamaican' : 'Guyanese';
+  const countryName = country === 'JM' ? 'Jamaica' : country === 'CO' ? 'Colombia' : 'Guyana';
+  const countryAdjective = country === 'JM' ? 'Jamaican' : country === 'CO' ? 'Colombian' : 'Guyanese';
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -39,7 +39,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <Hero site={country === 'JM' ? 'jamaica' : 'guyana'} />
+      <Hero site={country === 'JM' ? 'jamaica' : country === 'CO' ? 'colombia' : 'guyana'} />
 
       {/* Property Browsing Buttons - Below Hero */}
       <section className="w-full bg-white py-12">

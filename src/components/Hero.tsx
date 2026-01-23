@@ -38,7 +38,7 @@ function getABVariant(key: string, buckets = ["A", "B"]) {
 // -------- Helpers --------------------------------------------
 const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-type Site = "jamaica" | "guyana" | "barbados" | "rwanda" | "ghana" | "namibia" | "south-africa" | "kenya" | "dominican-republic" | "trinidad";
+type Site = "jamaica" | "guyana" | "colombia" | "barbados" | "rwanda" | "ghana" | "namibia" | "south-africa" | "kenya" | "dominican-republic" | "trinidad";
 
 export default function Hero({
   site,
@@ -52,7 +52,8 @@ export default function Hero({
   const country = useMemo(() => {
     const countryNames: Record<Site, string> = {
       jamaica: "Jamaica",
-      guyana: "Guyana", 
+      guyana: "Guyana",
+      colombia: "Colombia",
       barbados: "Barbados",
       rwanda: "Rwanda",
       ghana: "Ghana",
@@ -81,6 +82,7 @@ export default function Hero({
     const countryMapping: Record<Site, string> = {
       jamaica: "jamaica",
       guyana: "guyana",
+      colombia: "colombia",
       barbados: "barbados",
       rwanda: "rwanda",
       ghana: "ghana",
@@ -251,6 +253,7 @@ export default function Hero({
             const citiesMap: Record<Site, string[]> = {
               jamaica: ["Kingston", "Spanish Town", "Portmore", "May Pen"],
               guyana: ["Georgetown", "Providence", "Eccles", "New Amsterdam"],
+              colombia: ["Bogotá", "Medellín", "Cali", "Cartagena"],
               barbados: ["Bridgetown", "St. Lawrence", "Oistins", "Speightstown"],
               rwanda: ["Kigali", "Butare", "Gitarama", "Ruhengeri"],
               ghana: ["Accra", "Kumasi", "Tamale", "Cape Coast"],
@@ -311,6 +314,7 @@ export function getSiteFromHost(host?: string): Site | null {
   if (!host && typeof window !== "undefined") host = window.location.hostname;
   if (!host) return null;
   if (host.includes("jamaica")) return "jamaica";
+  if (host.includes("colombia")) return "colombia";
   if (host.includes("guyana")) return "guyana";
   return null;
 }
