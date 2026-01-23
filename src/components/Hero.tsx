@@ -112,11 +112,18 @@ export default function Hero({
     ];
   }, [site]);
   
+  // Desktop image with country-specific path and fallback
+  const [desktopImageSrc, setDesktopImageSrc] = useState(() => {
+    const countryCode = site;
+    return `/images/countries/${countryCode}/hero-desktop.jpg`;
+  });
+  const defaultDesktopImage = "/hero/hero-desktop.jpg";
+
   const [mobileImageIndex, setMobileImageIndex] = useState(0);
   useEffect(() => {
     // Only rotate if there are multiple images
     if (mobileImages.length <= 1) return;
-    
+
     const id = setInterval(() => {
       setMobileImageIndex((i) => (i + 1) % mobileImages.length);
     }, 4000); // Change image every 4 seconds - optimized for user attention span
@@ -164,12 +171,18 @@ export default function Hero({
     <section className="relative w-full">
       {/* Background Image with responsive sources */}
       <div className="absolute inset-0 -z-10">
-        {/* Desktop Image */}
+        {/* Desktop Image - country-specific with fallback */}
         <img
-          src={desktopImage}
+          src={desktopImageSrc}
           alt={`${country} homes background`}
           className="hidden h-[78vh] w-full object-cover object-top md:block"
           fetchPriority="high"
+          onError={(e) => {
+            if (e.currentTarget.src !== defaultDesktopImage) {
+              console.warn(`Country desktop hero not found, falling back to default`);
+              setDesktopImageSrc(defaultDesktopImage);
+            }
+          }}
         />
         
         {/* Mobile Images with Smooth Transitions */}
