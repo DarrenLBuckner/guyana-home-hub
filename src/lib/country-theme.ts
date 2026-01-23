@@ -1,4 +1,4 @@
-export type CountryCode = 'GY' | 'JM';
+export type CountryCode = 'GY' | 'JM' | 'CO';
 
 export interface CountryTheme {
   code: CountryCode;
@@ -51,6 +51,23 @@ export const countryThemes: Record<CountryCode, CountryTheme> = {
       logo: '/logos/jamaica-logo.png',
       favicon: '/favicons/jamaica-favicon.ico',
       hero: '/images/jamaica-hero.jpg'
+    }
+  },
+  CO: {
+    code: 'CO',
+    name: 'Colombia Home Hub 🇨🇴',
+    currency: 'COP',
+    colors: {
+      primary: '#FCD116',      // Colombia Flag Yellow (golden, dominant)
+      secondary: '#003893',    // Colombia Flag Blue (ocean, sky)
+      accent: '#CE1126',       // Colombia Flag Red (blood, courage)
+      background: '#FFFFFF',   // Clean white
+      text: '#1A1A1A'         // Dark text
+    },
+    assets: {
+      logo: '/logos/colombia-logo.png',
+      favicon: '/favicons/colombia-favicon.ico',
+      hero: '/images/colombia-hero.jpg'
     }
   }
 };

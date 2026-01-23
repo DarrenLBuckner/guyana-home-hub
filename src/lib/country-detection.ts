@@ -7,7 +7,7 @@ export async function getCountryFromHeaders(): Promise<CountryCode> {
     const cookieStore = await cookies();
     const countryCookie = cookieStore.get('country-code');
     
-    if (countryCookie?.value === 'JM' || countryCookie?.value === 'GY') {
+    if (countryCookie?.value === 'JM' || countryCookie?.value === 'GY' || countryCookie?.value === 'CO') {
       console.log(`🍪 SERVER: Read country from cookie: ${countryCookie.value}`);
       return countryCookie.value as CountryCode;
     }
@@ -22,7 +22,10 @@ export function getCountryFromDomain(hostname: string): CountryCode {
   if (hostname.includes('jamaica')) {
     return 'JM';
   }
-  
+  if (hostname.includes('colombia')) {
+    return 'CO';
+  }
+
   return 'GY'; // Default to Guyana
 }
 
@@ -35,7 +38,7 @@ export function getCountryFromCookies(): CountryCode {
     .find(row => row.startsWith('country-code='))
     ?.split('=')[1];
     
-  if (cookieValue === 'JM' || cookieValue === 'GY') {
+  if (cookieValue === 'JM' || cookieValue === 'GY' || cookieValue === 'CO') {
     console.log(`🍪 CLIENT: Read country from cookie: ${cookieValue}`);
     return cookieValue as CountryCode;
   }
