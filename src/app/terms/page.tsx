@@ -3,7 +3,7 @@ export default function TermsOfServicePage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold text-green-700 mb-6">Terms of Service</h1>
-      <p className="mb-4">Effective Date: November 28, 2025</p>
+      <p className="mb-4">Effective Date: January 25, 2026</p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">1. Acceptance of Terms</h2>
       <p className="mb-4">
@@ -147,27 +147,72 @@ export default function TermsOfServicePage() {
         Some jurisdictions may have additional consumer protection laws or regulations that apply to real estate transactions. Users are responsible for understanding and complying with the laws of their jurisdiction. Nothing in these Terms is intended to limit any rights you may have under applicable consumer protection laws that cannot be waived by agreement.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">10. Limitation of Liability</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">10. Owner Information Provided By Property Professionals</h2>
+
+      <h3 className="text-lg font-medium mt-4 mb-2">Agent-Uploaded Properties</h3>
+      <p className="mb-4">
+        Property Professionals may upload property listings on behalf of property owners with the owner's authorization. When a Property Professional uploads a listing, they may provide owner contact information (including name, email address, and/or phone number) solely for the purpose of facilitating direct communication between interested parties and the property owner.
+      </p>
+
+      <h3 className="text-lg font-medium mt-4 mb-2">Authorization and Accuracy</h3>
+      <p className="mb-4">
+        By uploading a property listing with owner contact information, the Property Professional represents and warrants that:
+      </p>
+      <ul className="mb-4 ml-6 list-disc">
+        <li>They have obtained proper authorization from the property owner to list the property</li>
+        <li>They have obtained the owner's explicit consent to share their contact information on the platform</li>
+        <li>The owner contact information provided is accurate and current</li>
+        <li>The property owner understands their information will be visible to users of the Services</li>
+      </ul>
+
+      <h3 className="text-lg font-medium mt-4 mb-2">Use of Owner Contact Information</h3>
+      <p className="mb-4">
+        Owner contact information displayed on listings is provided solely for legitimate property inquiries. Users agree not to:
+      </p>
+      <ul className="mb-4 ml-6 list-disc">
+        <li>Use owner contact information for unsolicited marketing or spam</li>
+        <li>Share, sell, or distribute owner contact information to third parties</li>
+        <li>Contact property owners for purposes unrelated to the listed property</li>
+        <li>Harass, threaten, or engage in any abusive behavior toward property owners</li>
+      </ul>
+
+      <h3 className="text-lg font-medium mt-4 mb-2">Platform Disclaimer</h3>
+      <p className="mb-4">
+        The Platform does not verify owner contact information provided by Property Professionals. We are not responsible for:
+      </p>
+      <ul className="mb-4 ml-6 list-disc">
+        <li>The accuracy of owner contact information</li>
+        <li>Any disputes between Property Professionals and property owners regarding authorization</li>
+        <li>Communications that occur directly between users and property owners</li>
+        <li>Any issues arising from unauthorized listing of properties</li>
+      </ul>
+
+      <h3 className="text-lg font-medium mt-4 mb-2">Removal Requests</h3>
+      <p className="mb-4">
+        Property owners who discover their property has been listed without authorization, or who wish to have their contact information removed, may contact us at info@guyanahomehub.com. We will investigate and take appropriate action, which may include removing the listing and suspending the responsible Property Professional's account.
+      </p>
+
+      <h2 className="text-xl font-semibold mt-6 mb-2">11. Limitation of Liability</h2>
       <p className="mb-4">
         Under no circumstances shall the owners, founders, team members, or affiliates of Caribbean Home Hub be liable for indirect, incidental, or consequential damages resulting from your use of this platform.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">11. Governing Law</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">12. Governing Law</h2>
       <p className="mb-4">
         These terms are governed by the laws of the United States. If you access the service from other countries, you are responsible for compliance with local laws.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">12. EU GDPR Compliance</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">13. EU GDPR Compliance</h2>
       <p className="mb-4">
         For users in the European Union, we adhere to GDPR principles. You may request to access, rectify, or delete your data. Contact us at <strong>info@guyanahomehub.com</strong> for inquiries.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">13. Updates</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">14. Updates</h2>
       <p className="mb-4">
         We may update these Terms of Service from time to time. Continued use after updates means you accept the revised terms.
       </p>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">14. Contact</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">15. Contact</h2>
       <p>
         For questions or concerns, email us at: <br />
         <strong>info@guyanahomehub.com</strong>
