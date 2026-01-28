@@ -8,6 +8,15 @@
   "functions": {
     "src/app/api/services/booking/route.ts": {
       "maxDuration": 10
+    },
+    "src/app/api/cron/update-exchange-rates/route.ts": {
+      "maxDuration": 30
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/update-exchange-rates",
+      "schedule": "0 6 * * *"
+    }
+  ]
 }
