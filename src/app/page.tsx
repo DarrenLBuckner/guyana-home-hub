@@ -127,6 +127,19 @@ export default function HomePage() {
             {/* Featured Properties Showcase - Live from database */}
             <FeaturedProperties countryName={countryName} />
 
+            {/* Browse All Residential Properties Button */}
+            <div className="text-center pt-4">
+              <button
+                onClick={() => router.push('/properties')}
+                className="inline-flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+              >
+                <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                </svg>
+                Browse All Residential Properties
+              </button>
+            </div>
+
             {/* Featured Commercial Properties Showcase - Live from database */}
             <FeaturedCommercialProperties countryName={countryName} />
 

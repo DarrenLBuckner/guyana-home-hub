@@ -96,7 +96,7 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
   // Show loading skeletons (brief loading state during fetch)
   if (loading) {
     return (
-      <section className="text-center">
+      <section className="text-center w-full">
         <h2 className="text-3xl font-bold text-gray-800 mb-4">
           Commercial Real Estate Opportunities
         </h2>
@@ -104,7 +104,7 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
           Explore prime commercial properties, office spaces, and investment opportunities across {displayCountryName}.
           From retail locations to industrial facilities, find your next business opportunity.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           <PropertyCardSkeleton />
           <PropertyCardSkeleton />
           <PropertyCardSkeleton />
@@ -120,7 +120,7 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
 
   // Render live commercial property cards with section heading
   return (
-    <section className="text-center">
+    <section className="text-center w-full">
       <h2 className="text-3xl font-bold text-gray-800 mb-4">
         Commercial Real Estate Opportunities
       </h2>
@@ -128,7 +128,7 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
         Explore prime commercial properties, office spaces, and investment opportunities across {displayCountryName}.
         From retail locations to industrial facilities, find your next business opportunity.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
         {properties.map((property) => {
           if (!property) return null
 
