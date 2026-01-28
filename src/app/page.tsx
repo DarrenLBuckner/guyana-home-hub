@@ -7,6 +7,7 @@ import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import FeaturedProperties from "../components/FeaturedProperties";
+import FeaturedCommercialProperties from "../components/FeaturedCommercialProperties";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 import AdDisplay from "@/components/ads/AdDisplay";
 import { useFragmentFix } from "@/hooks/useFragmentFix";
@@ -125,6 +126,9 @@ export default function HomePage() {
             
             {/* Featured Properties Showcase - Live from database */}
             <FeaturedProperties countryName={countryName} />
+
+            {/* Featured Commercial Properties Showcase - Live from database */}
+            <FeaturedCommercialProperties countryName={countryName} />
 
             {/* Why Choose Us Section */}
             <section className="bg-gray-50 rounded-lg p-8">

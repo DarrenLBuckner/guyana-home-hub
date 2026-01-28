@@ -12,7 +12,7 @@ interface Property {
   neighborhood?: string
   bedrooms?: number
   bathrooms?: number
-  listing_type?: 'sale' | 'rent'
+  listing_type?: 'sale' | 'rent' | 'lease'
   property_type?: string
   images?: string[]
   currency?: string
@@ -46,7 +46,7 @@ function formatPrice(property: Property): string {
   const price = property.price?.toLocaleString() || 'Contact for price'
   const currency = property.currency || 'GYD'
 
-  if (property.listing_type === 'rent') {
+  if (property.listing_type === 'rent' || property.listing_type === 'lease') {
     return `${price} ${currency}/month`
   }
   return `${price} ${currency}`
@@ -57,7 +57,12 @@ function buildDescription(property: Property): string {
   const parts = []
 
   // Listing type
-  const listingType = property.listing_type === 'rent' ? 'For Rent' : 'For Sale'
+  let listingType = 'For Sale'
+  if (property.listing_type === 'rent') {
+    listingType = 'For Rent'
+  } else if (property.listing_type === 'lease') {
+    listingType = 'For Lease'
+  }
   parts.push(listingType)
 
   // Property type
