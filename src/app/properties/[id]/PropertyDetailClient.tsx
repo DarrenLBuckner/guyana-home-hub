@@ -10,6 +10,7 @@ import { FSBOBadge } from '@/components/FSBOBadge'
 import PropertySchemaClient from '@/components/PropertySchemaClient'
 import { ShareDropdown } from '@/components/ShareDropdown'
 import { WatchButton } from '@/components/WatchButton'
+import { CurrencyCalculatorWidget } from '@/components/CurrencyCalculatorWidget'
 import { createClient } from '@/lib/supabase/client'
 
 interface Property {
@@ -676,6 +677,19 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
             )}
           </div>
         </div>
+
+        {/* Currency Calculator Widget */}
+        {property.price && (
+          <div className="mt-6">
+            <CurrencyCalculatorWidget
+              initialAmount={property.price}
+              initialFromCurrency="GYD"
+              initialToCurrency="USD"
+              compact={false}
+              className="shadow-lg"
+            />
+          </div>
+        )}
       </div>
 
       {/* Request Viewing Modal */}

@@ -8,7 +8,7 @@ export default function Footer() {
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   return (
     <footer className="bg-gray-100 text-gray-700 py-8 mt-12">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* ───────── Column 1 – About ───────── */}
         <div>
           <h4 className="font-bold mb-2" style={{ color: theme.colors.primary }}>{theme.name}</h4>
@@ -75,7 +75,22 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* ───────── Column 3 – Help / Auth ───────── */}
+        {/* ───────── Column 3 – Tools ───────── */}
+        <div>
+          <h4 className="font-bold mb-2 text-green-700">Tools</h4>
+          <ul className="space-y-1">
+            <li>
+              <Link href="/tools/currency-converter" className="hover:text-green-700">
+                Currency Converter
+              </Link>
+              <div className="text-xs text-gray-500 mt-1">
+                Convert between GYD, USD, and more
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {/* ───────── Column 4 – Help / Auth ───────── */}
         <div>
           <h4 className="font-bold mb-2 text-green-700">Help</h4>
           <ul className="space-y-1">
