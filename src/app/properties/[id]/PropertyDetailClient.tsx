@@ -8,7 +8,7 @@ import { PrivateListingDisclaimer } from '@/components/PrivateListingDisclaimer'
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
 import { FSBOBadge } from '@/components/FSBOBadge'
 import PropertySchemaClient from '@/components/PropertySchemaClient'
-import { ShareButtons } from '@/components/ShareButtons'
+import { ShareDropdown } from '@/components/ShareDropdown'
 import { WatchButton } from '@/components/WatchButton'
 import { createClient } from '@/lib/supabase/client'
 
@@ -189,7 +189,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
           <h1 className="text-4xl font-bold">{property.title}</h1>
           <div className="flex items-center gap-3">
             <WatchButton propertyId={property.id} />
-            <ShareButtons property={property} variant="mobile" />
+            <ShareDropdown property={property} />
           </div>
         </div>
 
