@@ -71,14 +71,13 @@ export async function GET(request: Request) {
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     // Update each currency
-    const updates: Promise<unknown>[] = []
     const results: { currency: string; rate: number; status: string }[] = []
 
     for (const currency of CURRENCIES_TO_TRACK) {
       const rate = rates[currency]
 
       if (rate && typeof rate === 'number') {
-        const update = supabase
+        const { error } = await supabase
           .from('exchange_rates')
           .upsert(
             {
@@ -93,21 +92,16 @@ export async function GET(request: Request) {
               onConflict: 'base_currency,target_currency',
             }
           )
-          .then(({ error }) => {
-            if (error) {
-              results.push({ currency: currency.toUpperCase(), rate, status: `error: ${error.message}` })
-            } else {
-              results.push({ currency: currency.toUpperCase(), rate, status: 'updated' })
-            }
-          })
 
-        updates.push(update)
+        if (error) {
+          results.push({ currency: currency.toUpperCase(), rate, status: `error: ${error.message}` })
+        } else {
+          results.push({ currency: currency.toUpperCase(), rate, status: 'updated' })
+        }
       } else {
         results.push({ currency: currency.toUpperCase(), rate: 0, status: 'not found in API' })
       }
     }
-
-    await Promise.all(updates)
 
     console.log('Exchange rate update complete:', results)
 
