@@ -12,9 +12,28 @@
       "Bash(npx tsx:*)",
       "Bash(cat:*)",
       "Bash(cmd.exe /c \"del C:\\Dev\\guyana-home-hub\\src\\components\\ui\\Toast.tsx\")",
-      "Bash(npm update:*)"
+      "Bash(npm update:*)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:portalhomehub.com)",
+      "Bash(curl:*)",
+      "Bash(node -e:*)",
+      "Bash(taskkill:*)",
+      "Bash(vercel env:*)",
+      "Bash(npm run dev)",
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(git restore:*)",
+      "Bash(GIT_TERMINAL_PROMPT=0 git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(timeout:*)",
+      "Bash(ping:*)",
+      "Bash(git diff:*)",
+      "Bash(npx next lint:*)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "additionalDirectories": [
+      "c:\\Dev\\Portal-home-hub\\src\\app\\terms",
+      "C:\\Dev\\Portal-home-hub\\src\\components"
+    ]
   }
 }

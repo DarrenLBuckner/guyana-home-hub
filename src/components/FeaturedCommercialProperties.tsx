@@ -60,7 +60,7 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
         setError(false)
 
         // Fetch commercial properties - filter by property_category = 'commercial'
-        const response = await fetch('/api/properties?limit=9&category=commercial')
+        const response = await fetch('/api/properties?property_category=commercial')
 
         if (!response.ok) {
           throw new Error('Failed to fetch commercial properties')
@@ -128,29 +128,31 @@ export default function FeaturedCommercialProperties({ countryName }: FeaturedCo
         Explore prime commercial properties, office spaces, and investment opportunities across {displayCountryName}.
         From retail locations to industrial facilities, find your next business opportunity.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
-        {properties.map((property) => {
-          if (!property) return null
+      <div className={`flex ${properties.length < 3 ? 'justify-center' : ''} w-full`}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 w-full">
+          {properties.map((property) => {
+            if (!property) return null
 
-          // Normalize property with defensive defaults
-          const normalizedProperty = {
-            ...property,
-            bedrooms: property.bedrooms ?? 0,
-            bathrooms: property.bathrooms ?? 0,
-            description: property.description || '',
-            location: property.location || 'Location not specified',
-            features: property.features || {},
-          }
+            // Normalize property with defensive defaults
+            const normalizedProperty = {
+              ...property,
+              bedrooms: property.bedrooms ?? 0,
+              bathrooms: property.bathrooms ?? 0,
+              description: property.description || '',
+              location: property.location || 'Location not specified',
+              features: property.features || {},
+            }
 
-          return (
-            <PropertyCard
-              key={property.id}
-              property={normalizedProperty as any}
-              variant="grid"
-              showStats={false}
-            />
-          )
-        })}
+            return (
+              <PropertyCard
+                key={property.id}
+                property={normalizedProperty as any}
+                variant="grid"
+                showStats={false}
+              />
+            )
+          })}
+        </div>
       </div>
       
       {/* Browse All Commercial Properties Button */}
