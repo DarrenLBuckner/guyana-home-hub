@@ -87,6 +87,14 @@ export default function Footer() {
                 Convert between GYD, USD, and more
               </div>
             </li>
+            <li className="mt-2">
+              <Link href="/mortgage-calculator" className="hover:text-green-700">
+                Mortgage Calculator
+              </Link>
+              <div className="text-xs text-gray-500 mt-1">
+                Estimate your monthly payments
+              </div>
+            </li>
           </ul>
         </div>
 

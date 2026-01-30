@@ -11,6 +11,7 @@ import PropertySchemaClient from '@/components/PropertySchemaClient'
 import { ShareDropdown } from '@/components/ShareDropdown'
 import { WatchButton } from '@/components/WatchButton'
 import { CurrencyCalculatorWidget } from '@/components/CurrencyCalculatorWidget'
+import MortgageCalculator from '@/components/MortgageCalculator'
 import { createClient } from '@/lib/supabase/client'
 
 interface Property {
