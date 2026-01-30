@@ -223,6 +223,7 @@ export function CurrencyCalculatorWidget({
             Rate: 1 {fromCurrency} = {rate.toFixed(6)} {toCurrency}
           </p>
           {lastUpdated && <p>Updated: {lastUpdated}</p>}
+          <p className="text-gray-400">Mid-market rates. Banks typically charge 2-5% more.</p>
         </div>
       </div>
     </div>
