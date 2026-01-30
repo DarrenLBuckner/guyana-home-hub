@@ -690,14 +690,18 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
           </div>
         </div>
 
-        {/* Currency Calculator Widget */}
+        {/* Currency & Mortgage Calculators */}
         {property.price && (
-          <div className="mt-6">
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CurrencyCalculatorWidget
               initialAmount={property.price}
               initialFromCurrency="GYD"
               initialToCurrency="USD"
               compact={false}
+              className="shadow-lg"
+            />
+            <MortgageCalculator
+              initialAmount={property.price}
               className="shadow-lg"
             />
           </div>
