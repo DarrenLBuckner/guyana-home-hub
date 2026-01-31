@@ -182,7 +182,7 @@ export default function HomePage() {
             </section>
 
             {/* For Real Estate Agents Section */}
-            <section className="bg-blue-50 rounded-lg p-8">
+            <section id="agents" className="bg-blue-50 rounded-lg p-8 scroll-mt-20">
               <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">For Real Estate Agents</h2>
               <p className="text-center text-gray-600 mb-8">Your listings. Diaspora buyers.</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
