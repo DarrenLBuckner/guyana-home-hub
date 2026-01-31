@@ -234,8 +234,8 @@ export default function Hero({
         </h1>
 
         {/* Static diaspora tagline - always visible for agents */}
-        <p className="mt-2 text-base text-white/90 drop-shadow md:text-lg">
-          {diasporaTagline}
+        <p className="mt-3 inline-block rounded-full bg-amber-500/90 px-5 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur-sm md:text-base">
+          🌍 {diasporaTagline}
         </p>
 
         {/* Rotating subheadline */}

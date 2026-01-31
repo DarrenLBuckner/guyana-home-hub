@@ -9,7 +9,6 @@ import ListYourPropertyCards from "../components/ListYourPropertyCards";
 import FeaturedProperties from "../components/FeaturedProperties";
 import FeaturedCommercialProperties from "../components/FeaturedCommercialProperties";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
-import AdDisplay from "@/components/ads/AdDisplay";
 import { useFragmentFix } from "@/hooks/useFragmentFix";
 
 export default function HomePage() {
@@ -87,34 +86,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Business Advertisement Banner - Mobile Optimized */}
-      <section className="w-full bg-gradient-to-br from-gray-50 to-gray-100 py-6 md:py-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <AdDisplay 
-            placement="gy-home-hero"
-            pageType="home"
-            className="w-full"
-            maxAds={1}
-            compactMode={false}
-            fallbackContent={
-              <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-xl shadow-lg overflow-hidden">
-                <div className="p-4 sm:p-6 md:p-8 text-center">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
-                    Advertise Your Real Estate Business Here
-                  </h3>
-                  <p className="text-sm sm:text-base md:text-lg mb-4 opacity-90">
-                    Reach thousands of property seekers across Guyana
-                  </p>
-                  <a
-                    href="/advertise"
-                    className="inline-block bg-white text-blue-600 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors text-sm sm:text-base"
-                  >
-                    Get Started Today
-                  </a>
-                </div>
-              </div>
-            }
-          />
+      {/* Agent CTA Banner - Prominent call-to-action for real estate agents */}
+      <section className="w-full bg-gradient-to-br from-blue-900 to-blue-700 py-8 md:py-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-amber-500 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full mb-4 shadow-md">
+            <span className="animate-pulse">⚡</span> FREE DURING LAUNCH
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
+            Real Estate Agent?
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
+            List unlimited properties. Reach {countryAdjective} buyers in <span className="font-semibold text-white">New York, Toronto & London</span>.
+          </p>
+          <a
+            href="/advertise#agents"
+            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-base sm:text-lg"
+          >
+            Register as an Agent — It&apos;s Free
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
+          <p className="text-blue-200 text-sm mt-4">
+            Join agents already listing on {theme.name}
+          </p>
         </div>
       </section>
 
