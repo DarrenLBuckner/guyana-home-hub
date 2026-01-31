@@ -66,6 +66,24 @@ export default function Hero({
     return countryNames[site] || "Jamaica";
   }, [site]);
 
+  // Diaspora tagline - connects agents/sellers to overseas buyers
+  const diasporaTagline = useMemo(() => {
+    const diasporaMap: Record<Site, string> = {
+      guyana: "Connecting Guyanese in NYC, Toronto & London with property back home.",
+      jamaica: "Connecting Jamaicans in NYC, Toronto & London with property back home.",
+      colombia: "Connecting Colombians in Miami, NYC & Madrid with property back home.",
+      barbados: "Connecting Bajans in NYC, Toronto & London with property back home.",
+      trinidad: "Connecting Trinis in NYC, Toronto & London with property back home.",
+      rwanda: "Connecting Rwandans abroad with property back home.",
+      ghana: "Connecting Ghanaians in London, NYC & Toronto with property back home.",
+      namibia: "Connecting Namibians abroad with property back home.",
+      "south-africa": "Connecting South Africans in London, Sydney & Toronto with property back home.",
+      kenya: "Connecting Kenyans in London, NYC & Dubai with property back home.",
+      "dominican-republic": "Connecting Dominicans in NYC, Miami & Madrid with property back home."
+    };
+    return diasporaMap[site] || diasporaMap.jamaica;
+  }, [site]);
+
   // A/B: Variant A (buyer‑first); Variant B (seller‑first)
   const [variant, setVariant] = useState<"A" | "B">("A");
   useEffect(() => {
@@ -214,6 +232,11 @@ export default function Hero({
         <h1 className="text-4xl font-extrabold leading-tight drop-shadow md:text-6xl">
           {headline}
         </h1>
+
+        {/* Static diaspora tagline - always visible for agents */}
+        <p className="mt-2 text-base text-white/90 drop-shadow md:text-lg">
+          {diasporaTagline}
+        </p>
 
         {/* Rotating subheadline */}
         <div className="mt-3 h-14 md:h-8">

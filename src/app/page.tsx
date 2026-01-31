@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Home, Users, MapPin, Briefcase } from "lucide-react";
+import { Home, Users, MapPin, Briefcase, Globe, ShieldCheck, Gift, Building2 } from "lucide-react";
 import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
@@ -183,6 +183,55 @@ export default function HomePage() {
                   <h3 className="font-semibold text-lg text-gray-800 mb-2">Full Service</h3>
                   <p className="text-gray-600">From browsing to closing, we're with you</p>
                 </div>
+              </div>
+            </section>
+
+            {/* For Real Estate Agents Section */}
+            <section className="bg-blue-50 rounded-lg p-8">
+              <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">For Real Estate Agents</h2>
+              <p className="text-center text-gray-600 mb-8">Your listings. Diaspora buyers.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Globe className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-semibold text-lg text-gray-800 mb-2">Reach Buyers Abroad</h3>
+                  <p className="text-gray-600">Your listings seen by {countryAdjective} in New York, Toronto, and London actively looking to invest back home.</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ShieldCheck className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-semibold text-lg text-gray-800 mb-2">Professional Platform</h3>
+                  <p className="text-gray-600">No more Facebook chaos. A real platform that makes you look professional.</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Gift className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-semibold text-lg text-gray-800 mb-2">Free During Launch</h3>
+                  <p className="text-gray-600">List unlimited properties at no cost while we build the marketplace together.</p>
+                </div>
+
+                <div className="text-center">
+                  <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Building2 className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="font-semibold text-lg text-gray-800 mb-2">US-Based Company</h3>
+                  <p className="text-gray-600">Caribbean Home Hub LLC. Real company. Real support. Not another fly-by-night website.</p>
+                </div>
+              </div>
+
+              {/* Agent CTA Button */}
+              <div className="text-center mt-8">
+                <a
+                  href="/advertise#agents"
+                  className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl text-base"
+                >
+                  Register as an Agent
+                </a>
               </div>
             </section>
 
