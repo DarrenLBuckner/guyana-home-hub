@@ -150,6 +150,11 @@ export default function Footer() {
               </a>
             </li>
             <li className="mt-4">
+              <Link href="/press" className="hover:text-green-700">
+                Press & Media
+              </Link>
+            </li>
+            <li>
               <Link href="/privacy" className="hover:text-green-700">
                 Privacy Policy
               </Link>
