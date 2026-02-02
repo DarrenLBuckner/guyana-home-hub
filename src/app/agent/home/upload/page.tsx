@@ -213,12 +213,15 @@ Write a professional, engaging description that highlights the property's best f
         location: form.location.trim(),
         bedrooms: parseInt(form.bedrooms, 10) || 0,
         bathrooms: parseInt(form.bathrooms, 10) || 0,
-
         lot_size: form.lotSize.trim() || null,
         home_size: form.homeSize.trim() || null,
         features: form.features,
         image_urls: uploadedImageUrls,
-        hero_index: form.heroIndex
+        hero_index: form.heroIndex,
+        // Required for admin dashboard visibility
+        site_id: 'guyana',
+        listed_by_type: 'agent',
+        country_id: 'GY'
       }
 
       console.log('FORM SUBMIT: Property data to insert', propertyData)
