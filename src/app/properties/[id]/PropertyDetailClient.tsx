@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home, Eye } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Home, Eye, ZoomIn } from 'lucide-react'
+import Lightbox from 'yet-another-react-lightbox'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+import 'yet-another-react-lightbox/styles.css'
 import VideoEmbed from '@/components/VideoEmbed'
 import RequestViewingModal from '@/components/RequestViewingModal'
 import { PrivateListingDisclaimer } from '@/components/PrivateListingDisclaimer'
@@ -116,6 +119,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
   const [error, setError] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showViewingModal, setShowViewingModal] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   useEffect(() => {
     if (propertyId) {
@@ -208,19 +212,29 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
         {property.images && property.images.length > 0 ? (
           <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative w-full max-h-[600px] min-h-[300px] bg-gray-100 flex items-center justify-center">
-              <img
-                src={property.images[currentImageIndex]}
-                alt={`${property.title} - Image ${currentImageIndex + 1}`}
-                className="max-w-full max-h-[600px] w-auto h-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = 'flex';
-                }}
-              />
-              <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center absolute inset-0">
-                <Home className="h-16 w-16 text-gray-400" />
-              </div>
+              <button
+                onClick={() => setLightboxOpen(true)}
+                className="w-full h-full flex items-center justify-center cursor-zoom-in group"
+                aria-label="Click to enlarge image"
+              >
+                <img
+                  src={property.images[currentImageIndex]}
+                  alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                  className="max-w-full max-h-[600px] w-auto h-auto object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center absolute inset-0">
+                  <Home className="h-16 w-16 text-gray-400" />
+                </div>
+                {/* Enlarge hint */}
+                <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-70 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn className="h-5 w-5" />
+                </div>
+              </button>
 
               {/* Property Status Ribbon */}
               <PropertyStatusRibbon
@@ -284,6 +298,27 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
           <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700">
             No images found or images array is empty
           </div>
+        )}
+
+        {/* Fullscreen Lightbox */}
+        {property.images && property.images.length > 0 && (
+          <Lightbox
+            open={lightboxOpen}
+            close={() => setLightboxOpen(false)}
+            index={currentImageIndex}
+            slides={property.images.map((src) => ({ src }))}
+            plugins={[Zoom]}
+            on={{
+              view: ({ index }) => setCurrentImageIndex(index),
+            }}
+            carousel={{
+              finite: false,
+            }}
+            zoom={{
+              maxZoomPixelRatio: 3,
+              scrollToZoom: true,
+            }}
+          />
         )}
 
         {/* Private Listing Disclaimer */}
