@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
       referer,
       ip_address: ip,
       session_id: payload.session_id || null,
-      ab_variant: payload.variant || null,
     };
 
     // Insert into analytics_events table

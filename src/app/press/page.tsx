@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Press & Media | Guyana HomeHub',
@@ -84,14 +85,25 @@ export default function PressPage() {
         {/* Founder Section */}
         <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">About the Founder</h2>
-          <div className="text-gray-700">
-            <p>
-              Darren Buckner is a serial entrepreneur based in St. Louis, Missouri with experience
-              in construction, real estate development, property renovation, and web development.
-              Married for 16 years to Rochelle Pydana - daughter of the late Guyanese cricket legend
-              Milton Pydana - Buckner built Guyana HomeHub after experiencing firsthand the challenges
-              of purchasing property in Guyana from overseas.
-            </p>
+          <div className="md:flex md:gap-6">
+            <div className="flex-shrink-0 mb-4 md:mb-0">
+              <Image
+                src="/images/founder-headshot.png"
+                alt="Darren Buckner, Founder & CEO"
+                width={128}
+                height={128}
+                className="w-32 h-32 rounded-lg object-cover"
+              />
+            </div>
+            <div className="text-gray-700">
+              <p>
+                Darren Buckner is a serial entrepreneur based in St. Louis, Missouri with experience
+                in construction, real estate development, property renovation, and web development.
+                Married for 16 years to Rochelle Pydana - daughter of the late Guyanese cricket legend
+                Milton Pydana - Buckner built Guyana HomeHub after experiencing firsthand the challenges
+                of purchasing property in Guyana from overseas.
+              </p>
+            </div>
           </div>
         </section>
 
