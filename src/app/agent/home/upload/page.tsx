@@ -127,31 +127,58 @@ Write a professional, engaging description that highlights the property's best f
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
+    console.log('FORM SUBMIT: Handler triggered')
+    console.log('FORM SUBMIT: User state', { hasUser: !!user, email: user?.email })
+    console.log('FORM SUBMIT: Form data', {
+      title: form.title,
+      price: form.price,
+      location: form.location,
+      imagesCount: form.images.length,
+      imageNames: form.images.map(f => f.name),
+      heroIndex: form.heroIndex
+    })
+
     if (!user) {
+      console.error('FORM SUBMIT: No user - redirecting to login')
       alert('Please log in to upload properties.')
       router.push('/agent-login')
       return
     }
 
     if (form.images.length === 0) {
-      alert('Please upload at least one image.')
+      console.error('FORM SUBMIT: No images in form state')
+      alert('Please upload at least one image. If you selected images but they are not showing, please try using the "Tap here to open file picker" link or try a different browser.')
       return
     }
 
     setIsLoading(true)
 
     try {
-      console.log('Starting upload process...')
+      console.log('FORM SUBMIT: Starting upload process...')
       
       // Upload images with better error handling
       const uploadedImageUrls: string[] = []
-      
+
+      console.log('FORM SUBMIT: Starting image uploads', { totalImages: form.images.length })
+
       for (let i = 0; i < form.images.length; i++) {
         const file = form.images[i]
+
+        // Validate file before upload
+        if (!file || !file.name) {
+          console.error(`FORM SUBMIT: Invalid file at index ${i}`, file)
+          throw new Error(`Invalid file at position ${i + 1}. Please re-select your images.`)
+        }
+
         const filename = `${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`
 
-        console.log(`Uploading image ${i + 1}/${form.images.length}: ${filename}`)
+        console.log(`FORM SUBMIT: Uploading image ${i + 1}/${form.images.length}`, {
+          filename,
+          originalName: file.name,
+          size: file.size,
+          type: file.type
+        })
 
         const { data, error: uploadError } = await supabase.storage
           .from('property-images')
@@ -161,8 +188,8 @@ Write a professional, engaging description that highlights the property's best f
           })
 
         if (uploadError) {
-          console.error('Upload error:', uploadError)
-          throw new Error(`Failed to upload image ${i + 1}: ${uploadError.message}`)
+          console.error('FORM SUBMIT: Upload error', { index: i, error: uploadError })
+          throw new Error(`Failed to upload image ${i + 1} (${file.name}): ${uploadError.message}`)
         }
 
         // FIXED: Use proper public URL generation
@@ -171,10 +198,10 @@ Write a professional, engaging description that highlights the property's best f
           .getPublicUrl(filename)
 
         uploadedImageUrls.push(publicUrl)
-        console.log(`Image ${i + 1} uploaded successfully:`, publicUrl)
+        console.log(`FORM SUBMIT: Image ${i + 1} uploaded successfully`, { publicUrl })
       }
 
-      console.log('All images uploaded, inserting property record...')
+      console.log('FORM SUBMIT: All images uploaded, inserting property record...')
 
       // Insert property record with better validation
       const propertyData = {
@@ -194,17 +221,19 @@ Write a professional, engaging description that highlights the property's best f
         hero_index: form.heroIndex
       }
 
+      console.log('FORM SUBMIT: Property data to insert', propertyData)
+
       const { data: insertData, error: insertError } = await supabase
         .from('properties')
         .insert([propertyData])
         .select()
 
       if (insertError) {
-        console.error('Database insert error:', insertError)
+        console.error('FORM SUBMIT: Database insert error', insertError)
         throw new Error(`Failed to save property: ${insertError.message}`)
       }
 
-      console.log('Property saved successfully:', insertData)
+      console.log('FORM SUBMIT: Property saved successfully', insertData)
       alert('Property submitted successfully! It will be reviewed before going live.')
       
       // Reset form
