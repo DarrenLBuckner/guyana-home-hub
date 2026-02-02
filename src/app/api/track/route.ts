@@ -46,11 +46,12 @@ export async function POST(request: NextRequest) {
       .insert([eventData]);
 
     if (error) {
+      // Log error but don't fail the request - analytics shouldn't break user experience
       console.error('Analytics tracking error:', error);
-      return NextResponse.json({ error: 'Failed to track event' }, { status: 500 });
+      return NextResponse.json({ success: true, tracked: false });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, tracked: true });
     
   } catch (error) {
     console.error('Analytics API error:', error);
