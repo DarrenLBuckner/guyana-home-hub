@@ -136,344 +136,225 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
           console.error('Error loading property:', err)
           setError(err.message)
           setLoading(false)
-        })
-    }
-  }, [propertyId])
+        // Responsive layout and conditional rendering for private listings
+        const isPrivateListing = property.is_private_listing;
+        const promotedAgent = property.promoted_agent;
+        const ownerContact = property.owner_contact;
 
-  // Increment view count on page load (fire-and-forget)
-  useEffect(() => {
-    const incrementViews = async () => {
-      try {
-        const supabase = createClient()
-        await supabase.rpc('increment_property_views', { property_id: propertyId })
-      } catch (error) {
-        // Silent fail - don't block page rendering for view increment
-        console.error('Failed to increment views:', error)
-      }
-    }
-
-    if (propertyId) {
-      incrementViews()
-    }
-  }, [propertyId])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading property details...</div>
-      </div>
-    )
-  }
-
-  if (error || !property) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Property Not Found</h1>
-          <p className="text-gray-600">The property you are looking for does not exist.</p>
-        </div>
-      </div>
-    )
-  }
-
-  const nextImage = () => {
-    if (property?.images) {
-      setCurrentImageIndex((prev) => (prev + 1) % property.images!.length)
-    }
-  }
-
-  const prevImage = () => {
-    if (property?.images) {
-      setCurrentImageIndex((prev) => (prev - 1 + property.images!.length) % property.images!.length)
-    }
-  }
-
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Title and Action Bar */}
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-          <h1 className="text-4xl font-bold">{property.title}</h1>
-          <div className="flex items-center gap-3">
-            <WatchButton propertyId={property.id} />
-            <ShareDropdown property={property} />
-          </div>
-        </div>
-
-        {/* View Count - Prominent Badge */}
-        {property.views !== undefined && property.views > 0 && (
-          <div className="inline-flex items-center gap-1.5 bg-green-500 text-white px-3 py-1.5 rounded-full text-sm font-medium mb-4">
-            <Eye className="h-4 w-4" />
-            <span>{property.views?.toLocaleString()} views</span>
-          </div>
-        )}
-
-        {/* Image Gallery */}
-        {property.images && property.images.length > 0 ? (
-          <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="relative w-full max-h-[600px] min-h-[300px] bg-gray-100 flex items-center justify-center">
-              <button
-                onClick={() => setLightboxOpen(true)}
-                className="w-full h-full flex items-center justify-center cursor-zoom-in group"
-                aria-label="Click to enlarge image"
-              >
-                <img
-                  src={property.images[currentImageIndex]}
-                  alt={`${property.title} - Image ${currentImageIndex + 1}`}
-                  className="max-w-full max-h-[600px] w-auto h-auto object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'flex';
-                  }}
-                />
-                <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center absolute inset-0">
-                  <Home className="h-16 w-16 text-gray-400" />
+        return (
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto">
+              {/* Title and Action Bar */}
+              <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <h1 className="text-4xl font-bold">{property.title}</h1>
+                <div className="flex items-center gap-3">
+                  <WatchButton propertyId={property.id} />
+                  <ShareDropdown property={property} />
                 </div>
-                {/* Enlarge hint */}
-                <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-70 group-hover:opacity-100 transition-opacity">
-                  <ZoomIn className="h-5 w-5" />
+              </div>
+
+              {/* View Count - Prominent Badge */}
+              {property.views !== undefined && property.views > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-green-500 text-white px-3 py-1.5 rounded-full text-sm font-medium mb-4">
+                  <Eye className="h-4 w-4" />
+                  <span>{property.views?.toLocaleString()} views</span>
                 </div>
-              </button>
-
-              {/* Property Status Ribbon */}
-              <PropertyStatusRibbon
-                status={property.status || 'available'}
-                listingType={property.listing_type}
-              />
-
-              {property.images.length > 1 && (
-                <>
-                  <button
-                    onClick={prevImage}
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
-                  >
-                    <ChevronLeft className="h-6 w-6" />
-                  </button>
-                  <button
-                    onClick={nextImage}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </button>
-                </>
               )}
 
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {property.images.length}
-              </div>
-            </div>
-
-            {property.images.length > 1 && (
-              <div className="p-4 bg-gray-50">
-                <div className="flex space-x-2 overflow-x-auto">
-                  {property.images.map((image, index) => (
+              {/* Image Gallery */}
+              {property.images && property.images.length > 0 ? (
+                <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+                  <div className="relative w-full max-h-[600px] min-h-[300px] bg-gray-100 flex items-center justify-center">
                     <button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                        index === currentImageIndex ? 'border-green-600' : 'border-gray-200'
-                      }`}
+                      onClick={() => setLightboxOpen(true)}
+                      className="w-full h-full flex items-center justify-center cursor-zoom-in group"
+                      aria-label="Click to enlarge image"
                     >
                       <img
-                        src={image}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        src={property.images[currentImageIndex]}
+                        alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                        className="max-w-full max-h-[600px] w-auto h-auto object-contain"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           const fallback = e.currentTarget.nextElementSibling as HTMLElement;
                           if (fallback) fallback.style.display = 'flex';
                         }}
                       />
-                      <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center">
-                        <Home className="h-6 w-6 text-gray-400" />
+                      <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center absolute inset-0">
+                        <Home className="h-16 w-16 text-gray-400" />
+                      </div>
+                      {/* Enlarge hint */}
+                      <div className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full opacity-70 group-hover:opacity-100 transition-opacity">
+                        <ZoomIn className="h-5 w-5" />
                       </div>
                     </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700">
-            No images found or images array is empty
-          </div>
-        )}
 
-        {/* Fullscreen Lightbox */}
-        {property.images && property.images.length > 0 && (
-          <Lightbox
-            open={lightboxOpen}
-            close={() => setLightboxOpen(false)}
-            index={currentImageIndex}
-            slides={property.images.map((src) => ({ src }))}
-            plugins={[Zoom]}
-            on={{
-              view: ({ index }) => setCurrentImageIndex(index),
-            }}
-            carousel={{
-              finite: false,
-            }}
-            zoom={{
-              maxZoomPixelRatio: 3,
-              scrollToZoom: true,
-            }}
-          />
-        )}
+                    {/* Property Status Ribbon */}
+                    <PropertyStatusRibbon
+                      status={property.status || 'available'}
+                      listingType={property.listing_type}
+                    />
 
-        {/* Private Listing Disclaimer */}
-        <PrivateListingDisclaimer
-          listedByType={property.listed_by_type}
-          listingType={property.listing_type}
-        />
-
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="p-6">
-            {/* Large Price and Key Details */}
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-              <div>
-                <div className="text-5xl font-bold text-green-600">
-                  ${property.price?.toLocaleString()}
-                  {property.listing_type === 'rent' && (
-                    <span className="text-2xl text-gray-600">/month</span>
-                  )}
-                </div>
-                {/* FSBO Badge */}
-                <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
-              </div>
-              <div className="flex flex-wrap items-center gap-6">
-                {property.bedrooms && (
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-800">{property.bedrooms}</div>
-                    <div className="text-sm text-gray-600 uppercase tracking-wide">Beds</div>
-                  </div>
-                )}
-                {property.bathrooms && (
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-gray-800">{property.bathrooms}</div>
-                    <div className="text-sm text-gray-600 uppercase tracking-wide">Baths</div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Property Details Rectangle */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-              {property.year_built && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-gray-800">{property.year_built}</div>
-                  <div className="text-sm text-gray-600">Year Built</div>
-                </div>
-              )}
-              {property.house_size_value && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-gray-800">
-                    {property.house_size_value.toLocaleString()}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Home Sq Ft {property.house_size_unit && property.house_size_unit !== 'sq ft' ? `(${property.house_size_unit})` : ''}
-                  </div>
-                </div>
-              )}
-              {(property.lot_length && property.lot_width) || property.land_size_value ? (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-gray-800">
-                    {/* Show dimensions if available (familiar to Guyanese locals) */}
-                    {property.lot_length && property.lot_width && (
-                      <div>
-                        {property.lot_length}x{property.lot_width}{property.lot_dimension_unit || 'ft'}
-                      </div>
+                    {property.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={prevImage}
+                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                        >
+                          <ChevronLeft className="h-6 w-6" />
+                        </button>
+                        <button
+                          onClick={nextImage}
+                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
+                        >
+                          <ChevronRight className="h-6 w-6" />
+                        </button>
+                      </>
                     )}
-                    {/* Show total area (familiar to international users) */}
-                    {property.land_size_value && (
-                      <div className={property.lot_length && property.lot_width ? "text-sm" : ""}>
-                        {property.land_size_value.toLocaleString()} {property.land_size_unit || 'sq ft'}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Lot Size {property.lot_length && property.lot_width && property.land_size_value ? '(Dimensions / Area)' : ''}
-                  </div>
-                </div>
-              ) : null}
-              {property.property_type && (
-                <div className="text-center">
-                  <div className="text-lg font-semibold text-gray-800">{property.property_type}</div>
-                  <div className="text-sm text-gray-600">Home Type</div>
-                </div>
-              )}
-            </div>
 
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">Location</h2>
-              {property.neighborhood ? (
-                <div>
-                  <p className="text-gray-700 font-medium">
-                    {property.show_address && property.address
-                      ? `${property.address}, ${property.neighborhood}`
-                      : property.neighborhood}
-                  </p>
-                  {property.city && (
-                    <p className="text-gray-500 text-sm">{property.city}</p>
-                  )}
-                  {!property.show_address && (
-                    <p className="text-gray-500 text-sm mt-1 italic">
-                      Contact agent for exact address
-                    </p>
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                      {currentImageIndex + 1} / {property.images.length}
+                    </div>
+                  </div>
+
+                  {property.images.length > 1 && (
+                    <div className="p-4 bg-gray-50">
+                      <div className="flex space-x-2 overflow-x-auto">
+                        {property.images.map((image, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setCurrentImageIndex(index)}
+                            className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
+                              index === currentImageIndex ? 'border-green-600' : 'border-gray-200'
+                            }`}
+                          >
+                            <img
+                              src={image}
+                              alt={`Thumbnail ${index + 1}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                if (fallback) fallback.style.display = 'flex';
+                              }}
+                            />
+                            <div className="hidden w-full h-full bg-gray-200 flex items-center justify-center">
+                              <Home className="h-6 w-6 text-gray-400" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               ) : (
-                <p className="text-gray-600">
-                  {property.city || 'Location details available upon request'}
-                </p>
+                <div className="mb-8 p-4 bg-red-100 border border-red-400 text-red-700">
+                  No images found or images array is empty
+                </div>
+              )}
+
+              {/* Fullscreen Lightbox */}
+              {property.images && property.images.length > 0 && (
+                <Lightbox
+                  open={lightboxOpen}
+                  close={() => setLightboxOpen(false)}
+                  index={currentImageIndex}
+                  slides={property.images.map((src) => ({ src }))}
+                  plugins={[Zoom]}
+                  on={{
+                    view: ({ index }) => setCurrentImageIndex(index),
+                  }}
+                  carousel={{
+                    finite: false,
+                  }}
+                  zoom={{
+                    maxZoomPixelRatio: 3,
+                    scrollToZoom: true,
+                  }}
+                />
+              )}
+
+              {/* Private Listing Disclaimer */}
+              <PrivateListingDisclaimer
+                listedByType={property.listed_by_type}
+                listingType={property.listing_type}
+              />
+
+              {/* Agent Promotion Box & Owner Contact for Private Listings */}
+              {isPrivateListing && (
+                <>
+                  {promotedAgent && (
+                    <div className="mb-8">
+                      <AgentPromotionBox agent={promotedAgent} onRequestViewing={() => setShowViewingModal(true)} />
+                    </div>
+                  )}
+                  <OwnerContact name={ownerContact?.name || 'Property Owner'} phone={ownerContact?.phone} />
+                </>
+              )}
+
+              {/* Hide standard owner contact buttons for private listings */}
+              {!isPrivateListing && property.agent_profile ? (
+                ...existing code...
+              ) : null}
+
+              {/* Currency & Mortgage Calculators */}
+              {property.price && (
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <CurrencyCalculatorWidget
+                    initialAmount={property.price}
+                    initialFromCurrency="GYD"
+                    initialToCurrency="USD"
+                    compact={false}
+                    className="shadow-lg"
+                  />
+                  <MortgageCalculator
+                    initialAmount={property.price}
+                    className="shadow-lg"
+                  />
+                </div>
               )}
             </div>
 
-            {property.description && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <TruncatedDescription description={property.description} maxLength={300} />
-              </div>
+            {/* Request Viewing Modal */}
+            {property && (
+              <RequestViewingModal
+                property={property}
+                isOpen={showViewingModal}
+                onClose={() => setShowViewingModal(false)}
+              />
             )}
 
-            {property.video_url && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Property Video</h2>
-                <VideoEmbed videoUrl={property.video_url} className="max-w-2xl" />
-              </div>
+            {/* Property Schema for Rich Search Results */}
+            {property && (
+              <PropertySchemaClient
+                property={{
+                  id: property.id,
+                  title: property.title,
+                  description: property.description,
+                  price: property.price,
+                  currency: 'GYD',
+                  propertyType: property.listing_type || 'sale',
+                  category: property.property_type,
+                  location: property.city,
+                  address: property.location || property.city,
+                  bedrooms: property.bedrooms,
+                  bathrooms: property.bathrooms,
+                  area: property.house_size_value,
+                  images: property.images,
+                  agent: property.agent_profile ? {
+                    name: `${property.agent_profile.first_name} ${property.agent_profile.last_name}`,
+                    phone: property.agent_profile.phone,
+                    company: property.agent_profile.company
+                  } : undefined,
+                  features: property.features || property.amenities,
+                  yearBuilt: property.year_built,
+                  listingDate: new Date().toISOString(),
+                  listedByType: property.listed_by_type as 'agent' | 'owner' | 'developer'
+                }}
+              />
             )}
-
-            {(property.amenities || property.features) && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-2">Amenities & Features</h2>
-                <div className="flex flex-wrap gap-2">
-                  {(property.amenities || property.features || []).map((amenity, index) => (
-                    <span
-                      key={index}
-                      className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Agent Profile Section - Only for Agent listings */}
-            {property.agent_profile ? (
-              <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-6 mb-6">
-                <div className="flex flex-wrap items-center gap-3 mb-4">
-                  <h3 className="text-xl font-semibold text-gray-800">Listed by</h3>
-                  {property.agent_profile.is_verified_agent && (
-                    <span className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-sm font-bold uppercase tracking-wide rounded-full px-4 py-1.5">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                      VERIFIED AGENT
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center space-x-4">
+          </div>
+        )
                   {/* Agent Photo */}
                   <div className="flex-shrink-0">
                     {property.agent_profile.profile_image ? (
