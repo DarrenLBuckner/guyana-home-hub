@@ -27,7 +27,14 @@
       "Bash(timeout:*)",
       "Bash(ping:*)",
       "Bash(git diff:*)",
-      "Bash(npx next lint:*)"
+      "Bash(npx next lint:*)",
+      "Bash(dir:*)",
+      "mcp__claude_ai_Vercel__list_deployments",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "Read(//c/Dev/Portal-home-hub/**)",
+      "Bash(ls:*)",
+      "Bash(gh api:*)"
     ],
     "deny": [],
     "ask": [],

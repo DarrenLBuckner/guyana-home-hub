@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(python -c:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Dev\\Portal-home-hub\\src\\app\\dashboard\\owner\\edit-property\\[id]"
+    ]
+  }
+}
