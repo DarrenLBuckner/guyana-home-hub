@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const { data: favorites, error } = await supabase
       .from('user_favorites')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_email', user.email)
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('user_favorites')
       .insert({
-        user_id: user.id,
+        user_email: user.email,
         property_id,
         property_title,
         property_price,
@@ -156,7 +156,7 @@ export async function DELETE(request: NextRequest) {
     const { error } = await supabase
       .from('user_favorites')
       .delete()
-      .eq('user_id', user.id)
+      .eq('user_email', user.email)
       .eq('property_id', property_id)
 
     if (error) {

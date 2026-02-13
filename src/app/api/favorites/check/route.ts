@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from('user_favorites')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_email', user.email)
       .eq('property_id', property_id)
       .single()
 

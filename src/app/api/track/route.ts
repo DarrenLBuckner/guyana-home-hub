@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare event data
     const eventData = {
-      event_name: event,
+      event_type: event,
       event_data: payload,
       timestamp,
       user_agent: userAgent,
