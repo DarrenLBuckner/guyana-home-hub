@@ -95,23 +95,19 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { property_id, property_title, property_price, property_location, property_type, listing_type } = body
+    const { property_id } = body
 
     if (!property_id) {
       return NextResponse.json({ error: 'Property ID is required' }, { status: 400 })
     }
 
-    // Add to favorites with property snapshot
+    // Add to favorites (only columns that exist on user_favorites table)
     const { data, error } = await supabase
       .from('user_favorites')
       .insert({
         user_email: user.email,
         property_id,
-        property_title,
-        property_price,
-        property_location,
-        property_type,
-        listing_type
+        site_id: 'guyana'
       })
       .select()
       .single()
