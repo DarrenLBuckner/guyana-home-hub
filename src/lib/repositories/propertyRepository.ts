@@ -28,12 +28,12 @@ export class PropertyRepository {
           *,
           images:property_images(*),
           metadata:property_metadata(*),
-          agent:profiles!agent_id(name, email, phone)
+          agent:profiles!user_id(name, email, phone)
         `, { count: 'exact' })
 
       // Apply filters
       if (filters.agent_id) {
-        query = query.eq('agent_id', filters.agent_id)
+        query = query.eq('user_id', filters.agent_id)
       }
 
       if (filters.status?.length) {
@@ -118,7 +118,7 @@ export class PropertyRepository {
           *,
           images:property_images(*),
           metadata:property_metadata(*),
-          agent:profiles!agent_id(name, email, phone)
+          agent:profiles!user_id(name, email, phone)
         `)
         .eq('id', id)
         .single()
@@ -157,10 +157,7 @@ export class PropertyRepository {
           status: propertyData.status,
           features: propertyData.features,
           amenities: propertyData.amenities,
-          tags: propertyData.tags,
-          agent_id: propertyData.agent_id,
-          owner_id: propertyData.owner_id,
-          seo: propertyData.seo
+          user_id: propertyData.agent_id || propertyData.owner_id,
         })
         .select()
         .single()
@@ -175,7 +172,7 @@ export class PropertyRepository {
           property.id,
           propertyData.image_files,
           propertyData.hero_image_index,
-          propertyData.agent_id || propertyData.owner_id || '' // fallback to owner if agent missing
+          propertyData.agent_id || propertyData.owner_id || ''
         )
       }
 
@@ -211,7 +208,6 @@ export class PropertyRepository {
           ...(updates.status && { status: updates.status }),
           ...(updates.features && { features: updates.features }),
           ...(updates.amenities && { amenities: updates.amenities }),
-          ...(updates.tags && { tags: updates.tags }),
           updated_at: new Date().toISOString()
         })
         .eq('id', id)
@@ -324,9 +320,9 @@ export class PropertyRepository {
       status: dbProperty.status,
       features: dbProperty.features || {},
       amenities: dbProperty.amenities || [],
-      tags: dbProperty.tags || [],
-      agent_id: dbProperty.agent_id,
-      owner_id: dbProperty.owner_id,
+      tags: [],
+      agent_id: dbProperty.user_id,
+      owner_id: dbProperty.user_id,
       images: dbProperty.images || [],
       hero_image: dbProperty.images?.find((img: any) => img.is_hero) || undefined,
       metadata: dbProperty.metadata?.[0] || {
@@ -336,7 +332,7 @@ export class PropertyRepository {
         days_on_market: 0,
         price_history: []
       },
-      seo: dbProperty.seo || {
+      seo: {
         slug: this.generateSlug(dbProperty.title),
         meta_title: dbProperty.title,
         meta_description: dbProperty.description?.substring(0, 160)
