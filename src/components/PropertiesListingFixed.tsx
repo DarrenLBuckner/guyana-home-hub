@@ -1,19 +1,19 @@
 "use client"
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import {
   Bed,
   Bath,
   Square,
   Search,
-  Filter,
   Grid,
   List,
   Eye,
   Home,
-  ChevronDown
+  SlidersHorizontal,
+  X
 } from 'lucide-react'
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
 import { FSBOBadge } from '@/components/FSBOBadge'
@@ -75,25 +75,54 @@ const COMMERCIAL_PROPERTY_TYPES = [
   { value: 'agricultural land', label: 'Agricultural Land' },
 ]
 
-function PropertiesListingContent({ 
-  title, 
+function PropertiesListingContent({
+  title,
   filterType = 'all',
-  propertyCategory = 'all', 
+  propertyCategory = 'all',
   showFilters = true
 }: PropertiesListingProps) {
   const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showFiltersModal, setShowFiltersModal] = useState(false)
+  const [showMoreFilters, setShowMoreFilters] = useState(false)
 
-  // Filter states - Initialize with URL parameters
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('location') || '')
-  const [selectedType, setSelectedType] = useState('')
-  const [priceRange, setPriceRange] = useState('')
-  const [bedrooms, setBedrooms] = useState('')
-  const [bathrooms, setBathrooms] = useState('')
-  const [sortBy, setSortBy] = useState('price-high') // Default to highest price first
+  // Filter states - Initialize from URL parameters (back-compat: read 'location' as fallback for 'q')
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || searchParams.get('location') || '')
+  const [selectedType, setSelectedType] = useState(searchParams.get('type') || '')
+  const [priceRange, setPriceRange] = useState(searchParams.get('price') || '')
+  const [bedrooms, setBedrooms] = useState(searchParams.get('beds') || '')
+  const [bathrooms, setBathrooms] = useState(searchParams.get('baths') || '')
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'price-high')
+
+  // Sync filter state to URL params (debounced)
+  const urlSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const syncFiltersToUrl = useCallback(() => {
+    if (urlSyncTimer.current) clearTimeout(urlSyncTimer.current)
+    urlSyncTimer.current = setTimeout(() => {
+      const params = new URLSearchParams()
+      if (searchTerm) params.set('q', searchTerm)
+      if (selectedType) params.set('type', selectedType)
+      if (priceRange) params.set('price', priceRange)
+      if (bedrooms) params.set('beds', bedrooms)
+      if (bathrooms) params.set('baths', bathrooms)
+      if (sortBy && sortBy !== 'price-high') params.set('sort', sortBy)
+      const qs = params.toString()
+      router.replace(`${pathname}${qs ? '?' + qs : ''}`, { scroll: false })
+    }, 300)
+  }, [searchTerm, selectedType, priceRange, bedrooms, bathrooms, sortBy, pathname, router])
+
+  useEffect(() => {
+    syncFiltersToUrl()
+    return () => { if (urlSyncTimer.current) clearTimeout(urlSyncTimer.current) }
+  }, [syncFiltersToUrl])
+
+  // Count of active secondary filters (for badge on "More" button)
+  const moreFilterCount = (bathrooms ? 1 : 0) + (sortBy !== 'price-high' ? 1 : 0) + (searchTerm ? 1 : 0)
+  const hasAnyFilter = !!(searchTerm || selectedType || priceRange || bedrooms || bathrooms)
 
   useEffect(() => {
     async function fetchProperties() {
@@ -189,6 +218,7 @@ function PropertiesListingContent({
     setBedrooms('')
     setBathrooms('')
     setSortBy('price-high')
+    router.replace(pathname, { scroll: false })
   }
 
   const filteredProperties = properties.filter(property => {
@@ -306,31 +336,178 @@ function PropertiesListingContent({
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Clean Filter Bar - Zillow Style */}
+        {/* Filter Bar */}
         {showFilters && (
-          <div className="bg-white p-4 shadow-sm rounded-lg mb-6 border">
-            {/* Desktop Filters */}
-            <div className="hidden lg:flex items-center gap-4 flex-wrap">
-              {/* Price Range */}
-              <div className="relative">
+          <div className="bg-white shadow-sm rounded-lg mb-6 border">
+            {/* ── DESKTOP FILTERS (lg+) ── */}
+            <div className="hidden lg:block p-4">
+              {/* Primary row: Type, Price, Beds, Search, Clear */}
+              <div className="flex items-center gap-3">
+                {/* Property Type */}
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  className={`px-4 py-2 border rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    selectedType ? 'border-green-500 text-green-700' : 'border-gray-300 text-gray-700'
+                  }`}
+                >
+                  <option value="">Property Type</option>
+                  {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+
+                {/* Price Range */}
                 <select
                   value={priceRange}
                   onChange={(e) => handlePriceRangeChange(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                  className={`px-4 py-2 border rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    priceRange ? 'border-green-500 text-green-700' : 'border-gray-300 text-gray-700'
+                  }`}
                 >
                   <option value="">{filterType === 'rent' ? 'Monthly Rent' : 'Price Range'}</option>
                   {getPriceRanges().map(range => (
                     <option key={range.value} value={range.value}>{range.label}</option>
                   ))}
                 </select>
-              </div>
 
-              {/* Bedrooms */}
-              <div className="relative">
+                {/* Bedrooms */}
                 <select
                   value={bedrooms}
                   onChange={(e) => setBedrooms(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
+                  className={`px-4 py-2 border rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    bedrooms ? 'border-green-500 text-green-700' : 'border-gray-300 text-gray-700'
+                  }`}
+                >
+                  <option value="">Beds</option>
+                  <option value="1">1+ Bed</option>
+                  <option value="2">2+ Beds</option>
+                  <option value="3">3+ Beds</option>
+                  <option value="4">4+ Beds</option>
+                  <option value="5">5+ Beds</option>
+                </select>
+
+                {/* Search */}
+                <div className="flex-1 relative min-w-[200px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    placeholder="Search location, title..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+
+                {/* More Filters toggle */}
+                <button
+                  onClick={() => setShowMoreFilters(!showMoreFilters)}
+                  className={`flex items-center gap-1.5 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                    showMoreFilters || moreFilterCount > 0
+                      ? 'border-green-500 text-green-700 bg-green-50'
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  More
+                  {moreFilterCount > 0 && (
+                    <span className="bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {moreFilterCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Clear All */}
+                {hasAnyFilter && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="text-green-600 hover:text-green-700 text-sm font-medium whitespace-nowrap"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
+
+              {/* Secondary row: Baths, Sort (expandable) */}
+              {showMoreFilters && (
+                <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
+                  {/* Bathrooms */}
+                  <select
+                    value={bathrooms}
+                    onChange={(e) => setBathrooms(e.target.value)}
+                    className={`px-4 py-2 border rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                      bathrooms ? 'border-green-500 text-green-700' : 'border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    <option value="">Baths</option>
+                    <option value="1">1+ Bath</option>
+                    <option value="2">2+ Baths</option>
+                    <option value="3">3+ Baths</option>
+                    <option value="4">4+ Baths</option>
+                  </select>
+
+                  {/* Sort */}
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  >
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {/* ── MOBILE INLINE FILTERS (<lg) ── */}
+            <div className="lg:hidden p-3">
+              <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                {/* Property Type pill */}
+                <select
+                  value={selectedType}
+                  onChange={(e) => setSelectedType(e.target.value)}
+                  className={`flex-shrink-0 px-3 py-2 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:outline-none appearance-none bg-no-repeat bg-[length:12px] bg-[center_right_8px] ${
+                    selectedType
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-300 bg-white text-gray-700'
+                  }`}
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, paddingRight: '24px' }}
+                >
+                  <option value="">Type</option>
+                  {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+
+                {/* Price pill */}
+                <select
+                  value={priceRange}
+                  onChange={(e) => handlePriceRangeChange(e.target.value)}
+                  className={`flex-shrink-0 px-3 py-2 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:outline-none appearance-none bg-no-repeat bg-[length:12px] bg-[center_right_8px] ${
+                    priceRange
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-300 bg-white text-gray-700'
+                  }`}
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, paddingRight: '24px' }}
+                >
+                  <option value="">Price</option>
+                  {getPriceRanges().map(range => (
+                    <option key={range.value} value={range.value}>{range.label}</option>
+                  ))}
+                </select>
+
+                {/* Beds pill */}
+                <select
+                  value={bedrooms}
+                  onChange={(e) => setBedrooms(e.target.value)}
+                  className={`flex-shrink-0 px-3 py-2 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:outline-none appearance-none bg-no-repeat bg-[length:12px] bg-[center_right_8px] ${
+                    bedrooms
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-300 bg-white text-gray-700'
+                  }`}
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, paddingRight: '24px' }}
                 >
                   <option value="">Beds</option>
                   <option value="1">1+</option>
@@ -339,83 +516,36 @@ function PropertiesListingContent({
                   <option value="4">4+</option>
                   <option value="5">5+</option>
                 </select>
-              </div>
 
-              {/* Bathrooms */}
-              <div className="relative">
-                <select
-                  value={bathrooms}
-                  onChange={(e) => setBathrooms(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-                >
-                  <option value="">Baths</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                  <option value="4">4+</option>
-                </select>
-              </div>
-
-              {/* Property Type */}
-              <div className="relative">
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-                >
-                  <option value="">Property Type</option>
-                  {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
-                    <option key={type.value} value={type.value}>{type.label}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Sort */}
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-                >
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="newest">Newest First</option>
-                  <option value="oldest">Oldest First</option>
-                </select>
-              </div>
-
-              {/* Search */}
-              <div className="flex-1 relative min-w-[200px]">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
-                  type="text"
-                  placeholder="Search location, title..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
-
-              {/* Clear Filters */}
-              {(searchTerm || selectedType || priceRange || bedrooms || bathrooms) && (
+                {/* More pill — opens drawer for secondary filters */}
                 <button
-                  onClick={clearAllFilters}
-                  className="text-green-600 hover:text-green-700 text-sm font-medium"
+                  onClick={() => setShowFiltersModal(true)}
+                  className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 border rounded-full text-sm font-medium ${
+                    moreFilterCount > 0
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-300 bg-white text-gray-700'
+                  }`}
                 >
-                  Clear All
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  More
+                  {moreFilterCount > 0 && (
+                    <span className="bg-green-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                      {moreFilterCount}
+                    </span>
+                  )}
                 </button>
-              )}
-            </div>
 
-            {/* Mobile Filter Button */}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setShowFiltersModal(true)}
-                className="w-full bg-green-600 text-white px-4 py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 flex items-center justify-center gap-2"
-              >
-                <Filter className="w-4 h-4" />
-                Filters & Sort
-              </button>
+                {/* Clear pill — only shows when filters active */}
+                {hasAnyFilter && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="flex-shrink-0 flex items-center gap-1 px-3 py-2 border border-red-200 rounded-full text-sm text-red-600 bg-red-50"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                    Clear
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -560,117 +690,72 @@ function PropertiesListingContent({
 
 
 
-      {/* Mobile Filter Drawer */}
+      {/* Mobile "More Filters" Drawer — secondary filters only */}
       {showFiltersModal && (
         <>
           {/* Backdrop */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setShowFiltersModal(false)}
           />
-          
+
           {/* Drawer */}
-          <div className="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl z-50 max-h-[90vh] overflow-y-auto animate-slide-up">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Filters</h2>
-                <button 
+          <div className="fixed inset-x-0 bottom-0 bg-white rounded-t-2xl z-50 max-h-[80vh] overflow-y-auto animate-slide-up">
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-300 rounded-full" />
+            </div>
+
+            <div className="p-5">
+              <div className="flex justify-between items-center mb-5">
+                <h2 className="text-lg font-bold text-gray-800">More Filters</h2>
+                <button
                   onClick={() => setShowFiltersModal(false)}
                   className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-full"
                 >
-                  ✕
+                  <X className="h-5 w-5" />
                 </button>
               </div>
-              
-              {/* Search */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <input
-                    type="text"
-                    placeholder="Search for properties..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-              </div>
 
-              {/* Filter Fields */}
               <div className="space-y-4">
-                {/* Property Type */}
+                {/* Search */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
-                  <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="">All Types</option>
-                    {(propertyCategory === 'commercial' ? COMMERCIAL_PROPERTY_TYPES : RESIDENTIAL_PROPERTY_TYPES).map(type => (
-                      <option key={type.value} value={type.value}>{type.label}</option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Search</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <input
+                      type="text"
+                      placeholder="Location, title, keyword..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
                 </div>
-                
-                {/* Price Range */}
+
+                {/* Bathrooms */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {filterType === 'rent' ? 'Monthly Rent (GYD)' : 'Price Range (GYD)'}
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Bathrooms</label>
                   <select
-                    value={priceRange}
-                    onChange={(e) => handlePriceRangeChange(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={bathrooms}
+                    onChange={(e) => setBathrooms(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   >
-                    <option value="">All Prices</option>
-                    {getPriceRanges().map(range => (
-                      <option key={range.value} value={range.value}>{range.label}</option>
-                    ))}
+                    <option value="">Any</option>
+                    <option value="1">1+ Bath</option>
+                    <option value="2">2+ Baths</option>
+                    <option value="3">3+ Baths</option>
+                    <option value="4">4+ Baths</option>
                   </select>
-                </div>
-                
-                {/* Beds/Baths */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
-                    <select
-                      value={bedrooms}
-                      onChange={(e) => setBedrooms(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Any</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                      <option value="5">5+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
-                    <select
-                      value={bathrooms}
-                      onChange={(e) => setBathrooms(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    >
-                      <option value="">Any</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                    </select>
-                  </div>
                 </div>
 
                 {/* Sort */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Sort By</label>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   >
                     <option value="price-high">Price: High to Low</option>
                     <option value="price-low">Price: Low to High</option>
@@ -678,22 +763,21 @@ function PropertiesListingContent({
                     <option value="oldest">Oldest First</option>
                   </select>
                 </div>
-                
               </div>
-              
+
               {/* Action Buttons */}
-              <div className="mt-8 flex gap-3">
-                {(searchTerm || selectedType || priceRange || bedrooms || bathrooms) && (
-                  <button 
-                    onClick={clearAllFilters}
-                    className="flex-1 border-2 border-gray-300 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50"
+              <div className="mt-6 flex gap-3">
+                {hasAnyFilter && (
+                  <button
+                    onClick={() => { clearAllFilters(); setShowFiltersModal(false) }}
+                    className="flex-1 border-2 border-gray-300 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 text-sm"
                   >
-                    Reset
+                    Reset All
                   </button>
                 )}
-                <button 
+                <button
                   onClick={() => setShowFiltersModal(false)}
-                  className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500"
+                  className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 focus:ring-2 focus:ring-green-500 text-sm"
                 >
                   Show {filteredProperties.length} Properties
                 </button>
