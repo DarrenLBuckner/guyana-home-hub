@@ -449,7 +449,7 @@ export default function DevelopmentsPage() {
                           </p>
                         </div>
                         <a
-                          href={`/developments/${dev.slug}`}
+                          href={`/properties/developments/${dev.slug}`}
                           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition text-sm font-medium"
                         >
                           View Details
