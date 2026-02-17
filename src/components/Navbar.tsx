@@ -86,6 +86,9 @@ export default function Navbar() {
           <Link href="/properties/commercial" className="hover:text-green-600">
             Commercial
           </Link>
+          <Link href="/properties/developments" className="hover:text-green-600">
+            Developments
+          </Link>
           <Link href="/business-directory" className="hover:text-green-600">
             Business Directory
           </Link>
@@ -172,6 +175,13 @@ export default function Navbar() {
               onClick={closeMenu}
             >
               🏢 Commercial Properties
+            </Link>
+            <Link
+              href="/properties/developments"
+              className="block text-blue-600 hover:text-blue-700 text-lg font-bold py-3 px-4"
+              onClick={closeMenu}
+            >
+              🏗️ Developments
             </Link>
             <Link
               href="/business-directory"
