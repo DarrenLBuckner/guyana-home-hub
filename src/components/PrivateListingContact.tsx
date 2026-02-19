@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { buildPropertyMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 
 // Helper function to format phone for WhatsApp
 function formatWhatsAppNumber(phone: string, countryCode: string = '592'): string {
@@ -45,15 +46,37 @@ interface PrivateListingContactProps {
   owner: OwnerContact;
   agent: PromotedAgent | null;
   onRequestViewing?: () => void;
+  propertyTitle?: string;
+  propertyPrice?: string;
+  propertyLocation?: string;
+  propertyId?: string;
 }
 
 export default function PrivateListingContact({
   owner,
   agent,
-  onRequestViewing
+  onRequestViewing,
+  propertyTitle,
+  propertyPrice,
+  propertyLocation,
+  propertyId,
 }: PrivateListingContactProps) {
   const ownerWhatsapp = owner.phone ? formatWhatsAppNumber(owner.phone, '592') : '';
   const agentWhatsapp = agent?.phone ? formatWhatsAppNumber(agent.phone, '592') : '';
+
+  function getWhatsAppHref(phone: string, recipientName: string): string {
+    if (propertyId) {
+      const message = buildPropertyMessage({
+        recipientName,
+        propertyTitle: propertyTitle || 'this property',
+        price: propertyPrice || '',
+        location: propertyLocation || '',
+        propertyId,
+      });
+      return buildWhatsAppUrl(phone, message);
+    }
+    return `https://wa.me/${phone}`;
+  }
 
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -82,7 +105,7 @@ export default function PrivateListingContact({
 
         {ownerWhatsapp && (
           <a
-            href={`https://wa.me/${ownerWhatsapp}`}
+            href={getWhatsAppHref(ownerWhatsapp, owner.name)}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"
@@ -122,7 +145,7 @@ export default function PrivateListingContact({
           <div className="space-y-2">
             {agentWhatsapp && (
               <a
-                href={`https://wa.me/${agentWhatsapp}`}
+                href={getWhatsAppHref(agentWhatsapp, `${agent.first_name} ${agent.last_name}`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg transition-colors text-sm"

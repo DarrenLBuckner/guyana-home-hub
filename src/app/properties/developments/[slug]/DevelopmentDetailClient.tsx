@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { buildDevelopmentMessage, buildWhatsAppUrl as buildWAUrl } from '@/lib/whatsapp'
 import {
   MapPin,
   Building2,
@@ -83,12 +84,9 @@ function formatPrice(price: number, currency: string): string {
   return `$${price.toLocaleString()}`
 }
 
-function whatsappUrl(number: string, devName: string): string {
-  const cleaned = number.replace(/[^+\d]/g, '')
-  const text = encodeURIComponent(
-    `Hi, I'm interested in ${devName}. Could you please share more details?`
-  )
-  return `https://wa.me/${cleaned}?text=${text}`
+function whatsappUrl(number: string, devName: string, devSlug: string): string {
+  const message = buildDevelopmentMessage({ developmentName: devName, slug: devSlug })
+  return buildWAUrl(number, message)
 }
 
 export default function DevelopmentDetailClient({ slug }: { slug: string }) {
@@ -393,7 +391,7 @@ export default function DevelopmentDetailClient({ slug }: { slug: string }) {
               <div className="space-y-3">
                 {dev.contact_whatsapp && (
                   <a
-                    href={whatsappUrl(dev.contact_whatsapp, dev.name)}
+                    href={whatsappUrl(dev.contact_whatsapp, dev.name, dev.slug)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg font-semibold transition"

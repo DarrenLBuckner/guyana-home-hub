@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { buildPropertyMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 
 interface PromotedAgent {
   id: string;
@@ -14,10 +15,24 @@ interface PromotedAgent {
 
 interface AgentPromotionBoxProps {
   agent: PromotedAgent;
+  propertyTitle?: string;
+  propertyPrice?: string;
+  propertyLocation?: string;
+  propertyId?: string;
 }
 
-export default function AgentPromotionBox({ agent }: AgentPromotionBoxProps) {
-  const whatsappNumber = agent.phone?.replace(/[^0-9]/g, '');
+export default function AgentPromotionBox({ agent, propertyTitle, propertyPrice, propertyLocation, propertyId }: AgentPromotionBoxProps) {
+  const agentName = `${agent.first_name} ${agent.last_name}`;
+
+  const whatsappHref = agent.phone && propertyId
+    ? buildWhatsAppUrl(agent.phone, buildPropertyMessage({
+        recipientName: agentName,
+        propertyTitle: propertyTitle || 'this property',
+        price: propertyPrice || '',
+        location: propertyLocation || '',
+        propertyId,
+      }))
+    : agent.phone ? `https://wa.me/${agent.phone.replace(/[^0-9]/g, '')}` : '';
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -36,7 +51,7 @@ export default function AgentPromotionBox({ agent }: AgentPromotionBoxProps) {
         />
         <div>
           <p className="font-semibold text-gray-900">
-            {agent.first_name} {agent.last_name}
+            {agentName}
           </p>
           {agent.company && (
             <p className="text-sm text-gray-600">{agent.company}</p>
@@ -48,9 +63,9 @@ export default function AgentPromotionBox({ agent }: AgentPromotionBoxProps) {
       </div>
 
       <div className="space-y-3">
-        {whatsappNumber && (
+        {whatsappHref && (
           <a
-            href={`https://wa.me/${whatsappNumber}`}
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
