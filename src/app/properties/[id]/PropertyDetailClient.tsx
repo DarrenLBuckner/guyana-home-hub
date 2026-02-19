@@ -17,6 +17,7 @@ import { CurrencyCalculatorWidget } from '@/components/CurrencyCalculatorWidget'
 import MortgageCalculator from '@/components/MortgageCalculator'
 import PrivateListingContact from '@/components/PrivateListingContact'
 import { createClient } from '@/lib/supabase/client'
+import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 
 interface Property {
   id: string
@@ -487,6 +488,10 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                 owner={ownerContact || { name: 'Property Owner', phone: property.owner_whatsapp }}
                 agent={promotedAgent}
                 onRequestViewing={() => setShowViewingModal(true)}
+                propertyTitle={property.title}
+                propertyPrice={property.price ? `$${property.price.toLocaleString()}` : ''}
+                propertyLocation={property.neighborhood || property.city || ''}
+                propertyId={property.id}
               />
             ) : property.agent_profile ? (
               <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-6 mb-6">
@@ -565,9 +570,6 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                               return;
                             }
 
-                            // Clean phone number (remove +, spaces, dashes, parentheses)
-                            const cleanNumber = phoneNumber.replace(/[\s\-\+\(\)]/g, '');
-
                             // Create WhatsApp message for backup offers
                             const propertyTitle = property?.title || 'this property';
                             const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
@@ -575,16 +577,15 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                             const listingType = property.listing_type || 'sale';
                             const contactName = property.agent_profile ? `${property.agent_profile.first_name} ${property.agent_profile.last_name}` : 'agent';
 
-                            const message = encodeURIComponent(
-                              `Hi ${contactName}! I'm interested in backup offers for your property:\n\n` +
-                              `${propertyTitle}\n` +
-                              `${propertyPrice ? `Price: ${propertyPrice}${listingType === 'rent' ? '/month' : ''}\n` : ''}` +
-                              `${propertyLocation ? `Location: ${propertyLocation}\n` : ''}\n` +
-                              `I understand it's under contract but would like to submit a backup offer.`
-                            );
+                            const message = buildBackupOfferMessage({
+                              recipientName: contactName,
+                              propertyTitle,
+                              price: propertyPrice ? `${propertyPrice}${listingType === 'rent' ? '/month' : ''}` : '',
+                              location: propertyLocation,
+                              propertyId: property.id,
+                            });
 
-                            // WhatsApp URL
-                            const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
+                            const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
 
                             // Open in new window
                             window.open(whatsappUrl, '_blank');
@@ -608,9 +609,6 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                                 return;
                               }
 
-                              // Clean phone number (remove +, spaces, dashes, parentheses)
-                              const cleanNumber = phoneNumber.replace(/[\s\-\+\(\)]/g, '');
-
                               // Create WhatsApp message
                               const propertyTitle = property?.title || 'this property';
                               const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
@@ -618,16 +616,15 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                               const listingType = property.listing_type || 'sale';
                               const contactName = property.agent_profile ? `${property.agent_profile.first_name} ${property.agent_profile.last_name}` : 'agent';
 
-                              const message = encodeURIComponent(
-                                `Hi ${contactName}! I'm interested in your property${listingType === 'rent' ? ' for rental' : ' for sale'}:\n\n` +
-                                `${propertyTitle}\n` +
-                                `${propertyPrice ? `Price: ${propertyPrice}${listingType === 'rent' ? '/month' : ''}\n` : ''}` +
-                                `${propertyLocation ? `Location: ${propertyLocation}\n` : ''}\n` +
-                                `Could you provide more details and schedule a viewing?`
-                              );
+                              const message = buildPropertyMessage({
+                                recipientName: contactName,
+                                propertyTitle,
+                                price: propertyPrice ? `${propertyPrice}${listingType === 'rent' ? '/month' : ''}` : '',
+                                location: propertyLocation,
+                                propertyId: property.id,
+                              });
 
-                              // WhatsApp URL
-                              const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
+                              const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
 
                               // Open in new window
                               window.open(whatsappUrl, '_blank');
@@ -677,7 +674,15 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     </a>
                     {property.owner_whatsapp && (
                       <a
-                        href={`https://wa.me/${property.owner_whatsapp.replace(/[^0-9]/g, '')}`}
+                        href={buildWhatsAppUrl(property.owner_whatsapp, buildPropertyMessage({
+                          recipientName: property.owner_contact?.name || 'there',
+                          propertyTitle: property.title || 'this property',
+                          price: property.price ? `$${property.price.toLocaleString()}` : '',
+                          location: property.neighborhood || property.city || '',
+                          propertyId: property.id,
+                        }))}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="bg-green-600 text-white text-center py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
                       >
                         WhatsApp Owner
@@ -702,19 +707,17 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                       alert('Contact information not available');
                       return;
                     }
-                    const cleanNumber = phoneNumber.replace(/[\s\-\+\(\)]/g, '');
                     const propertyTitle = property?.title || 'this property';
                     const propertyPrice = property?.price ? `$${property.price.toLocaleString()}` : '';
                     const propertyLocation = property?.neighborhood || property?.city || '';
                     const listingType = property.listing_type || 'sale';
-                    const message = encodeURIComponent(
-                      `Hi! I'm interested in your property${listingType === 'rent' ? ' for rental' : ' for sale'}:\n\n` +
-                      `${propertyTitle}\n` +
-                      `${propertyPrice ? `Price: ${propertyPrice}${listingType === 'rent' ? '/month' : ''}\n` : ''}` +
-                      `${propertyLocation ? `Location: ${propertyLocation}\n` : ''}\n` +
-                      `Could you provide more details and schedule a viewing?`
-                    );
-                    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
+                    const message = buildPropertyMessage({
+                      propertyTitle,
+                      price: propertyPrice ? `${propertyPrice}${listingType === 'rent' ? '/month' : ''}` : '',
+                      location: propertyLocation,
+                      propertyId: property.id,
+                    });
+                    const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
                     window.open(whatsappUrl, '_blank');
                   }}
                   className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"

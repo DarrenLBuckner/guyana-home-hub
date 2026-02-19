@@ -7,6 +7,7 @@ import { PropertyFilters } from './PropertyFilters'
 import { PropertyCard } from './PropertyCard'
 import { LoadingSpinner } from './ui/LoadingSpinner'
 import { Property, PropertyFilters as IPropertyFilters, PropertySortOptions } from '@/types/property'
+import { buildPropertyMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -179,29 +180,20 @@ export function PropertySearch({
       return;
     }
     
-    // Clean phone number (remove +, spaces, dashes, parentheses)
-    const cleanNumber = phoneNumber.replace(/[\s\-\+\(\)]/g, '');
-    
-    // Create WhatsApp message
+    // Create branded WhatsApp message
     const propertyTitle = property?.title || 'this property';
     const propertyPrice = property?.price ? `GYD ${parseInt(property.price.toString()).toLocaleString()}` : '';
     const propertyLocation = property?.location || '';
-    
-    const message = encodeURIComponent(
-      `Hi! I'm interested in your property:\n\n` +
-      `${propertyTitle}\n` +
-      `${propertyPrice ? `Price: ${propertyPrice}\n` : ''}` +
-      `${propertyLocation ? `Location: ${propertyLocation}\n` : ''}\n` +
-      `I'd like to know more details.`
-    );
-    
-    // WhatsApp URL
-    const whatsappUrl = `https://wa.me/${cleanNumber}?text=${message}`;
-    
-    // Open in new window
+
+    const message = buildPropertyMessage({
+      propertyTitle,
+      price: propertyPrice,
+      location: propertyLocation,
+      propertyId: property.id,
+    });
+
+    const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
     window.open(whatsappUrl, '_blank');
-    
-    console.log('WhatsApp contact initiated:', cleanNumber);
   }, [])
 
   const sortOptions = [

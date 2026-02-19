@@ -1,14 +1,27 @@
 'use client';
 
 import React from 'react';
+import { buildPropertyMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
 
 interface OwnerContactProps {
   name: string;
   phone?: string;
+  propertyTitle?: string;
+  propertyPrice?: string;
+  propertyLocation?: string;
+  propertyId?: string;
 }
 
-export default function OwnerContact({ name, phone }: OwnerContactProps) {
-  const whatsappNumber = phone?.replace(/[^0-9]/g, '');
+export default function OwnerContact({ name, phone, propertyTitle, propertyPrice, propertyLocation, propertyId }: OwnerContactProps) {
+  const whatsappHref = phone && propertyId
+    ? buildWhatsAppUrl(phone, buildPropertyMessage({
+        recipientName: name,
+        propertyTitle: propertyTitle || 'this property',
+        price: propertyPrice || '',
+        location: propertyLocation || '',
+        propertyId,
+      }))
+    : phone ? `https://wa.me/${phone.replace(/[^0-9]/g, '')}` : '';
 
   return (
     <div className="flex items-center gap-3 py-4 border-t border-gray-200 mt-6">
@@ -23,9 +36,9 @@ export default function OwnerContact({ name, phone }: OwnerContactProps) {
       <div>
         <p className="text-sm text-gray-500">Listed by</p>
         <p className="text-sm font-medium text-gray-700">{name}</p>
-        {whatsappNumber && (
+        {whatsappHref && (
           <a
-            href={`https://wa.me/${whatsappNumber}`}
+            href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-gray-500 hover:text-gray-700 underline"
