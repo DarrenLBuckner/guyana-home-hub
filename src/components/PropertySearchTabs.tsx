@@ -368,7 +368,7 @@ export default function PropertySearchTabs({
     return params;
   }, [selectedTypes, minPrice, maxPrice, currency, beds, baths, searchQuery, devType]);
 
-  // ── Search handler ──
+  // ── Search handler (explicit button click) ──
   const handleSearch = useCallback(() => {
     const params = buildParams();
     const qs = params.toString();
@@ -380,6 +380,20 @@ export default function PropertySearchTabs({
       router.replace(targetUrl, { scroll: false });
     }
   }, [activeTab, variant, router, buildParams]);
+
+  // ── Auto-sync filters to URL for listing variant (debounced 300ms) ──
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (variant !== "listing") return;
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      const params = buildParams();
+      const qs = params.toString();
+      const targetUrl = `${TAB_ROUTES[activeTab]}${qs ? "?" + qs : ""}`;
+      router.replace(targetUrl, { scroll: false });
+    }, 300);
+    return () => { if (syncTimer.current) clearTimeout(syncTimer.current); };
+  }, [variant, activeTab, buildParams, router]);
 
   // ── Clear all ──
   const clearFilters = () => {

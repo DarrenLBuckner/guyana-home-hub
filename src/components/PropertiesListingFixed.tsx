@@ -94,13 +94,28 @@ function PropertiesListingContent({
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || searchParams.get('location') || '')
   const [selectedType, setSelectedType] = useState(searchParams.get('type') || '')
   const [priceRange, setPriceRange] = useState(searchParams.get('price') || '')
+  const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '')
+  const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '')
   const [bedrooms, setBedrooms] = useState(searchParams.get('beds') || '')
   const [bathrooms, setBathrooms] = useState(searchParams.get('baths') || '')
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'price-high')
 
-  // Sync filter state to URL params (debounced)
+  // Reactively sync FROM URL params when they change (e.g. from PropertySearchTabs)
+  useEffect(() => {
+    setSearchTerm(searchParams.get('q') || searchParams.get('location') || '')
+    setSelectedType(searchParams.get('type') || '')
+    setPriceRange(searchParams.get('price') || '')
+    setMinPrice(searchParams.get('minPrice') || '')
+    setMaxPrice(searchParams.get('maxPrice') || '')
+    setBedrooms(searchParams.get('beds') || '')
+    setBathrooms(searchParams.get('baths') || '')
+    setSortBy(searchParams.get('sort') || 'price-high')
+  }, [searchParams])
+
+  // Sync filter state to URL params (debounced) — only when this component owns the filters
   const urlSyncTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const syncFiltersToUrl = useCallback(() => {
+    if (!showFilters) return // PropertySearchTabs owns the URL when filters are hidden
     if (urlSyncTimer.current) clearTimeout(urlSyncTimer.current)
     urlSyncTimer.current = setTimeout(() => {
       const params = new URLSearchParams()
@@ -113,7 +128,7 @@ function PropertiesListingContent({
       const qs = params.toString()
       router.replace(`${pathname}${qs ? '?' + qs : ''}`, { scroll: false })
     }, 300)
-  }, [searchTerm, selectedType, priceRange, bedrooms, bathrooms, sortBy, pathname, router])
+  }, [searchTerm, selectedType, priceRange, bedrooms, bathrooms, sortBy, pathname, router, showFilters])
 
   useEffect(() => {
     syncFiltersToUrl()
@@ -226,15 +241,20 @@ function PropertiesListingContent({
                          property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.description?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    // Property type filter - handle special "commercial" case
+    // Property type filter - supports comma-separated multi-select (e.g. "house,apartment")
     let matchesType = !selectedType;
     if (selectedType) {
-      if (selectedType.toLowerCase() === 'commercial') {
-        // If user selects "commercial" filter, match any commercial property
-        matchesType = (property as any).property_category === 'commercial';
+      const typeValues = selectedType.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)
+      if (typeValues.length === 0) {
+        matchesType = true
+      } else if (typeValues.includes('commercial')) {
+        // If "commercial" is one of the selected types, also match by category
+        const otherTypes = typeValues.filter(t => t !== 'commercial')
+        const matchesCategory = (property as any).property_category === 'commercial'
+        const matchesSpecific = otherTypes.length > 0 && otherTypes.includes(property.property_type?.toLowerCase() || '')
+        matchesType = matchesCategory || matchesSpecific
       } else {
-        // Otherwise match exact property type (case-insensitive)
-        matchesType = property.property_type?.toLowerCase() === selectedType.toLowerCase();
+        matchesType = typeValues.includes(property.property_type?.toLowerCase() || '')
       }
     }
     
@@ -265,11 +285,14 @@ function PropertiesListingContent({
       }
     }
     
-    // Handle price range filtering
+    // Handle price range filtering (supports both old 'price=min-max' and new 'minPrice'/'maxPrice')
     let matchesPrice = true
     if (priceRange) {
       const [min, max] = priceRange.split('-').map(p => parseInt(p))
       matchesPrice = property.price >= min && property.price <= max
+    } else {
+      if (minPrice) matchesPrice = property.price >= parseInt(minPrice)
+      if (maxPrice) matchesPrice = matchesPrice && property.price <= parseInt(maxPrice)
     }
 
     return matchesSearch && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesListingType && matchesCategory
