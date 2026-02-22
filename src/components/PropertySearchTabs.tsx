@@ -354,8 +354,8 @@ export default function PropertySearchTabs({
     [variant, defaultTab, router]
   );
 
-  // ── Build URL params ──
-  const buildParams = useCallback(() => {
+  // ── Build URL string from current filter state (plain function, no memoization) ──
+  function buildFilterUrl(): string {
     const params = new URLSearchParams();
     if (selectedTypes.length > 0) params.set("type", selectedTypes.join(","));
     if (minPrice) params.set("minPrice", minPrice);
@@ -365,21 +365,19 @@ export default function PropertySearchTabs({
     if (baths) params.set("baths", baths);
     if (searchQuery.trim()) params.set("q", searchQuery.trim());
     if (devType) params.set("devType", devType);
-    return params;
-  }, [selectedTypes, minPrice, maxPrice, currency, beds, baths, searchQuery, devType]);
-
-  // ── Search handler (explicit button click) ──
-  const handleSearch = useCallback(() => {
-    const params = buildParams();
     const qs = params.toString();
-    const targetUrl = `${TAB_ROUTES[activeTab]}${qs ? "?" + qs : ""}`;
+    return `${TAB_ROUTES[activeTab]}${qs ? "?" + qs : ""}`;
+  }
 
+  // ── Search handler (explicit button click — used by hero + listing) ──
+  const handleSearch = () => {
+    const url = buildFilterUrl();
     if (variant === "hero") {
-      router.push(targetUrl);
+      router.push(url);
     } else {
-      router.replace(targetUrl, { scroll: false });
+      router.replace(url, { scroll: false });
     }
-  }, [activeTab, variant, router, buildParams]);
+  };
 
   // ── Auto-sync filters to URL for listing variant (debounced 300ms) ──
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -387,13 +385,21 @@ export default function PropertySearchTabs({
     if (variant !== "listing") return;
     if (syncTimer.current) clearTimeout(syncTimer.current);
     syncTimer.current = setTimeout(() => {
-      const params = buildParams();
+      const params = new URLSearchParams();
+      if (selectedTypes.length > 0) params.set("type", selectedTypes.join(","));
+      if (minPrice) params.set("minPrice", minPrice);
+      if (maxPrice) params.set("maxPrice", maxPrice);
+      if (currency !== "GYD") params.set("currency", currency);
+      if (beds) params.set("beds", beds);
+      if (baths) params.set("baths", baths);
+      if (searchQuery.trim()) params.set("q", searchQuery.trim());
+      if (devType) params.set("devType", devType);
       const qs = params.toString();
-      const targetUrl = `${TAB_ROUTES[activeTab]}${qs ? "?" + qs : ""}`;
-      router.replace(targetUrl, { scroll: false });
+      router.replace(`${TAB_ROUTES[activeTab]}${qs ? "?" + qs : ""}`, { scroll: false });
     }, 300);
     return () => { if (syncTimer.current) clearTimeout(syncTimer.current); };
-  }, [variant, activeTab, buildParams, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTypes, minPrice, maxPrice, currency, beds, baths, searchQuery, devType, activeTab, variant]);
 
   // ── Clear all ──
   const clearFilters = () => {
