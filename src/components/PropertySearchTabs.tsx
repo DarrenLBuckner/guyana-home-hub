@@ -497,6 +497,32 @@ export default function PropertySearchTabs({
             />
           </div>
 
+          {/* Currency Toggle */}
+          <div className="flex justify-center">
+            <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
+              <button
+                onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
+                className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  currency === "GYD"
+                    ? "bg-green-600 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                GYD
+              </button>
+              <button
+                onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
+                className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  currency === "USD"
+                    ? "bg-green-600 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                USD
+              </button>
+            </div>
+          </div>
+
           {/* Bedrooms / Bathrooms side by side (buy/rent only) */}
           {showBedBath && (
             <div className="grid grid-cols-2 gap-3">
@@ -646,8 +672,32 @@ export default function PropertySearchTabs({
             </div>
           </div>
 
-          {/* Row 2: Beds, Baths, More, Clear */}
+          {/* Row 2: Currency toggle, Beds, Baths, More, Clear, Search */}
           <div className="flex items-center gap-3">
+            {/* Currency Toggle */}
+            <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
+              <button
+                onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  currency === "GYD"
+                    ? "bg-green-600 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                GYD
+              </button>
+              <button
+                onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                  currency === "USD"
+                    ? "bg-green-600 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                USD
+              </button>
+            </div>
+
             {showBedBath && (
               <>
                 <select
