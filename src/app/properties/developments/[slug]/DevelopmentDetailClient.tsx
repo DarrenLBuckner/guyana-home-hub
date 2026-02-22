@@ -153,18 +153,27 @@ export default function DevelopmentDetailClient({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Image */}
-      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-200">
+      <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-900 overflow-hidden">
         {dev.hero_image || dev.hero_image_mobile ? (
-          <picture>
-            {dev.hero_image_mobile && (
-              <source media="(max-width: 767px)" srcSet={dev.hero_image_mobile} />
-            )}
+          <>
+            {/* Blurred background fill — prevents letterbox gaps for non-landscape images */}
             <img
               src={dev.hero_image || dev.hero_image_mobile || ''}
-              alt={dev.name}
-              className="w-full h-full object-cover"
+              alt=""
+              className="hidden md:block absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-50"
+              aria-hidden="true"
             />
-          </picture>
+            <picture className="relative block w-full h-full">
+              {dev.hero_image_mobile && (
+                <source media="(max-width: 767px)" srcSet={dev.hero_image_mobile} />
+              )}
+              <img
+                src={dev.hero_image || dev.hero_image_mobile || ''}
+                alt={dev.name}
+                className="w-full h-full object-cover md:object-contain"
+              />
+            </picture>
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
             <Building2 className="w-24 h-24 text-gray-300" />
