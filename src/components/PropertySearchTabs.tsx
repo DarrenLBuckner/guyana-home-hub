@@ -302,6 +302,7 @@ export default function PropertySearchTabs({
   const [beds, setBeds] = useState(searchParams.get("beds") || "");
   const [baths, setBaths] = useState(searchParams.get("baths") || "");
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [devType, setDevType] = useState(searchParams.get("devType") || "");
   const [showMore, setShowMore] = useState(false);
 
   // ── Derived values ──
@@ -314,6 +315,7 @@ export default function PropertySearchTabs({
     if (activeTab === "commercial") {
       return [{ label: "Commercial", types: COMMERCIAL_TYPES }];
     }
+    // Buy, Rent, Developments all show both groups
     return [
       { label: "Residential", types: RESIDENTIAL_TYPES },
       { label: "Commercial", types: COMMERCIAL_TYPES },
@@ -330,7 +332,7 @@ export default function PropertySearchTabs({
 
   // Count active "more" filters
   const moreFilterCount = (baths ? 1 : 0) + (searchQuery ? 1 : 0);
-  const hasAnyFilter = selectedTypes.length > 0 || minPrice || maxPrice || beds || baths || searchQuery;
+  const hasAnyFilter = selectedTypes.length > 0 || minPrice || maxPrice || beds || baths || searchQuery || devType;
 
   // ── Tab change ──
   const handleTabChange = useCallback(
@@ -343,6 +345,7 @@ export default function PropertySearchTabs({
       setBeds("");
       setBaths("");
       setSearchQuery("");
+      setDevType("");
       setShowMore(false);
       if (variant === "listing" && tab !== defaultTab) {
         router.push(TAB_ROUTES[tab]);
@@ -361,8 +364,9 @@ export default function PropertySearchTabs({
     if (beds) params.set("beds", beds);
     if (baths) params.set("baths", baths);
     if (searchQuery.trim()) params.set("q", searchQuery.trim());
+    if (devType) params.set("devType", devType);
     return params;
-  }, [selectedTypes, minPrice, maxPrice, currency, beds, baths, searchQuery]);
+  }, [selectedTypes, minPrice, maxPrice, currency, beds, baths, searchQuery, devType]);
 
   // ── Search handler ──
   const handleSearch = useCallback(() => {
@@ -385,6 +389,7 @@ export default function PropertySearchTabs({
     setBeds("");
     setBaths("");
     setSearchQuery("");
+    setDevType("");
     setShowMore(false);
   };
 
@@ -451,15 +456,28 @@ export default function PropertySearchTabs({
             />
           </div>
 
-          {/* Property Type (all tabs except developments — for now) */}
-          {!isDev && (
-            <PropertyTypeDropdown
-              selected={selectedTypes}
-              onChange={setSelectedTypes}
-              groups={propertyTypeGroups}
-              isHero={isHero}
-            />
+          {/* Development Type (developments tab only) */}
+          {isDev && (
+            <select
+              value={devType}
+              onChange={(e) => setDevType(e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg text-sm min-h-[44px] focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                devType ? "border-green-500 text-green-700 bg-green-50" : "border-gray-200 text-gray-700 bg-white"
+              }`}
+            >
+              <option value="">Development Type — Any</option>
+              <option value="sale">For Sale</option>
+              <option value="rental">For Rental</option>
+            </select>
           )}
+
+          {/* Property Type (all tabs) */}
+          <PropertyTypeDropdown
+            selected={selectedTypes}
+            onChange={setSelectedTypes}
+            groups={propertyTypeGroups}
+            isHero={isHero}
+          />
 
           {/* Min / Max Price side by side */}
           <div className="grid grid-cols-2 gap-3">
@@ -578,17 +596,32 @@ export default function PropertySearchTabs({
               />
             </div>
 
-            {/* Property Type */}
-            {!isDev && (
-              <div className="w-52">
-                <PropertyTypeDropdown
-                  selected={selectedTypes}
-                  onChange={setSelectedTypes}
-                  groups={propertyTypeGroups}
-                  isHero={isHero}
-                />
+            {/* Development Type (developments tab only) */}
+            {isDev && (
+              <div className="w-44">
+                <select
+                  value={devType}
+                  onChange={(e) => setDevType(e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                  }`}
+                >
+                  <option value="">Dev Type — Any</option>
+                  <option value="sale">For Sale</option>
+                  <option value="rental">For Rental</option>
+                </select>
               </div>
             )}
+
+            {/* Property Type */}
+            <div className="w-52">
+              <PropertyTypeDropdown
+                selected={selectedTypes}
+                onChange={setSelectedTypes}
+                groups={propertyTypeGroups}
+                isHero={isHero}
+              />
+            </div>
 
             {/* Min Price */}
             <div className="w-40">
