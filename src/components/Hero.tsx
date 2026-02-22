@@ -1,53 +1,22 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { analytics } from "@/lib/analytics";
+import PropertySearchTabs from "./PropertySearchTabs";
 
 /**
  * HERO COMPONENT – JHH/GHH unified
  * ------------------------------------------------------------
- * • Country‑aware copy (Jamaica/Guyana)
- * • Dynamic rotating subheadline
- * • A/B test (variant A vs B) with localStorage bucketing
- * • Mobile vs Desktop CTA hierarchy swap
- * • Sticky mobile CTA bar (appears after slight scroll)
- * • Responsive hero image with mobile/desktop sources
- * • Clean Tailwind, minimal dependencies, analytics hooks
- *
- * HOW TO USE
- *   <Hero site={"jamaica"} />  // jamaica | guyana
- *   Place in each home page under the navbar.
- *
- * TRACKING:
- *   Connected to Supabase analytics via /api/track endpoint
+ * Simplified hero with Property24-style tabbed search.
+ * Keeps: background images, gradient, sticky CTA, analytics.
+ * Removed: diaspora banner, city pills, old search bar, A/B test.
  */
-
-// -------- Utility: simple persistent A/B bucketing ------------
-function getABVariant(key: string, buckets = ["A", "B"]) {
-  const storageKey = `ab_${key}`;
-  try {
-    const existing = localStorage.getItem(storageKey);
-    if (existing) return existing as "A" | "B";
-    const assigned = Math.random() < 0.5 ? buckets[0] : buckets[1];
-    localStorage.setItem(storageKey, assigned);
-    return assigned as "A" | "B";
-  } catch {
-    return "A"; // fail‑safe default
-  }
-}
-
-// -------- Helpers --------------------------------------------
-const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 type Site = "jamaica" | "guyana" | "colombia" | "barbados" | "rwanda" | "ghana" | "namibia" | "south-africa" | "kenya" | "dominican-republic" | "trinidad";
 
 export default function Hero({
   site,
-  desktopImage = "/hero/hero-desktop.jpg",
-  mobileImage = "/hero/hero-mobile.jpg",
 }: {
   site: Site;
-  desktopImage?: string; // 1920x900 or similar
-  mobileImage?: string; // 1080x1600 portrait crop
 }) {
   const country = useMemo(() => {
     const countryNames: Record<Site, string> = {
@@ -66,108 +35,51 @@ export default function Hero({
     return countryNames[site] || "Jamaica";
   }, [site]);
 
-  // Diaspora tagline - connects agents/sellers to overseas buyers
-  const diasporaTagline = useMemo(() => {
-    const diasporaMap: Record<Site, string> = {
-      guyana: "Connecting Guyanese in NYC, Toronto & London with property back home.",
-      jamaica: "Connecting Jamaicans in NYC, Toronto & London with property back home.",
-      colombia: "Connecting Colombians in Miami, NYC & Madrid with property back home.",
-      barbados: "Connecting Bajans in NYC, Toronto & London with property back home.",
-      trinidad: "Connecting Trinis in NYC, Toronto & London with property back home.",
-      rwanda: "Connecting Rwandans abroad with property back home.",
-      ghana: "Connecting Ghanaians in London, NYC & Toronto with property back home.",
-      namibia: "Connecting Namibians abroad with property back home.",
-      "south-africa": "Connecting South Africans in London, Sydney & Toronto with property back home.",
-      kenya: "Connecting Kenyans in London, NYC & Dubai with property back home.",
-      "dominican-republic": "Connecting Dominicans in NYC, Miami & Madrid with property back home."
-    };
-    return diasporaMap[site] || diasporaMap.jamaica;
-  }, [site]);
-
-  // A/B: Variant A (buyer‑first); Variant B (seller‑first)
-  const [variant, setVariant] = useState<"A" | "B">("A");
+  // Track hero view
   useEffect(() => {
-    const abVariant = getABVariant("hero_v1");
-    setVariant(abVariant);
-    
-    // Track hero view with variant
-    analytics.heroView(abVariant, site);
+    analytics.heroView("A", site);
   }, [site]);
 
-  // Mobile image rotation for cultural diversity (only existing images)
+  // Mobile image rotation
   const mobileImages = useMemo(() => {
-    // Map site names to country folder names
-    const countryMapping: Record<Site, string> = {
-      jamaica: "jamaica",
-      guyana: "guyana",
-      colombia: "colombia",
-      barbados: "barbados",
-      rwanda: "rwanda",
-      ghana: "ghana",
-      namibia: "namibia",
-      "south-africa": "south-africa",
-      kenya: "kenya",
-      "dominican-republic": "dominican-republic",
-      trinidad: "trinidad"
-    };
-    
-    const countryCode = countryMapping[site] || "jamaica";
-    
-    // Define available images per country (only the 2 existing images)
+    const countryCode = site;
     const availableImages: Record<string, string[]> = {
       guyana: [
-        `/images/countries/${countryCode}/hero-mobile-1.jpg`, // Your family photo - must keep!
+        `/images/countries/${countryCode}/hero-mobile-1.jpg`,
         `/images/countries/${countryCode}/hero-mobile-2.jpg`
       ],
       jamaica: [
-        `/images/countries/${countryCode}/hero-mobile-1.jpg`, // Primary image
+        `/images/countries/${countryCode}/hero-mobile-1.jpg`,
         `/images/countries/${countryCode}/hero-mobile-2.jpg`
       ]
     };
-    
     return availableImages[countryCode] || [
       `/images/countries/${countryCode}/hero-mobile-1.jpg`
     ];
   }, [site]);
-  
-  // Desktop image with country-specific path and fallback
+
+  // Desktop image with fallback
   const [desktopImageSrc, setDesktopImageSrc] = useState(() => {
-    const countryCode = site;
-    return `/images/countries/${countryCode}/hero-desktop.jpg`;
+    return `/images/countries/${site}/hero-desktop.jpg`;
   });
   const defaultDesktopImage = "/hero/hero-desktop.jpg";
 
   const [mobileImageIndex, setMobileImageIndex] = useState(0);
   useEffect(() => {
-    // Only rotate if there are multiple images
     if (mobileImages.length <= 1) return;
-
     const id = setInterval(() => {
       setMobileImageIndex((i) => (i + 1) % mobileImages.length);
-    }, 4000); // Change image every 4 seconds - optimized for user attention span
+    }, 4000);
     return () => clearInterval(id);
   }, [mobileImages.length]);
 
-  // Rotating secondary line
-  const rotating = useMemo(() => [
-    "Buy. Rent. Sell — All in One Place.",
-    `List Free Today. Reach verified buyers & renters across ${country} and the diaspora.`,
-  ], [country]);
-  const [rotIndex, setRotIndex] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setRotIndex((i) => (i + 1) % rotating.length), 3500); // Faster text rotation for better engagement
-    return () => clearInterval(id);
-  }, [rotating.length]);
-
-  // Sticky mobile CTA visibility
+  // Sticky mobile CTA
   const [showSticky, setShowSticky] = useState(false);
   const [stickyTracked, setStickyTracked] = useState(false);
   useEffect(() => {
     const onScroll = () => {
       const shouldShow = window.scrollY > 120;
       setShowSticky(shouldShow);
-      
-      // Track sticky CTA view once when it first appears
       if (shouldShow && !stickyTracked) {
         analytics.stickyCtaView(site);
         setStickyTracked(true);
@@ -177,19 +89,11 @@ export default function Hero({
     return () => window.removeEventListener("scroll", onScroll);
   }, [site, stickyTracked]);
 
-  const headline = variant === "A"
-    ? `Find Your Perfect Home in ${country}`
-    : `Sell or Rent Faster in ${country}`;
-
-  const subheadline = variant === "A"
-    ? `List Free Today. Get verified buyers and renters across ${country} and the diaspora.`
-    : `Post your property free — keep every dollar and reach serious leads across ${country} & the diaspora.`;
-
   return (
     <section className="relative w-full">
-      {/* Background Image with responsive sources */}
+      {/* Background Image */}
       <div className="absolute inset-0 -z-10">
-        {/* Desktop Image - country-specific with fallback */}
+        {/* Desktop */}
         <img
           src={desktopImageSrc}
           alt={`${country} homes background`}
@@ -197,13 +101,11 @@ export default function Hero({
           fetchPriority="high"
           onError={(e) => {
             if (e.currentTarget.src !== defaultDesktopImage) {
-              console.warn(`Country desktop hero not found, falling back to default`);
               setDesktopImageSrc(defaultDesktopImage);
             }
           }}
         />
-        
-        {/* Mobile Images with Smooth Transitions */}
+        {/* Mobile */}
         <div className="relative h-[78vh] w-full md:hidden">
           {mobileImages.map((imgSrc, index) => (
             <img
@@ -215,105 +117,27 @@ export default function Hero({
               }`}
               fetchPriority={index === 0 ? "high" : "low"}
               onError={(e) => {
-                console.warn(`Failed to load mobile hero image: ${imgSrc}`);
-                // Hide broken image
                 e.currentTarget.style.display = 'none';
               }}
             />
           ))}
         </div>
-        
-        {/* Gradient overlay - optimized to show faces while maintaining text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/10 via-black/30 to-black/20" />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/40" />
       </div>
 
-      {/* Content - positioned to show faces in mobile hero images */}
-      <div className="mx-auto flex h-[78vh] max-w-6xl flex-col items-center justify-center px-4 pt-8 text-center text-white md:justify-start md:pt-24">
-        <h1 className="text-4xl font-extrabold leading-tight drop-shadow md:text-6xl">
-          {headline}
+      {/* Content */}
+      <div className="mx-auto flex h-[78vh] max-w-6xl flex-col items-center justify-center px-4 pt-8 text-center text-white md:justify-start md:pt-20">
+        {/* Headline — responsive */}
+        <h1 className="text-3xl font-extrabold leading-tight drop-shadow md:text-5xl lg:text-6xl mb-6">
+          <span className="md:hidden">Find Property in {country}</span>
+          <span className="hidden md:inline">Find Your Dream Property in {country}</span>
         </h1>
 
-        {/* Static diaspora tagline - always visible for agents */}
-        <p className="mt-3 inline-block rounded-full bg-amber-500/90 px-5 py-2 text-sm font-semibold text-white shadow-lg backdrop-blur-sm md:text-base">
-          🌍 {diasporaTagline}
-        </p>
-
-        {/* Rotating subheadline */}
-        <div className="mt-3 h-14 md:h-8">
-          <AnimatePresence mode="wait">
-            <motion.p key={rotIndex}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.35 }}
-              className="mx-auto max-w-2xl px-1 text-lg md:text-xl">
-              {rotating[rotIndex]}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-
-        {/* Search bar - extra spacing on mobile to show faces */}
-        <div className="mt-8 w-full max-w-3xl md:mt-5">
-          <form
-            className="flex overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = e.currentTarget as HTMLFormElement;
-              const q = (form.elements.namedItem("q") as HTMLInputElement)?.value?.trim();
-              analytics.searchSubmit(q || "", site);
-              
-              // Route to search page with query
-              if (q) {
-                window.location.href = `/search?q=${encodeURIComponent(q)}`;
-              }
-            }}
-          >
-            <input
-              name="q"
-              aria-label="Search"
-              placeholder={`Search by area, neighborhood, or keyword...`}
-              className="w-full px-5 py-4 text-gray-800 placeholder-gray-500 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="hidden shrink-0 bg-emerald-600 px-6 py-4 font-semibold text-white hover:bg-emerald-700 focus:outline-none md:block"
-            >
-              Search
-            </button>
-          </form>
-        </div>
-
-        {/* Popular quick chips - extra spacing on mobile */}
-        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm md:mt-4">
-          {(() => {
-            const citiesMap: Record<Site, string[]> = {
-              jamaica: ["Kingston", "Spanish Town", "Portmore", "May Pen"],
-              guyana: ["Georgetown", "Providence", "Eccles", "New Amsterdam"],
-              colombia: ["Bogotá", "Medellín", "Cali", "Cartagena"],
-              barbados: ["Bridgetown", "St. Lawrence", "Oistins", "Speightstown"],
-              rwanda: ["Kigali", "Butare", "Gitarama", "Ruhengeri"],
-              ghana: ["Accra", "Kumasi", "Tamale", "Cape Coast"],
-              namibia: ["Windhoek", "Swakopmund", "Walvis Bay", "Oshakati"],
-              "south-africa": ["Cape Town", "Johannesburg", "Durban", "Pretoria"],
-              kenya: ["Nairobi", "Mombasa", "Kisumu", "Nakuru"],
-              "dominican-republic": ["Santo Domingo", "Santiago", "La Romana", "Puerto Plata"],
-              trinidad: ["Port of Spain", "San Fernando", "Chaguanas", "Arima"]
-            };
-            return citiesMap[site] || citiesMap.jamaica;
-          })().map((city) => (
-            <button
-              key={city}
-              onClick={() => {
-                analytics.quickSearch(city, site);
-                // Navigate to search page with the city as query
-                window.location.href = `/search?q=${encodeURIComponent(city)}`;
-              }}
-              className="rounded-full border border-white/70 bg-white/10 px-4 py-2 backdrop-blur hover:bg-white/20"
-            >
-              {city}
-            </button>
-          ))}
-        </div>
+        {/* Tabbed Search Component */}
+        <Suspense fallback={<div className="w-full max-w-3xl h-48 bg-white/10 rounded-2xl animate-pulse" />}>
+          <PropertySearchTabs variant="hero" />
+        </Suspense>
       </div>
 
       {/* Sticky mobile CTA bar */}
