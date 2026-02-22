@@ -1,26 +1,28 @@
 'use client';
 import { Suspense } from 'react';
 import PropertiesListingFixed from '@/components/PropertiesListingFixed';
+import PropertySearchTabs from '@/components/PropertySearchTabs';
 
-// Inner component
 function RentPropertiesContent() {
   return (
-    <PropertiesListingFixed 
-      title="Find Your Rental Property"
-      filterType="rent"
-      propertyCategory="residential"
-      showFilters={true}
-    />
+    <>
+      <PropertySearchTabs variant="listing" defaultTab="rent" />
+      <PropertiesListingFixed
+        title="Rental Properties"
+        filterType="rent"
+        propertyCategory="residential"
+        showFilters={false}
+      />
+    </>
   );
 }
 
-// Outer component with Suspense
 export default function RentPropertiesPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-4 animate-pulse">🏠</div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading rental properties...</p>
         </div>
       </div>

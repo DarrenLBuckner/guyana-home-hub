@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { Search, MapPin, Home, ChevronDown, Filter, Building2, Users, Star } from 'lucide-react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { MapPin, Building2, Users, Star } from 'lucide-react';
+import PropertySearchTabs from '@/components/PropertySearchTabs';
 
 interface ApiDevelopment {
   id: string;
@@ -60,6 +62,15 @@ const STATUS_STYLES: Record<string, string> = {
   completed: 'bg-gray-100 text-gray-800',
 };
 
+const typeLabels: Record<string, string> = {
+  condominium: 'Condominium',
+  townhouse: 'Townhouse',
+  single_family: 'Single Family',
+  mixed_use: 'Mixed Use',
+  gated_community: 'Gated Community',
+  commercial: 'Commercial',
+};
+
 function mapDevelopment(d: ApiDevelopment): Development {
   const location = [d.location_area, d.city].filter(Boolean).join(', ');
   return {
@@ -84,45 +95,18 @@ function mapDevelopment(d: ApiDevelopment): Development {
   };
 }
 
-export default function DevelopmentsPage() {
-  const [developmentType, setDevelopmentType] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
+function DevelopmentsContent() {
+  const searchParams = useSearchParams();
   const [allDevelopments, setAllDevelopments] = useState<Development[]>([]);
   const [developments, setDevelopments] = useState<Development[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const developmentTypes = [
-    'condominium',
-    'townhouse',
-    'single_family',
-    'mixed_use',
-    'gated_community',
-    'commercial',
-  ];
-
-  const typeLabels: Record<string, string> = {
-    condominium: 'Condominium',
-    townhouse: 'Townhouse',
-    single_family: 'Single Family',
-    mixed_use: 'Mixed Use',
-    gated_community: 'Gated Community',
-    commercial: 'Commercial',
-  };
-
-  const statuses = Object.keys(STATUS_MAP);
-
-  const priceRanges = [
-    { value: '50000', label: '$50K' },
-    { value: '100000', label: '$100K' },
-    { value: '150000', label: '$150K' },
-    { value: '200000', label: '$200K' },
-    { value: '300000', label: '$300K' },
-    { value: '500000', label: '$500K' },
-    { value: '1000000', label: '$1M+' },
-  ];
+  // Read filter state from URL params (set by PropertySearchTabs)
+  const devType = searchParams.get('devType') || '';
+  const selectedTypes = searchParams.get('type')?.split(',').filter(Boolean) || [];
+  const minPrice = searchParams.get('minPrice') || '';
+  const maxPrice = searchParams.get('maxPrice') || '';
+  const searchQuery = searchParams.get('q') || '';
 
   const formatPrice = (price: number, currency: string) => {
     if (price === 0) return 'Contact for price';
@@ -135,11 +119,10 @@ export default function DevelopmentsPage() {
   const applyFilters = useCallback((devs: Development[]) => {
     let filtered = devs;
 
-    if (developmentType) {
-      filtered = filtered.filter(d => d.developmentType === developmentType);
-    }
-    if (statusFilter) {
-      filtered = filtered.filter(d => d.status === statusFilter);
+    if (selectedTypes.length > 0) {
+      filtered = filtered.filter(d =>
+        selectedTypes.some(t => d.developmentType.toLowerCase().includes(t.toLowerCase()))
+      );
     }
     if (minPrice) {
       filtered = filtered.filter(d => d.priceTo >= Number(minPrice));
@@ -147,9 +130,17 @@ export default function DevelopmentsPage() {
     if (maxPrice) {
       filtered = filtered.filter(d => d.priceFrom <= Number(maxPrice));
     }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(d =>
+        d.title.toLowerCase().includes(q) ||
+        d.location.toLowerCase().includes(q) ||
+        d.developerName.toLowerCase().includes(q)
+      );
+    }
 
     setDevelopments(filtered);
-  }, [developmentType, statusFilter, minPrice, maxPrice]);
+  }, [selectedTypes, minPrice, maxPrice, searchQuery]);
 
   // Fetch all developments on page load
   useEffect(() => {
@@ -162,7 +153,6 @@ export default function DevelopmentsPage() {
         if (data.success) {
           const mapped = data.developments.map(mapDevelopment);
           setAllDevelopments(mapped);
-          setDevelopments(mapped);
         }
       } catch (error) {
         console.error('Failed to fetch developments:', error);
@@ -173,166 +163,16 @@ export default function DevelopmentsPage() {
     fetchDevelopments();
   }, []);
 
-  // Re-apply filters when filter values change
+  // Re-apply filters when URL params change
   useEffect(() => {
     applyFilters(allDevelopments);
   }, [allDevelopments, applyFilters]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    applyFilters(allDevelopments);
-  };
-
-  const clearFilters = () => {
-    setDevelopmentType('');
-    setStatusFilter('');
-    setMinPrice('');
-    setMaxPrice('');
-  };
-
   return (
     <div>
       <main className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-br from-green-50 to-blue-50 py-16 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">
-              Explore New <span className="text-green-600">Developments</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Discover premium residential developments across Guyana. From luxury gated communities
-              to modern eco-friendly projects, find your perfect new home.
-            </p>
-          </div>
-        </div>
-
-        {/* Search Section */}
-        <div className="bg-white shadow-lg border-b">
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <form onSubmit={handleSearch} className="space-y-6">
-              {/* Primary Search Bar */}
-              <div className="bg-gray-50 rounded-2xl p-6 shadow-sm">
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                  {/* Development Type */}
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Home className="inline w-4 h-4 mr-1" />
-                      Development Type
-                    </label>
-                    <select
-                      value={developmentType}
-                      onChange={(e) => setDevelopmentType(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
-                    >
-                      <option value="">All Types</option>
-                      {developmentTypes.map((type) => (
-                        <option key={type} value={type}>
-                          {typeLabels[type] || type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Status Filter */}
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <Building2 className="inline w-4 h-4 mr-1" />
-                      Status
-                    </label>
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
-                    >
-                      <option value="">All Statuses</option>
-                      {statuses.map((status) => (
-                        <option key={status} value={status}>
-                          {STATUS_MAP[status]}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Price Range */}
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price Range (USD)
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <select
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(e.target.value)}
-                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                      >
-                        <option value="">Min</option>
-                        {priceRanges.map((price) => (
-                          <option key={price.value} value={price.value}>
-                            {price.label}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(e.target.value)}
-                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm"
-                      >
-                        <option value="">Max</option>
-                        {priceRanges.map((price) => (
-                          <option key={price.value} value={price.value}>
-                            {price.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Search Button */}
-                  <div className="flex items-end gap-2">
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center space-x-2"
-                    >
-                      <Search className="w-5 h-5" />
-                      <span>{loading ? 'Loading...' : 'Search'}</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Advanced Filters Toggle */}
-              <div className="flex justify-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="inline-flex items-center space-x-2 text-green-600 hover:text-green-700 font-medium"
-                >
-                  <Filter className="w-4 h-4" />
-                  <span>Advanced Filters</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-                </button>
-                {(developmentType || statusFilter || minPrice || maxPrice) && (
-                  <button
-                    type="button"
-                    onClick={clearFilters}
-                    className="text-sm text-red-500 hover:text-red-600 font-medium"
-                  >
-                    Clear Filters
-                  </button>
-                )}
-              </div>
-
-              {/* Advanced Filters (placeholder for future fields) */}
-              {showFilters && (
-                <div className="bg-gray-50 rounded-lg p-6 border">
-                  <p className="text-sm text-gray-500 text-center">
-                    More filters coming soon — bedrooms, amenities, and completion date.
-                  </p>
-                </div>
-              )}
-            </form>
-          </div>
-        </div>
+        {/* Tabbed Search */}
+        <PropertySearchTabs variant="listing" defaultTab="developments" />
 
         {/* Results Section */}
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -366,7 +206,6 @@ export default function DevelopmentsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {developments.map((dev) => (
                   <div key={dev.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                    {/* Development Image */}
                     <div className="h-48 bg-gray-200 relative">
                       {dev.image || dev.imageMobile ? (
                         <picture>
@@ -384,7 +223,6 @@ export default function DevelopmentsPage() {
                           <Building2 className="w-16 h-16 text-gray-300" />
                         </div>
                       )}
-                      {/* Status Badge */}
                       <div className="absolute top-4 right-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                           STATUS_STYLES[dev.status] || 'bg-gray-100 text-gray-800'
@@ -392,7 +230,6 @@ export default function DevelopmentsPage() {
                           {dev.statusLabel}
                         </span>
                       </div>
-                      {/* Featured Badge */}
                       {dev.featured && (
                         <div className="absolute top-4 left-4">
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 flex items-center gap-1">
@@ -403,14 +240,11 @@ export default function DevelopmentsPage() {
                       )}
                     </div>
 
-                    {/* Development Info */}
                     <div className="p-6">
                       <h3 className="text-xl font-bold text-gray-900 mb-1">{dev.title}</h3>
                       {dev.tagline && (
                         <p className="text-gray-600 mb-3 text-sm line-clamp-2">{dev.tagline}</p>
                       )}
-
-                      {/* Notable Partners Badge */}
                       {dev.notablePartners && (
                         <div className="mb-3">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
@@ -464,5 +298,20 @@ export default function DevelopmentsPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function DevelopmentsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading developments...</p>
+        </div>
+      </div>
+    }>
+      <DevelopmentsContent />
+    </Suspense>
   );
 }
