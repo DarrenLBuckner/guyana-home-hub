@@ -231,14 +231,11 @@ export default function HomePage() {
             </section>
 
             {/* Be Part of Something New */}
-            <section className="text-center">
-              <h2 className="text-3xl font-bold text-gray-800 mb-4">Be Part of Something New</h2>
-              <p className="text-gray-600 max-w-2xl mx-auto mb-6">
-                {theme.name} is building a better way to buy and sell property.
-                No more scrolling through Facebook chaos. No more wondering if a listing is real.
-              </p>
-              <p className="text-gray-600 max-w-2xl mx-auto">
-                We're just getting started, and we'd love for you to join us.
+            <section className="bg-slate-900 text-white rounded-xl p-8 md:p-12 text-center">
+              <p className="text-lg md:text-xl text-slate-300 mb-3">Tired of scrolling through Facebook for property listings?</p>
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">We're building a better way.</h2>
+              <p className="text-slate-400 max-w-xl mx-auto text-sm md:text-base">
+                Real listings. Verified agents. One platform for {countryName} property.
               </p>
             </section>
 
