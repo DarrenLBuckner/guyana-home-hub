@@ -131,6 +131,10 @@ export default function Hero({
             <span className="md:hidden">Find Property in {country}</span>
             <span className="hidden md:inline">Find Your Dream Property in {country}</span>
           </h1>
+          <p className="mt-2 text-xs md:text-sm text-white/80 drop-shadow-md max-w-lg">
+            <span className="md:hidden">Real listings. Verified agents. One platform.</span>
+            <span className="hidden md:inline">Tired of Facebook? Real listings. Verified agents. One platform for {country} property.</span>
+          </p>
         </div>
       </div>
 
