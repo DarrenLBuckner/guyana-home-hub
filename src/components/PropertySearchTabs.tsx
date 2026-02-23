@@ -420,7 +420,7 @@ export default function PropertySearchTabs({
     <div
       className={
         isHero
-          ? "w-full max-w-6xl mx-auto"
+          ? "w-full max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden lg:bg-white/95 lg:backdrop-blur-sm"
           : "w-full bg-white border-b shadow-sm"
       }
     >
@@ -428,7 +428,7 @@ export default function PropertySearchTabs({
       <div
         className={
           isHero
-            ? "flex border-b border-white/30"
+            ? "flex border-b border-gray-200 px-2"
             : "flex border-b border-gray-200 max-w-7xl mx-auto px-4"
         }
       >
@@ -438,11 +438,7 @@ export default function PropertySearchTabs({
             onClick={() => handleTabChange(tab.key)}
             className={`relative px-4 py-3 text-sm font-semibold transition-colors ${
               activeTab === tab.key
-                ? isHero
-                  ? "text-white"
-                  : "text-green-700"
-                : isHero
-                ? "text-white/70 hover:text-white"
+                ? "text-green-700"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
@@ -458,7 +454,7 @@ export default function PropertySearchTabs({
       <div
         className={
           isHero
-            ? "bg-white rounded-b-2xl p-4 shadow-lg"
+            ? "p-4 lg:p-6"
             : "max-w-7xl mx-auto p-4"
         }
       >
@@ -629,38 +625,38 @@ export default function PropertySearchTabs({
         {/* ── DESKTOP LAYOUT (lg+) ── */}
         <div className="hidden lg:block space-y-2">
           {isHero ? (
-            /* ── Hero desktop: single-row wide layout ── */
+            /* ── Hero desktop: two-row wide layout ── */
             <>
-              <div className="flex items-center gap-2">
-                {/* Search input — flex-grow */}
-                <div className="flex-1 relative min-w-[140px]">
+              {/* Row 1: Search + Property Type + Min Price + Max Price */}
+              <div className="flex items-start gap-3">
+                <div className="flex-1 relative min-w-[160px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Search by city, area..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
-                {/* Dev Type (developments tab only) */}
                 {isDev && (
-                  <select
-                    value={devType}
-                    onChange={(e) => setDevType(e.target.value)}
-                    className={`px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
-                      devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <option value="">Dev Type</option>
-                    <option value="sale">For Sale</option>
-                    <option value="rental">For Rental</option>
-                  </select>
+                  <div className="w-40">
+                    <select
+                      value={devType}
+                      onChange={(e) => setDevType(e.target.value)}
+                      className={`w-full px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Dev Type — Any</option>
+                      <option value="sale">For Sale</option>
+                      <option value="rental">For Rental</option>
+                    </select>
+                  </div>
                 )}
 
-                {/* Property Type */}
-                <div className="w-[160px]">
+                <div className="w-44">
                   <PropertyTypeDropdown
                     selected={selectedTypes}
                     onChange={setSelectedTypes}
@@ -669,8 +665,7 @@ export default function PropertySearchTabs({
                   />
                 </div>
 
-                {/* Min Price */}
-                <div className="w-[125px]">
+                <div className="w-36">
                   <PriceDropdown
                     label="Min Price"
                     value={minPrice}
@@ -680,8 +675,7 @@ export default function PropertySearchTabs({
                   />
                 </div>
 
-                {/* Max Price */}
-                <div className="w-[125px]">
+                <div className="w-36">
                   <PriceDropdown
                     label="Max Price"
                     value={maxPrice}
@@ -690,75 +684,14 @@ export default function PropertySearchTabs({
                     currency={currency}
                   />
                 </div>
-
-                {/* Beds (buy/rent only) */}
-                {showBedBath && (
-                  <>
-                    <select
-                      value={beds}
-                      onChange={(e) => setBeds(e.target.value)}
-                      className={`px-2 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
-                        beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                      }`}
-                    >
-                      <option value="">Beds</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                      <option value="5">5+</option>
-                    </select>
-                    <select
-                      value={baths}
-                      onChange={(e) => setBaths(e.target.value)}
-                      className={`px-2 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
-                        baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                      }`}
-                    >
-                      <option value="">Baths</option>
-                      <option value="1">1+</option>
-                      <option value="2">2+</option>
-                      <option value="3">3+</option>
-                      <option value="4">4+</option>
-                    </select>
-                  </>
-                )}
-
-                {/* More Filters */}
-                {!isDev && (
-                  <button
-                    onClick={() => setShowMore(!showMore)}
-                    className={`flex items-center gap-1 px-3 py-2.5 border rounded-lg text-sm font-medium transition-colors ${
-                      showMore || moreFilterCount > 0
-                        ? "border-green-500 text-green-700 bg-green-50"
-                        : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    <SlidersHorizontal className="w-4 h-4" />
-                    {moreFilterCount > 0 && (
-                      <span className="bg-green-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
-                        {moreFilterCount}
-                      </span>
-                    )}
-                  </button>
-                )}
-
-                {/* Search button — inline at end */}
-                <button
-                  onClick={handleSearch}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-5 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap"
-                >
-                  <Search className="w-4 h-4" />
-                  Search
-                </button>
               </div>
 
-              {/* Secondary row: currency toggle + clear */}
+              {/* Row 2: Currency + Beds + Baths + More + Clear + Search */}
               <div className="flex items-center gap-3">
                 <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
                   <button
                     onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
-                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
                       currency === "GYD"
                         ? "bg-green-600 text-white shadow-sm"
                         : "text-gray-500 hover:text-gray-700"
@@ -768,7 +701,7 @@ export default function PropertySearchTabs({
                   </button>
                   <button
                     onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
-                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
                       currency === "USD"
                         ? "bg-green-600 text-white shadow-sm"
                         : "text-gray-500 hover:text-gray-700"
@@ -777,7 +710,60 @@ export default function PropertySearchTabs({
                     USD
                   </button>
                 </div>
+
+                {showBedBath && (
+                  <>
+                    <select
+                      value={beds}
+                      onChange={(e) => setBeds(e.target.value)}
+                      className={`px-3 py-2 border rounded-lg text-sm h-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Beds</option>
+                      <option value="1">1+ Bed</option>
+                      <option value="2">2+ Beds</option>
+                      <option value="3">3+ Beds</option>
+                      <option value="4">4+ Beds</option>
+                      <option value="5">5+ Beds</option>
+                    </select>
+                    <select
+                      value={baths}
+                      onChange={(e) => setBaths(e.target.value)}
+                      className={`px-3 py-2 border rounded-lg text-sm h-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Baths</option>
+                      <option value="1">1+ Bath</option>
+                      <option value="2">2+ Baths</option>
+                      <option value="3">3+ Baths</option>
+                      <option value="4">4+ Baths</option>
+                    </select>
+                  </>
+                )}
+
+                {!isDev && (
+                  <button
+                    onClick={() => setShowMore(!showMore)}
+                    className={`flex items-center gap-1.5 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                      showMore || moreFilterCount > 0
+                        ? "border-green-500 text-green-700 bg-green-50"
+                        : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <SlidersHorizontal className="w-4 h-4" />
+                    More
+                    {moreFilterCount > 0 && (
+                      <span className="bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {moreFilterCount}
+                      </span>
+                    )}
+                  </button>
+                )}
+
                 <div className="flex-1" />
+
                 {hasAnyFilter && (
                   <button
                     onClick={clearFilters}
@@ -786,6 +772,14 @@ export default function PropertySearchTabs({
                     Clear Filters
                   </button>
                 )}
+
+                <button
+                  onClick={handleSearch}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-8 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <Search className="w-4 h-4" />
+                  Search
+                </button>
               </div>
             </>
           ) : (

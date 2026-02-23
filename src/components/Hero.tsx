@@ -91,13 +91,13 @@ export default function Hero({
 
   return (
     <section className="relative w-full">
-      {/* Background Image */}
-      <div className="absolute inset-0 -z-10">
+      {/* ── Hero Image Area ── */}
+      <div className="relative h-[300px] lg:h-[480px] xl:h-[520px] overflow-hidden">
         {/* Desktop */}
         <img
           src={desktopImageSrc}
           alt={`${country} homes background`}
-          className="hidden h-[78vh] w-full object-cover object-top md:block"
+          className="hidden h-full w-full object-cover object-top md:block"
           fetchPriority="high"
           onError={(e) => {
             if (e.currentTarget.src !== defaultDesktopImage) {
@@ -106,7 +106,7 @@ export default function Hero({
           }}
         />
         {/* Mobile */}
-        <div className="relative h-[78vh] w-full md:hidden">
+        <div className="relative h-full w-full md:hidden">
           {mobileImages.map((imgSrc, index) => (
             <img
               key={imgSrc}
@@ -122,20 +122,21 @@ export default function Hero({
             />
           ))}
         </div>
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/40" />
+        {/* Gradient overlay — bottom-to-top for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10" />
+
+        {/* Title on image */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pb-10 lg:pb-32 text-center text-white">
+          <h1 className="text-2xl font-bold leading-tight drop-shadow-lg md:text-4xl lg:text-5xl">
+            <span className="md:hidden">Find Property in {country}</span>
+            <span className="hidden md:inline">Find Your Dream Property in {country}</span>
+          </h1>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="mx-auto flex h-[78vh] max-w-6xl flex-col items-center justify-center px-4 pt-8 text-center text-white md:justify-start md:pt-20">
-        {/* Headline — responsive */}
-        <h1 className="text-3xl font-extrabold leading-tight drop-shadow md:text-5xl lg:text-6xl mb-6">
-          <span className="md:hidden">Find Property in {country}</span>
-          <span className="hidden md:inline">Find Your Dream Property in {country}</span>
-        </h1>
-
-        {/* Tabbed Search Component */}
-        <Suspense fallback={<div className="w-full max-w-6xl h-20 lg:h-16 bg-white/10 rounded-2xl animate-pulse" />}>
+      {/* ── Search Component — overlaps hero bottom ── */}
+      <div className="relative z-10 -mt-8 lg:-mt-20 px-4 lg:px-8">
+        <Suspense fallback={<div className="max-w-5xl mx-auto h-40 bg-white/90 rounded-2xl animate-pulse shadow-lg" />}>
           <PropertySearchTabs variant="hero" />
         </Suspense>
       </div>
