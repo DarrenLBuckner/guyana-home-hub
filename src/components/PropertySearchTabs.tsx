@@ -420,7 +420,7 @@ export default function PropertySearchTabs({
     <div
       className={
         isHero
-          ? "w-full max-w-3xl mx-auto"
+          ? "w-full max-w-6xl mx-auto"
           : "w-full bg-white border-b shadow-sm"
       }
     >
@@ -627,170 +627,326 @@ export default function PropertySearchTabs({
         </div>
 
         {/* ── DESKTOP LAYOUT (lg+) ── */}
-        <div className="hidden lg:block space-y-3">
-          {/* Row 1: Search + Property Type + Min Price + Max Price */}
-          <div className="flex items-start gap-3">
-            {/* Search */}
-            <div className="flex-1 relative min-w-[180px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search by city, area..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-              />
-            </div>
+        <div className="hidden lg:block space-y-2">
+          {isHero ? (
+            /* ── Hero desktop: single-row wide layout ── */
+            <>
+              <div className="flex items-center gap-2">
+                {/* Search input — flex-grow */}
+                <div className="flex-1 relative min-w-[140px]">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Search by city, area..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
 
-            {/* Development Type (developments tab only) */}
-            {isDev && (
-              <div className="w-44">
-                <select
-                  value={devType}
-                  onChange={(e) => setDevType(e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                    devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                  }`}
-                >
-                  <option value="">Dev Type — Any</option>
-                  <option value="sale">For Sale</option>
-                  <option value="rental">For Rental</option>
-                </select>
-              </div>
-            )}
-
-            {/* Property Type */}
-            <div className="w-52">
-              <PropertyTypeDropdown
-                selected={selectedTypes}
-                onChange={setSelectedTypes}
-                groups={propertyTypeGroups}
-                isHero={isHero}
-              />
-            </div>
-
-            {/* Min Price */}
-            <div className="w-40">
-              <PriceDropdown
-                label="Min Price"
-                value={minPrice}
-                onChange={setMinPrice}
-                presets={isDev ? [] : pricePresets.min}
-                currency={currency}
-              />
-            </div>
-
-            {/* Max Price */}
-            <div className="w-40">
-              <PriceDropdown
-                label="Max Price"
-                value={maxPrice}
-                onChange={setMaxPrice}
-                presets={isDev ? [] : pricePresets.max}
-                currency={currency}
-              />
-            </div>
-          </div>
-
-          {/* Row 2: Currency toggle, Beds, Baths, More, Clear, Search */}
-          <div className="flex items-center gap-3">
-            {/* Currency Toggle */}
-            <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
-              <button
-                onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
-                  currency === "GYD"
-                    ? "bg-green-600 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                GYD
-              </button>
-              <button
-                onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
-                  currency === "USD"
-                    ? "bg-green-600 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                USD
-              </button>
-            </div>
-
-            {showBedBath && (
-              <>
-                <select
-                  value={beds}
-                  onChange={(e) => setBeds(e.target.value)}
-                  className={`px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                    beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                  }`}
-                >
-                  <option value="">Bedrooms</option>
-                  <option value="1">1+ Bed</option>
-                  <option value="2">2+ Beds</option>
-                  <option value="3">3+ Beds</option>
-                  <option value="4">4+ Beds</option>
-                  <option value="5">5+ Beds</option>
-                </select>
-                <select
-                  value={baths}
-                  onChange={(e) => setBaths(e.target.value)}
-                  className={`px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                    baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                  }`}
-                >
-                  <option value="">Bathrooms</option>
-                  <option value="1">1+ Bath</option>
-                  <option value="2">2+ Baths</option>
-                  <option value="3">3+ Baths</option>
-                  <option value="4">4+ Baths</option>
-                </select>
-              </>
-            )}
-
-            {/* More Filters */}
-            {!isDev && (
-              <button
-                onClick={() => setShowMore(!showMore)}
-                className={`flex items-center gap-1.5 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
-                  showMore || moreFilterCount > 0
-                    ? "border-green-500 text-green-700 bg-green-50"
-                    : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <SlidersHorizontal className="w-4 h-4" />
-                More
-                {moreFilterCount > 0 && (
-                  <span className="bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {moreFilterCount}
-                  </span>
+                {/* Dev Type (developments tab only) */}
+                {isDev && (
+                  <select
+                    value={devType}
+                    onChange={(e) => setDevType(e.target.value)}
+                    className={`px-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
+                      devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <option value="">Dev Type</option>
+                    <option value="sale">For Sale</option>
+                    <option value="rental">For Rental</option>
+                  </select>
                 )}
-              </button>
-            )}
 
-            <div className="flex-1" />
+                {/* Property Type */}
+                <div className="w-[160px]">
+                  <PropertyTypeDropdown
+                    selected={selectedTypes}
+                    onChange={setSelectedTypes}
+                    groups={propertyTypeGroups}
+                    isHero={isHero}
+                  />
+                </div>
 
-            {/* Clear */}
-            {hasAnyFilter && (
-              <button
-                onClick={clearFilters}
-                className="text-sm text-red-500 hover:text-red-600 font-medium"
-              >
-                Clear Filters
-              </button>
-            )}
+                {/* Min Price */}
+                <div className="w-[125px]">
+                  <PriceDropdown
+                    label="Min Price"
+                    value={minPrice}
+                    onChange={setMinPrice}
+                    presets={isDev ? [] : pricePresets.min}
+                    currency={currency}
+                  />
+                </div>
 
-            {/* Search */}
-            <button
-              onClick={handleSearch}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2"
-            >
-              <Search className="w-4 h-4" />
-              Search
-            </button>
-          </div>
+                {/* Max Price */}
+                <div className="w-[125px]">
+                  <PriceDropdown
+                    label="Max Price"
+                    value={maxPrice}
+                    onChange={setMaxPrice}
+                    presets={isDev ? [] : pricePresets.max}
+                    currency={currency}
+                  />
+                </div>
+
+                {/* Beds (buy/rent only) */}
+                {showBedBath && (
+                  <>
+                    <select
+                      value={beds}
+                      onChange={(e) => setBeds(e.target.value)}
+                      className={`px-2 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
+                        beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Beds</option>
+                      <option value="1">1+</option>
+                      <option value="2">2+</option>
+                      <option value="3">3+</option>
+                      <option value="4">4+</option>
+                      <option value="5">5+</option>
+                    </select>
+                    <select
+                      value={baths}
+                      onChange={(e) => setBaths(e.target.value)}
+                      className={`px-2 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 ${
+                        baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Baths</option>
+                      <option value="1">1+</option>
+                      <option value="2">2+</option>
+                      <option value="3">3+</option>
+                      <option value="4">4+</option>
+                    </select>
+                  </>
+                )}
+
+                {/* More Filters */}
+                {!isDev && (
+                  <button
+                    onClick={() => setShowMore(!showMore)}
+                    className={`flex items-center gap-1 px-3 py-2.5 border rounded-lg text-sm font-medium transition-colors ${
+                      showMore || moreFilterCount > 0
+                        ? "border-green-500 text-green-700 bg-green-50"
+                        : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <SlidersHorizontal className="w-4 h-4" />
+                    {moreFilterCount > 0 && (
+                      <span className="bg-green-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                        {moreFilterCount}
+                      </span>
+                    )}
+                  </button>
+                )}
+
+                {/* Search button — inline at end */}
+                <button
+                  onClick={handleSearch}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-5 rounded-lg transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                >
+                  <Search className="w-4 h-4" />
+                  Search
+                </button>
+              </div>
+
+              {/* Secondary row: currency toggle + clear */}
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
+                  <button
+                    onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
+                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
+                      currency === "GYD"
+                        ? "bg-green-600 text-white shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    GYD
+                  </button>
+                  <button
+                    onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
+                    className={`px-3 py-1 text-xs font-semibold rounded-full transition-colors ${
+                      currency === "USD"
+                        ? "bg-green-600 text-white shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    USD
+                  </button>
+                </div>
+                <div className="flex-1" />
+                {hasAnyFilter && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-red-500 hover:text-red-600 font-medium"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            /* ── Listing desktop: two-row layout ── */
+            <>
+              {/* Row 1: Search + Property Type + Min Price + Max Price */}
+              <div className="flex items-start gap-3">
+                <div className="flex-1 relative min-w-[180px]">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Search by city, area..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+
+                {isDev && (
+                  <div className="w-44">
+                    <select
+                      value={devType}
+                      onChange={(e) => setDevType(e.target.value)}
+                      className={`w-full px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Dev Type — Any</option>
+                      <option value="sale">For Sale</option>
+                      <option value="rental">For Rental</option>
+                    </select>
+                  </div>
+                )}
+
+                <div className="w-52">
+                  <PropertyTypeDropdown
+                    selected={selectedTypes}
+                    onChange={setSelectedTypes}
+                    groups={propertyTypeGroups}
+                    isHero={isHero}
+                  />
+                </div>
+
+                <div className="w-40">
+                  <PriceDropdown
+                    label="Min Price"
+                    value={minPrice}
+                    onChange={setMinPrice}
+                    presets={isDev ? [] : pricePresets.min}
+                    currency={currency}
+                  />
+                </div>
+
+                <div className="w-40">
+                  <PriceDropdown
+                    label="Max Price"
+                    value={maxPrice}
+                    onChange={setMaxPrice}
+                    presets={isDev ? [] : pricePresets.max}
+                    currency={currency}
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Currency toggle, Beds, Baths, More, Clear, Search */}
+              <div className="flex items-center gap-3">
+                <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
+                  <button
+                    onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                      currency === "GYD"
+                        ? "bg-green-600 text-white shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    GYD
+                  </button>
+                  <button
+                    onClick={() => { setCurrency("USD"); setMinPrice(""); setMaxPrice(""); }}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-colors ${
+                      currency === "USD"
+                        ? "bg-green-600 text-white shadow-sm"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    USD
+                  </button>
+                </div>
+
+                {showBedBath && (
+                  <>
+                    <select
+                      value={beds}
+                      onChange={(e) => setBeds(e.target.value)}
+                      className={`px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Bedrooms</option>
+                      <option value="1">1+ Bed</option>
+                      <option value="2">2+ Beds</option>
+                      <option value="3">3+ Beds</option>
+                      <option value="4">4+ Beds</option>
+                      <option value="5">5+ Beds</option>
+                    </select>
+                    <select
+                      value={baths}
+                      onChange={(e) => setBaths(e.target.value)}
+                      className={`px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                        baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <option value="">Bathrooms</option>
+                      <option value="1">1+ Bath</option>
+                      <option value="2">2+ Baths</option>
+                      <option value="3">3+ Baths</option>
+                      <option value="4">4+ Baths</option>
+                    </select>
+                  </>
+                )}
+
+                {!isDev && (
+                  <button
+                    onClick={() => setShowMore(!showMore)}
+                    className={`flex items-center gap-1.5 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                      showMore || moreFilterCount > 0
+                        ? "border-green-500 text-green-700 bg-green-50"
+                        : "border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    <SlidersHorizontal className="w-4 h-4" />
+                    More
+                    {moreFilterCount > 0 && (
+                      <span className="bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {moreFilterCount}
+                      </span>
+                    )}
+                  </button>
+                )}
+
+                <div className="flex-1" />
+
+                {hasAnyFilter && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-red-500 hover:text-red-600 font-medium"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+
+                <button
+                  onClick={handleSearch}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <Search className="w-4 h-4" />
+                  Search
+                </button>
+              </div>
+            </>
+          )}
 
           {/* More filters expanded (desktop) */}
           {showMore && (

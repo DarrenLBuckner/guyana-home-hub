@@ -135,7 +135,7 @@ export default function Hero({
         </h1>
 
         {/* Tabbed Search Component */}
-        <Suspense fallback={<div className="w-full max-w-3xl h-48 bg-white/10 rounded-2xl animate-pulse" />}>
+        <Suspense fallback={<div className="w-full max-w-6xl h-20 lg:h-16 bg-white/10 rounded-2xl animate-pulse" />}>
           <PropertySearchTabs variant="hero" />
         </Suspense>
       </div>
