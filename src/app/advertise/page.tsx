@@ -46,12 +46,8 @@ export default function AdvertisePage() {
           }} />
         </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur text-white rounded-full text-sm font-bold mb-6">
-            Only 25 Founding Agent Spots Available
-          </div>
-
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Join Our Premier Agent Network
+            Join Guyana's Premier Real Estate Platform
           </h2>
           <p className="text-green-100 text-lg mb-8">
             Reach local buyers and the Guyanese diaspora worldwide
@@ -60,11 +56,7 @@ export default function AdvertisePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto">
             <div className="flex items-center justify-center gap-2 text-white">
               <span className="text-xl">📋</span>
-              <span>List up to 25 properties</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 text-white">
-              <span className="text-xl">💰</span>
-              <span>20% lifetime discount</span>
+              <span>Unlimited property listings</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-white">
               <span className="text-xl">🎬</span>
@@ -78,20 +70,20 @@ export default function AdvertisePage() {
               <span className="text-xl">📊</span>
               <span>Professional agent dashboard</span>
             </div>
+            <div className="flex items-center justify-center gap-2 text-white">
+              <span className="text-xl">🌍</span>
+              <span>Diaspora buyer reach</span>
+            </div>
           </div>
 
           <a
-            href="https://www.portalhomehub.com/register?code=FOUNDING-AGENT-GY"
+            href="https://www.portalhomehub.com/register"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-white text-green-700 px-10 py-4 rounded-lg font-bold text-lg hover:bg-green-50 transition shadow-lg"
           >
-            Become a Founding Agent
+            Register Free - List Your Properties Today
           </a>
-
-          <p className="text-green-200 text-sm mt-4">
-            Limited spots remaining &bull; Use code <span className="font-mono font-bold text-white">FOUNDING-AGENT-GY</span>
-          </p>
         </div>
       </section>
 

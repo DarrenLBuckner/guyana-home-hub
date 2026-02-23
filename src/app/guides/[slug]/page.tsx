@@ -1525,7 +1525,7 @@ Read our [complete guide to buying property in Guyana from abroad](/guides/buyin
   'why-agents-choose-homehub': {
     slug: 'why-agents-choose-homehub',
     title: 'Why Smart Agents Are Looking Beyond Facebook',
-    description: 'Facebook groups are holding your real estate business back. Be one of the first 25 founding agents on Guyana HomeHub and reach serious buyers.',
+    description: 'Facebook groups are holding your real estate business back. Join Guyana HomeHub and reach serious buyers across the diaspora.',
     readTime: '8 min read',
     category: 'For Agents',
     lastUpdated: 'January, 2025',
@@ -1634,25 +1634,22 @@ The oil boom is bringing unprecedented attention to Guyana. Diaspora buyers are 
 
 **Someone is going to build the professional platform for Guyana real estate.** We decided it should be us.
 
-That means the agents who get in now aren't just early adopters — they're **founders**. The ones who help shape what this becomes. The ones who'll have established profiles and reviews while everyone else is still figuring it out.
+That means the agents who get in now are early movers. The ones who help shape what this becomes. The ones who'll have established profiles and reviews while everyone else is still figuring it out.
 
 ---
 
-## Be a Founding Agent
+## Join the Platform
 
-We're looking for the first 25 agents in Guyana to build this with us.
+We're building a professional agent network in Guyana — and registration is free.
 
-**What founding agents get:**
-- **Founding Agent badge** on your profile (permanent — shows you were here from the start)
+**What you get:**
+- **Verified Agent badge** on your profile
+- **Unlimited property listings**
 - **Priority support** — direct WhatsApp line for any issues
 - **Input on features** — tell us what you need, we'll build it
 - **First mover advantage** — established presence before the wave hits
 
-**Use code: FOUNDERS-AGENT-GY** when you sign up.
-
 This isn't a gimmick. We need agents who believe in what we're building and want to be part of it. If that's you, we want you in.
-
-If you'd rather wait and see, that's fine too. But the founding agent spots won't last forever.
 
 ---
 
@@ -1672,7 +1669,7 @@ Guyana HomeHub gives you that professional presence. It shows buyers and regulat
 
 ## What It Costs
 
-For founding agents: **nothing to start.**
+For agents: **free to start.**
 
 Sign up, get verified, post your listings. We're not here to nickel-and-dime you while we're all building this together.
 
@@ -1690,17 +1687,17 @@ But the ones who also establish themselves on a professional platform now? They'
 
 We're not asking you to abandon what works. We're inviting you to be part of building what's next.
 
-Twenty-five founding agent spots. A platform built for Guyana. Your chance to get in early.
+A platform built for Guyana. Your chance to get in early.
 
 ---
 
-## Ready to Be a Founding Agent?
+## Ready to Join?
 
-Use code **FOUNDERS-AGENT-GY** when you sign up.
+Registration is free — start listing your properties today.
 
 <a href="/advertise#agents" style="display: inline-block; background: #059669; color: white; font-weight: 600; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">Sign Up as an Agent →</a>
 
-Questions? **Text us on WhatsApp** (fastest response): <a href="https://wa.me/5927629797?text=Hi,%20I'm%20interested%20in%20becoming%20a%20Founding%20Agent" target="_blank" rel="noopener noreferrer" style="color: #059669; font-weight: 600; text-decoration: none;">+592 762 9797</a>
+Questions? **Text us on WhatsApp** (fastest response): <a href="https://wa.me/5927629797?text=Hi,%20I'm%20interested%20in%20joining%20as%20an%20agent" target="_blank" rel="noopener noreferrer" style="color: #059669; font-weight: 600; text-decoration: none;">+592 762 9797</a>
 
 *(Please text, don't call — our team responds faster to messages)*
 `,
@@ -1710,11 +1707,11 @@ Questions? **Text us on WhatsApp** (fastest response): <a href="https://wa.me/59
       { id: 'the-guyana-real-estate-market-is-changing', title: 'The Guyana Real Estate Market Is Changing', level: 2 },
       { id: 'what-guyana-homehub-gives-you', title: 'What Guyana HomeHub Gives You', level: 2 },
       { id: 'but-this-platform-is-new', title: '"But This Platform Is New"', level: 2 },
-      { id: 'be-a-founding-agent', title: 'Be a Founding Agent', level: 2 },
+      { id: 'join-the-platform', title: 'Join the Platform', level: 2 },
       { id: 'the-new-regulatory-environment', title: 'The New Regulatory Environment', level: 2 },
       { id: 'what-it-costs', title: 'What It Costs', level: 2 },
       { id: 'the-bottom-line', title: 'The Bottom Line', level: 2 },
-      { id: 'ready-to-be-a-founding-agent', title: 'Ready to Be a Founding Agent?', level: 2 }
+      { id: 'ready-to-join', title: 'Ready to Join?', level: 2 }
     ],
     relatedGuides: [
       {

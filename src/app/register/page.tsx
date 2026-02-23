@@ -44,15 +44,6 @@ export default function RegisterPage() {
     setError("");
 
     try {
-      // Check for elite promo code
-      const ELITE_PROMO_CODE = "ELITE-ADMIN-2025-XYZ!@#";
-      let agentTier = "basic";
-      let promoCodeUsed = null;
-      if (formData.promoCode.trim() === ELITE_PROMO_CODE) {
-        agentTier = "elite";
-        promoCodeUsed = ELITE_PROMO_CODE;
-      }
-
       // Register with Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -63,8 +54,7 @@ export default function RegisterPage() {
             user_types: userType.join(", "),
             mobile: formData.mobile,
             company: formData.company,
-            agent_tier: agentTier,
-            promo_code_used: promoCodeUsed,
+            promo_code_used: formData.promoCode.trim() || null,
           },
         },
       });

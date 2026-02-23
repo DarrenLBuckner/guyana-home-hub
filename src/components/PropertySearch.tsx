@@ -16,11 +16,6 @@ import 'react-international-phone/style.css'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
-// Elite Promo Code Configuration
-const ELITE_PROMO_CODES = [
-  "GUYANA-AGENT-ELITE-2025-LAUNCH"
-];
-
 interface PropertySearchProps {
   initialFilters?: IPropertyFilters
   showMap?: boolean
@@ -47,7 +42,6 @@ export function PropertySearch({
   const [formData, setFormData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [selectedUserTypes, setSelectedUserTypes] = useState<string[]>([])
-  const [elitePromoCodeValid, setElitePromoCodeValid] = useState(false)
 
   // Debounce search terms to avoid excessive API calls
   const debouncedFilters = useDebounce(filters, 300)
@@ -67,13 +61,6 @@ export function PropertySearch({
     return true;
   }
 
-  const handlePromoCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const code = e.target.value.toUpperCase();
-    setFormData(prev => ({ ...prev, promoCode: code }));
-    // Validate promo code
-    setElitePromoCodeValid(ELITE_PROMO_CODES.includes(code));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -88,21 +75,6 @@ export function PropertySearch({
     setLoading(true);
 
     try {
-      // Validate Promo Code
-      let agentTier = "basic";
-      let promoCodeUsed = null;
-
-      if (ELITE_PROMO_CODES.includes(formData.promoCode)) {
-        agentTier = "elite";
-          promoCodeUsed = formData.promoCode;
-      } else if (formData.promoCode) {
-          setErrors(prev => ({
-            ...prev,
-          promoCode: "Invalid or expired promo code"
-          }));
-          setLoading(false);
-          return;
-    }
       // Registration with Supabase
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -114,8 +86,7 @@ export function PropertySearch({
             mobile: formData.mobile,
             whatsapp_number: formData.whatsappNumber || null,
             company: formData.company || null,
-            agent_tier: agentTier,
-            promo_code_used: promoCodeUsed,
+            promo_code_used: formData.promoCode?.trim() || null,
             buying_budget: formData.buyingBudget || null,
             rental_budget: formData.rentalBudget || null
           },
@@ -268,20 +239,6 @@ export function PropertySearch({
             )}
               </Button>
             </div>
-        <div>
-          <input
-            placeholder="Promo Code (Optional)"
-            type="text"
-            value={formData.promoCode}
-            onChange={handlePromoCodeChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 mt-4"
-        />
-          {formData.promoCode && (
-            <p className={`text-xs mt-1 ${elitePromoCodeValid ? 'text-green-600' : 'text-red-600'}`}>
-              {elitePromoCodeValid ? "Valid Elite Promo Code ✓" : "Invalid or Expired Promo Code"}
-            </p>
-      )}
-    </div>
           </div>
 
       {/* Advanced Filters */}
