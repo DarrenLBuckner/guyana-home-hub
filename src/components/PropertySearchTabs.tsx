@@ -28,23 +28,23 @@ const TAB_ROUTES: Record<Tab, string> = {
   developments: "/properties/developments",
 };
 
-// Property type options
+// Property type options — values MUST match database (Title Case)
 const RESIDENTIAL_TYPES = [
-  { value: "house", label: "House" },
-  { value: "apartment", label: "Apartment" },
-  { value: "condo", label: "Condo" },
-  { value: "townhouse", label: "Townhouse" },
-  { value: "land", label: "Land" },
+  { value: "House", label: "House" },
+  { value: "Apartment", label: "Apartment" },
+  { value: "Condo", label: "Condo" },
+  { value: "Townhouse", label: "Townhouse" },
+  { value: "Land", label: "Land" },
 ];
 
 const COMMERCIAL_TYPES = [
-  { value: "office", label: "Office" },
-  { value: "retail", label: "Retail" },
-  { value: "warehouse", label: "Warehouse" },
-  { value: "industrial", label: "Industrial" },
-  { value: "mixed use", label: "Mixed Use" },
-  { value: "commercial land", label: "Commercial Land" },
-  { value: "agricultural land", label: "Agricultural Land" },
+  { value: "Office", label: "Office" },
+  { value: "Retail", label: "Retail" },
+  { value: "Warehouse", label: "Warehouse" },
+  { value: "Industrial", label: "Industrial" },
+  { value: "Mixed Use", label: "Mixed Use" },
+  { value: "Commercial Land", label: "Commercial Land" },
+  { value: "Agricultural Land", label: "Agricultural Land" },
 ];
 
 // Price presets per tab + currency
@@ -332,9 +332,9 @@ export default function PropertySearchTabs({
     return currency === "GYD" ? BUY_PRICES_GYD : BUY_PRICES_USD;
   })();
 
-  // Count active "more" filters
-  const moreFilterCount = (baths ? 1 : 0) + (searchQuery ? 1 : 0);
-  const hasAnyFilter = selectedTypes.length > 0 || minPrice || maxPrice || beds || baths || searchQuery || devType;
+  // Count active "more" filters (searchQuery excluded — location search temporarily hidden)
+  const moreFilterCount = (baths ? 1 : 0);
+  const hasAnyFilter = selectedTypes.length > 0 || minPrice || maxPrice || beds || baths || devType;
 
   // ── Tab change ──
   const handleTabChange = useCallback(
@@ -462,7 +462,7 @@ export default function PropertySearchTabs({
       >
         {/* ── MOBILE LAYOUT (<lg) ── */}
         <div className="lg:hidden space-y-3">
-          {/* Search input */}
+          {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -473,6 +473,7 @@ export default function PropertySearchTabs({
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]"
             />
           </div>
+          */}
 
           {/* Development Type (developments tab only) */}
           {isDev && (
@@ -629,7 +630,7 @@ export default function PropertySearchTabs({
           {isHero ? (
             /* ── Hero desktop: search-first, filters-second ── */
             <>
-              {/* Row 1: Prominent full-width search bar */}
+              {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -641,8 +642,9 @@ export default function PropertySearchTabs({
                   className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder:text-gray-400"
                 />
               </div>
+              */}
 
-              {/* Row 2: All filters as pill row */}
+              {/* All filters as pill row */}
               <div className="flex items-center gap-2 flex-wrap">
                 {isDev && (
                   <select
@@ -786,8 +788,9 @@ export default function PropertySearchTabs({
           ) : (
             /* ── Listing desktop: two-row layout ── */
             <>
-              {/* Row 1: Search + Property Type + Min Price + Max Price */}
+              {/* Row 1: Property Type + Min Price + Max Price */}
               <div className="flex items-start gap-3">
+                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
                 <div className="flex-1 relative min-w-[180px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -798,6 +801,7 @@ export default function PropertySearchTabs({
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
+                */}
 
                 {isDev && (
                   <div className="w-44">

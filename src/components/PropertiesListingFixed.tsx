@@ -56,23 +56,23 @@ interface PropertiesListingProps {
   showFilters?: boolean
 }
 
-// Property type options based on category
+// Property type options based on category — values MUST match database (Title Case)
 const RESIDENTIAL_PROPERTY_TYPES = [
-  { value: 'house', label: 'House' },
-  { value: 'apartment', label: 'Apartment' },
-  { value: 'condo', label: 'Condo' },
-  { value: 'townhouse', label: 'Townhouse' },
-  { value: 'land', label: 'Land' },
+  { value: 'House', label: 'House' },
+  { value: 'Apartment', label: 'Apartment' },
+  { value: 'Condo', label: 'Condo' },
+  { value: 'Townhouse', label: 'Townhouse' },
+  { value: 'Land', label: 'Land' },
 ]
 
 const COMMERCIAL_PROPERTY_TYPES = [
-  { value: 'office', label: 'Office' },
-  { value: 'retail', label: 'Retail' },
-  { value: 'warehouse', label: 'Warehouse' },
-  { value: 'industrial', label: 'Industrial' },
-  { value: 'mixed use', label: 'Mixed Use' },
-  { value: 'commercial land', label: 'Commercial Land' },
-  { value: 'agricultural land', label: 'Agricultural Land' },
+  { value: 'Office', label: 'Office' },
+  { value: 'Retail', label: 'Retail' },
+  { value: 'Warehouse', label: 'Warehouse' },
+  { value: 'Industrial', label: 'Industrial' },
+  { value: 'Mixed Use', label: 'Mixed Use' },
+  { value: 'Commercial Land', label: 'Commercial Land' },
+  { value: 'Agricultural Land', label: 'Agricultural Land' },
 ]
 
 function PropertiesListingContent({
@@ -135,9 +135,9 @@ function PropertiesListingContent({
     return () => { if (urlSyncTimer.current) clearTimeout(urlSyncTimer.current) }
   }, [syncFiltersToUrl])
 
-  // Count of active secondary filters (for badge on "More" button)
-  const moreFilterCount = (bathrooms ? 1 : 0) + (sortBy !== 'price-high' ? 1 : 0) + (searchTerm ? 1 : 0)
-  const hasAnyFilter = !!(searchTerm || selectedType || priceRange || bedrooms || bathrooms)
+  // Count of active secondary filters (for badge on "More" button) — searchTerm excluded, location search hidden
+  const moreFilterCount = (bathrooms ? 1 : 0) + (sortBy !== 'price-high' ? 1 : 0)
+  const hasAnyFilter = !!(selectedType || priceRange || bedrooms || bathrooms)
 
   useEffect(() => {
     async function fetchProperties() {
@@ -410,7 +410,7 @@ function PropertiesListingContent({
                   <option value="5">5+ Beds</option>
                 </select>
 
-                {/* Search */}
+                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
                 <div className="flex-1 relative min-w-[200px]">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <input
@@ -421,6 +421,7 @@ function PropertiesListingContent({
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
+                */}
 
                 {/* More Filters toggle */}
                 <button
@@ -741,7 +742,7 @@ function PropertiesListingContent({
               </div>
 
               <div className="space-y-4">
-                {/* Search */}
+                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Search</label>
                   <div className="relative">
@@ -755,6 +756,7 @@ function PropertiesListingContent({
                     />
                   </div>
                 </div>
+                */}
 
                 {/* Bathrooms */}
                 <div>
