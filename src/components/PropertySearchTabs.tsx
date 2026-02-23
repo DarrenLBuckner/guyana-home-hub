@@ -420,7 +420,7 @@ export default function PropertySearchTabs({
     <div
       className={
         isHero
-          ? "w-full max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden lg:bg-white/95 lg:backdrop-blur-sm"
+          ? "w-full max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-visible lg:bg-white/95 lg:backdrop-blur-sm"
           : "w-full bg-white border-b shadow-sm"
       }
     >
