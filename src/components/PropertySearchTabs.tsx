@@ -117,7 +117,7 @@ function PropertyTypeDropdown({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-4 py-3 border rounded-lg text-sm text-left transition-colors min-h-[44px] ${
+        className={`w-full flex items-center justify-between px-4 py-3 border ${isHero ? "rounded-full" : "rounded-lg"} text-sm text-left transition-colors min-h-[44px] ${
           selected.length > 0
             ? "border-green-500 text-green-700 bg-green-50"
             : "border-gray-200 text-gray-700 bg-white"
@@ -178,12 +178,14 @@ function PriceDropdown({
   onChange,
   presets,
   currency,
+  pillShape,
 }: {
   label: string;
   value: string;
   onChange: (val: string) => void;
   presets: number[];
   currency: Currency;
+  pillShape?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [manualMode, setManualMode] = useState(false);
@@ -210,7 +212,7 @@ function PriceDropdown({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-4 py-3 border rounded-lg text-sm text-left transition-colors min-h-[44px] ${
+        className={`w-full flex items-center justify-between px-4 py-3 border ${pillShape ? "rounded-full" : "rounded-lg"} text-sm text-left transition-colors min-h-[44px] ${
           value
             ? "border-green-500 text-green-700 bg-green-50"
             : "border-gray-200 text-gray-700 bg-white"
@@ -420,7 +422,7 @@ export default function PropertySearchTabs({
     <div
       className={
         isHero
-          ? "w-full max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-visible lg:bg-white/95 lg:backdrop-blur-sm"
+          ? "w-full max-w-6xl mx-auto bg-white shadow-2xl rounded-2xl overflow-visible lg:bg-white/95 lg:backdrop-blur-sm"
           : "w-full bg-white border-b shadow-sm"
       }
     >
@@ -436,7 +438,7 @@ export default function PropertySearchTabs({
           <button
             key={tab.key}
             onClick={() => handleTabChange(tab.key)}
-            className={`relative px-4 py-3 text-sm font-semibold transition-colors ${
+            className={`relative px-5 py-3.5 text-base font-semibold transition-colors ${
               activeTab === tab.key
                 ? "text-green-700"
                 : "text-gray-500 hover:text-gray-700"
@@ -454,7 +456,7 @@ export default function PropertySearchTabs({
       <div
         className={
           isHero
-            ? "p-4 lg:p-6"
+            ? "p-4 lg:px-6 lg:py-4"
             : "max-w-7xl mx-auto p-4"
         }
       >
@@ -625,38 +627,38 @@ export default function PropertySearchTabs({
         {/* ── DESKTOP LAYOUT (lg+) ── */}
         <div className="hidden lg:block space-y-2">
           {isHero ? (
-            /* ── Hero desktop: two-row wide layout ── */
+            /* ── Hero desktop: search-first, filters-second ── */
             <>
-              {/* Row 1: Search + Property Type + Min Price + Max Price */}
-              <div className="flex items-start gap-3">
-                <div className="flex-1 relative min-w-[160px]">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Search by city, area..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
+              {/* Row 1: Prominent full-width search bar */}
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search by city, neighborhood, or area..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder:text-gray-400"
+                />
+              </div>
 
+              {/* Row 2: All filters as pill row */}
+              <div className="flex items-center gap-2 flex-wrap">
                 {isDev && (
-                  <div className="w-40">
-                    <select
-                      value={devType}
-                      onChange={(e) => setDevType(e.target.value)}
-                      className={`w-full px-4 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                        devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
-                      }`}
-                    >
-                      <option value="">Dev Type — Any</option>
-                      <option value="sale">For Sale</option>
-                      <option value="rental">For Rental</option>
-                    </select>
-                  </div>
+                  <select
+                    value={devType}
+                    onChange={(e) => setDevType(e.target.value)}
+                    className={`px-4 py-2.5 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                      devType ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <option value="">Dev Type — Any</option>
+                    <option value="sale">For Sale</option>
+                    <option value="rental">For Rental</option>
+                  </select>
                 )}
 
-                <div className="w-44">
+                <div className="w-40">
                   <PropertyTypeDropdown
                     selected={selectedTypes}
                     onChange={setSelectedTypes}
@@ -665,29 +667,28 @@ export default function PropertySearchTabs({
                   />
                 </div>
 
-                <div className="w-36">
+                <div className="w-32">
                   <PriceDropdown
                     label="Min Price"
                     value={minPrice}
                     onChange={setMinPrice}
                     presets={isDev ? [] : pricePresets.min}
                     currency={currency}
+                    pillShape
                   />
                 </div>
 
-                <div className="w-36">
+                <div className="w-32">
                   <PriceDropdown
                     label="Max Price"
                     value={maxPrice}
                     onChange={setMaxPrice}
                     presets={isDev ? [] : pricePresets.max}
                     currency={currency}
+                    pillShape
                   />
                 </div>
-              </div>
 
-              {/* Row 2: Currency + Beds + Baths + More + Clear + Search */}
-              <div className="flex items-center gap-3">
                 <div className="inline-flex items-center bg-gray-100 rounded-full p-0.5">
                   <button
                     onClick={() => { setCurrency("GYD"); setMinPrice(""); setMaxPrice(""); }}
@@ -716,7 +717,7 @@ export default function PropertySearchTabs({
                     <select
                       value={beds}
                       onChange={(e) => setBeds(e.target.value)}
-                      className={`px-3 py-2 border rounded-lg text-sm h-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                      className={`px-3 py-2.5 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
                         beds ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
                       }`}
                     >
@@ -730,7 +731,7 @@ export default function PropertySearchTabs({
                     <select
                       value={baths}
                       onChange={(e) => setBaths(e.target.value)}
-                      className={`px-3 py-2 border rounded-lg text-sm h-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                      className={`px-3 py-2.5 border rounded-full text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
                         baths ? "border-green-500 text-green-700" : "border-gray-200 text-gray-700"
                       }`}
                     >
@@ -746,7 +747,7 @@ export default function PropertySearchTabs({
                 {!isDev && (
                   <button
                     onClick={() => setShowMore(!showMore)}
-                    className={`flex items-center gap-1.5 px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
+                    className={`flex items-center gap-1.5 px-4 py-2.5 border rounded-full text-sm font-medium transition-colors ${
                       showMore || moreFilterCount > 0
                         ? "border-green-500 text-green-700 bg-green-50"
                         : "border-gray-200 text-gray-700 hover:bg-gray-50"
@@ -769,15 +770,15 @@ export default function PropertySearchTabs({
                     onClick={clearFilters}
                     className="text-sm text-red-500 hover:text-red-600 font-medium"
                   >
-                    Clear Filters
+                    Clear
                   </button>
                 )}
 
                 <button
                   onClick={handleSearch}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-8 rounded-lg transition-colors flex items-center gap-2"
+                  className="bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-10 rounded-full transition-colors flex items-center gap-2 text-base shadow-md"
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-5 h-5" />
                   Search
                 </button>
               </div>

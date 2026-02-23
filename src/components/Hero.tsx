@@ -92,7 +92,7 @@ export default function Hero({
   return (
     <section className="relative w-full">
       {/* ── Hero Image Area ── */}
-      <div className="relative h-[300px] lg:h-[480px] xl:h-[520px] overflow-hidden">
+      <div className="relative h-[240px] lg:h-[360px] xl:h-[400px] overflow-hidden">
         {/* Desktop */}
         <img
           src={desktopImageSrc}
@@ -123,11 +123,11 @@ export default function Hero({
           ))}
         </div>
         {/* Gradient overlay — bottom-to-top for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/5" />
 
         {/* Title on image */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pb-10 lg:pb-32 text-center text-white">
-          <h1 className="text-2xl font-bold leading-tight drop-shadow-lg md:text-4xl lg:text-5xl">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pb-6 lg:pb-20 text-center text-white">
+          <h1 className="text-xl font-bold leading-tight drop-shadow-lg md:text-3xl lg:text-4xl">
             <span className="md:hidden">Find Property in {country}</span>
             <span className="hidden md:inline">Find Your Dream Property in {country}</span>
           </h1>
@@ -135,8 +135,8 @@ export default function Hero({
       </div>
 
       {/* ── Search Component — overlaps hero bottom ── */}
-      <div className="relative z-10 -mt-8 lg:-mt-20 px-4 lg:px-8">
-        <Suspense fallback={<div className="max-w-5xl mx-auto h-40 bg-white/90 rounded-2xl animate-pulse shadow-lg" />}>
+      <div className="relative z-10 -mt-12 lg:-mt-28 xl:-mt-32 px-4 lg:px-8">
+        <Suspense fallback={<div className="max-w-6xl mx-auto h-32 bg-white/90 rounded-2xl animate-pulse shadow-lg" />}>
           <PropertySearchTabs variant="hero" />
         </Suspense>
       </div>
