@@ -112,7 +112,7 @@ export default function Hero({
               key={imgSrc}
               src={imgSrc}
               alt={`${country} homes background ${index + 1}`}
-              className={`absolute inset-0 h-full w-full object-cover object-[center_25%] transition-opacity duration-1000 ease-in-out ${
+              className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-1000 ease-in-out ${
                 index === mobileImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
               fetchPriority={index === 0 ? "high" : "low"}
