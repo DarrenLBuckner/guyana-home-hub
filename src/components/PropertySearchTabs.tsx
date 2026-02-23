@@ -438,7 +438,7 @@ export default function PropertySearchTabs({
           <button
             key={tab.key}
             onClick={() => handleTabChange(tab.key)}
-            className={`relative px-5 py-3.5 text-base font-semibold transition-colors ${
+            className={`relative px-3 py-3 text-sm font-semibold transition-colors lg:px-5 lg:py-3.5 lg:text-base ${
               activeTab === tab.key
                 ? "text-green-700"
                 : "text-gray-500 hover:text-gray-700"
