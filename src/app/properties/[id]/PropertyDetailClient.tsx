@@ -50,7 +50,8 @@ interface Property {
   video_url?: string
   views?: number
 
-  listing_type?: 'sale' | 'rent'
+  listing_type?: 'sale' | 'rent' | 'lease' | 'short_term_rent'
+  available_from?: string | null
   property_type?: string
   status?: string
   agent_profile?: {
@@ -360,6 +361,15 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     <span className="text-2xl text-gray-600">/month</span>
                   )}
                 </div>
+                {/* Availability — hero section, near price (Zillow/Property24 standard) */}
+                {(property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent') && (() => {
+                  const af = property.available_from;
+                  if (!af || new Date(af) <= new Date()) {
+                    return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 mt-2 mb-1">Available Now</span>;
+                  }
+                  const label = new Date(af).toLocaleString('default', { month: 'long', year: 'numeric' });
+                  return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 mt-2 mb-1">Available from {label}</span>;
+                })()}
                 {/* FSBO Badge */}
                 <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
               </div>

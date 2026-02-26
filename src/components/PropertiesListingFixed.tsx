@@ -47,6 +47,7 @@ interface Property {
   amenities?: string[]
   listed_by_type?: string
   rental_type?: string | null
+  available_from?: string | null
 }
 
 interface PropertiesListingProps {
@@ -693,6 +694,15 @@ function PropertiesListingContent({
                       <div className="text-2xl font-bold text-green-600">
                         {formatPrice(property.price, property.price_type)}
                       </div>
+                      {/* Availability badge — card body, Zillow/Property24 style */}
+                      {(property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent') && (() => {
+                        const af = property.available_from;
+                        if (!af || new Date(af) <= new Date()) {
+                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 mt-1">Available Now</span>;
+                        }
+                        const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
+                        return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 mt-1">Available {label}</span>;
+                      })()}
                       {/* FSBO Badge */}
                       <FSBOBadge listedByType={property.listed_by_type} className="mt-1" />
                     </div>
