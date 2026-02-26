@@ -262,7 +262,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
               {/* Property Status Ribbon */}
               <PropertyStatusRibbon
                 status={property.status || 'available'}
-                listingType={property.listing_type}
+                listingType={property.listing_type as 'sale' | 'rent'}
               />
 
               {property.images.length > 1 && (
@@ -347,7 +347,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
         {/* Private Listing Disclaimer */}
         <PrivateListingDisclaimer
           listedByType={property.listed_by_type}
-          listingType={property.listing_type}
+          listingType={property.listing_type as 'sale' | 'rent'}
         />
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
