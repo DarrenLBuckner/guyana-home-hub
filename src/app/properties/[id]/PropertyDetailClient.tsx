@@ -788,7 +788,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
             description: property.description,
             price: property.price,
             currency: 'GYD',
-            propertyType: property.listing_type || 'sale',
+            propertyType: (property.listing_type as 'sale' | 'rent' | 'commercial') || 'sale',
             category: property.property_type,
             location: property.city,
             address: property.location || property.city,
