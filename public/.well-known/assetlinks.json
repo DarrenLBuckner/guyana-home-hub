@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.caribbeanhomehub.guyana",
+      "sha256_cert_fingerprints": ["06:F1:75:7A:98:71:12:3B:E7:3E:38:39:52:0C:CA:E5:15:6D:6C:24:B2:65:45:F3:EE:EF:30:30:DB:17:8D:30"]
+    }
+  }
+]
