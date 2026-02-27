@@ -21,8 +21,27 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  async rewrites() {
+    return [
+      {
+        // Ensure .well-known files are served correctly for TWA Digital Asset Links
+        source: '/.well-known/:path*',
+        destination: '/.well-known/:path*',
+      },
+    ];
+  },
   async headers() {
     return [
+      {
+        // Serve assetlinks.json with correct content type
+        source: '/.well-known/assetlinks.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json',
+          },
+        ],
+      },
       {
         // Allow CORS for email signup API from marketing sites
         source: '/api/email-signup',

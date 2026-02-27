@@ -1,8 +1,10 @@
-const CACHE_NAME = 'guyana-home-hub-v1';
+const CACHE_NAME = 'guyana-home-hub-v2';
 
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
+  '/offline.html',
+  '/icons/icon-96x96.png',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
 ];
@@ -31,7 +33,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for pages, cache-first for static assets
+// Fetch: handle navigation, static assets, and pages
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -43,6 +45,26 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API routes and auth-related paths
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) {
+    return;
+  }
+
+  // Navigation requests: network-first with offline fallback
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request).then((cached) => {
+            return cached || caches.match('/offline.html');
+          });
+        })
+    );
     return;
   }
 
@@ -63,7 +85,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Pages: network-first with cache fallback
+  // Other requests: network-first with cache fallback
   event.respondWith(
     fetch(request)
       .then((response) => {

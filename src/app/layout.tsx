@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: `${countryName} real estate, property for sale ${countryName}, ${countryName} homes, diaspora property investment, verified agents ${countryName}, safe property buying`,
     icons: {
       icon: "/favicon.ico",
-      apple: "/icons/icon-192x192.png",
+      apple: "/icons/apple-touch-icon.png",
     },
     manifest: "/manifest.json",
     appleWebApp: {
