@@ -17,7 +17,8 @@ import {
   Home as HomeIcon,
   Building2,
   Warehouse,
-  TreePine
+  TreePine,
+  Video
 } from 'lucide-react'
 import { Property } from '@/types/property'
 import { Button } from '@/components/ui/button'
@@ -183,12 +184,20 @@ export function PropertyCard({
                 listingType={property.listing_type}
               />
 
-              {/* Image Count */}
-              {property.images && property.images.length > 1 && (
-                <div className="absolute bottom-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
-                  {property.images.length} photos
-                </div>
-              )}
+              {/* Image Count & Video Badge */}
+              <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
+                {property.video_url && (
+                  <div className="bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+                    <Video className="h-3 w-3 mr-1" />
+                    Video
+                  </div>
+                )}
+                {property.images && property.images.length > 1 && (
+                  <div className="bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+                    {property.images.length} photos
+                  </div>
+                )}
+              </div>
 
               {/* View Count Badge - Prominent */}
               {property.views !== undefined && property.views > 0 && (
@@ -328,12 +337,20 @@ export function PropertyCard({
             </div>
           )}
 
-          {/* Image Count */}
-          {property.images && property.images.length > 1 && (
-            <div className="absolute bottom-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
-              {property.images.length} photos
-            </div>
-          )}
+          {/* Image Count & Video Badge */}
+          <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
+            {property.video_url && (
+              <div className="bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+                <Video className="h-3 w-3 mr-1" />
+                Video
+              </div>
+            )}
+            {property.images && property.images.length > 1 && (
+              <div className="bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+                {property.images.length} photos
+              </div>
+            )}
+          </div>
 
           {/* View Count Badge - Prominent */}
           {property.views !== undefined && property.views > 0 && (

@@ -67,6 +67,7 @@ export interface Property extends BaseProperty {
   // Media
   images: PropertyImages[]
   hero_image?: PropertyImages
+  video_url?: string
   
   // Categorization
   amenities: string[]
