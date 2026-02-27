@@ -695,13 +695,22 @@ function PropertiesListingContent({
                         {formatPrice(property.price, property.price_type)}
                       </div>
                       {/* Availability badge — card body, Zillow/Property24 style */}
-                      {(property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent') && (() => {
+                      {(() => {
                         const af = property.available_from;
-                        if (!af || new Date(af) <= new Date()) {
-                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 mt-1">Available Now</span>;
+                        const isRental = property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent';
+                        if (isRental) {
+                          if (!af || new Date(af) <= new Date()) {
+                            return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 mt-1">Available Now</span>;
+                          }
+                          const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
+                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 mt-1">Available {label}</span>;
                         }
-                        const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
-                        return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 mt-1">Available {label}</span>;
+                        // Sale/other: only show badge if future date set
+                        if (af && new Date(af) > new Date()) {
+                          const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
+                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon — {label}</span>;
+                        }
+                        return null;
                       })()}
                       {/* FSBO Badge */}
                       <FSBOBadge listedByType={property.listed_by_type} className="mt-1" />
