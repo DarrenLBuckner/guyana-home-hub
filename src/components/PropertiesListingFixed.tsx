@@ -707,8 +707,7 @@ function PropertiesListingContent({
                         }
                         // Sale/other: only show badge if future date set
                         if (af && new Date(af) > new Date()) {
-                          const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
-                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon — {label}</span>;
+                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon</span>;
                         }
                         return null;
                       })()}

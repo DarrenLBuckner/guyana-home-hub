@@ -377,8 +377,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     const label = new Date(af).toLocaleString('default', { month: 'long', year: 'numeric' });
                     return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 mt-2 mb-1">Available from {label}</span>;
                   }
-                  const label = new Date(af).toLocaleString('default', { month: 'long', year: 'numeric' });
-                  return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 mt-2 mb-1">Coming Soon — {label}</span>;
+                  return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200 mt-2 mb-1">Coming Soon</span>;
                 })()}
                 {/* FSBO Badge */}
                 <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
