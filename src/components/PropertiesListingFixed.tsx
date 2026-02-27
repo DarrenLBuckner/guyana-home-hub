@@ -697,17 +697,25 @@ function PropertiesListingContent({
                       {/* Availability badge — card body, Zillow/Property24 style */}
                       {(() => {
                         const af = property.available_from;
+                        const isSentinel = af === '9999-12-31';
                         const isRental = property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent';
                         if (isRental) {
+                          if (isSentinel) {
+                            return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon</span>;
+                          }
                           if (!af || new Date(af) <= new Date()) {
                             return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 mt-1">Available Now</span>;
                           }
                           const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
                           return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 mt-1">Available {label}</span>;
                         }
-                        // Sale/other: only show badge if future date set
-                        if (af && new Date(af) > new Date()) {
+                        // Sale/other: show badge if coming soon (sentinel or real future date)
+                        if (isSentinel) {
                           return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon</span>;
+                        }
+                        if (af && new Date(af) > new Date()) {
+                          const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
+                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon — {label}</span>;
                         }
                         return null;
                       })()}
