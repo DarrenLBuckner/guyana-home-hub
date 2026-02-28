@@ -127,11 +127,11 @@ export default function Hero({
 
         {/* Title on image */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pb-6 lg:pb-20 text-center text-white">
-          <h1 className="text-xl font-bold leading-tight drop-shadow-lg md:text-3xl lg:text-4xl">
+          <h1 className="text-2xl font-bold leading-tight drop-shadow-lg md:text-4xl lg:text-5xl">
             <span className="md:hidden">Find Property in {country}</span>
             <span className="hidden md:inline">Find Your Dream Property in {country}</span>
           </h1>
-          <p className="mt-2 text-xs md:text-sm text-white/80 drop-shadow-md max-w-lg">
+          <p className="mt-2 text-sm md:text-base text-white/80 drop-shadow-md max-w-2xl">
             <span className="md:hidden">Real listings. Verified agents. One platform.</span>
             <span className="hidden md:inline">Tired of Facebook? Real listings. Verified agents. One platform for {country} property.</span>
           </p>

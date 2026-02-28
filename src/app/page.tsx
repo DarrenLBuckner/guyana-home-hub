@@ -10,6 +10,7 @@ import FeaturedProperties from "../components/FeaturedProperties";
 import FeaturedCommercialProperties from "../components/FeaturedCommercialProperties";
 import { useCountryTheme } from "@/components/CountryThemeProvider";
 import { useFragmentFix } from "@/hooks/useFragmentFix";
+// import TajPartnerBanner from "@/components/ads/TajPartnerBanner";
 
 export default function HomePage() {
   const [showBrowseCards, setShowBrowseCards] = useState(false);
@@ -40,6 +41,9 @@ export default function HomePage() {
   return (
     <div>
       <Hero site={country === 'JM' ? 'jamaica' : country === 'CO' ? 'colombia' : 'guyana'} />
+
+      {/* TAJ Developer Partner Banner - hold for approval */}
+      {/* <TajPartnerBanner /> */}
 
       {/* Property Browsing Buttons - Below Hero */}
       <section className="w-full bg-white py-12">
