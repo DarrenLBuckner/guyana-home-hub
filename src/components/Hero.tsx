@@ -97,7 +97,7 @@ export default function Hero({
         <img
           src={desktopImageSrc}
           alt={`${country} homes background`}
-          className="hidden h-full w-full object-cover object-top md:block"
+          className="hidden h-full w-full object-cover object-[center_20%] md:block"
           fetchPriority="high"
           onError={(e) => {
             if (e.currentTarget.src !== defaultDesktopImage) {
