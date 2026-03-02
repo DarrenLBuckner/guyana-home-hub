@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useJsApiLoader } from '@react-google-maps/api';
+import { useGoogleMaps } from './GoogleMapsProvider';
 
 interface NearbyPlacesProps {
   latitude: number;
@@ -23,8 +23,6 @@ const CATEGORIES = [
   { type: 'bank', label: 'Banks', icon: '🏦' },
 ];
 
-const LIBRARIES: ('places')[] = ['places'];
-
 function haversineDistance(
   lat1: number, lng1: number,
   lat2: number, lng2: number,
@@ -41,10 +39,7 @@ function haversineDistance(
 }
 
 export default function NearbyPlaces({ latitude, longitude }: NearbyPlacesProps) {
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries: LIBRARIES,
-  });
+  const { isLoaded } = useGoogleMaps();
 
   const [placesByCategory, setPlacesByCategory] = useState<Record<string, PlaceResult[]>>({});
   const [loaded, setLoaded] = useState(false);

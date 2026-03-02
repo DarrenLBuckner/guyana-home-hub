@@ -20,6 +20,10 @@ import { createClient } from '@/lib/supabase/client'
 import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 import dynamic from 'next/dynamic'
 
+const GoogleMapsProvider = dynamic(
+  () => import('@/components/maps/GoogleMapsProvider').then((mod) => ({ default: mod.GoogleMapsProvider })),
+  { ssr: false },
+)
 const GoogleMapWrapper = dynamic(() => import('@/components/maps/GoogleMapWrapper'), {
   ssr: false,
   loading: () => <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />,
@@ -490,7 +494,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-2">Approximate Location</h2>
               {property.latitude && property.longitude ? (
-                <>
+                <GoogleMapsProvider>
                   <GoogleMapWrapper
                     latitude={property.latitude}
                     longitude={property.longitude}
@@ -502,7 +506,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     latitude={property.latitude}
                     longitude={property.longitude}
                   />
-                </>
+                </GoogleMapsProvider>
               ) : (
                 <p className="text-gray-500 text-sm italic">
                   Map location not yet available for this property

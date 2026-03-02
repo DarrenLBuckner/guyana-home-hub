@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, Circle } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
+import { useGoogleMaps } from './GoogleMapsProvider';
 
 interface GoogleMapWrapperProps {
   latitude: number;
@@ -60,9 +61,7 @@ export default function GoogleMapWrapper({
   zoom = 14,
   height = '400px',
 }: GoogleMapWrapperProps) {
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-  });
+  const { isLoaded, loadError } = useGoogleMaps();
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
