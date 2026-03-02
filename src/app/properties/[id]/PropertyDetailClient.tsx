@@ -18,6 +18,15 @@ import MortgageCalculator from '@/components/MortgageCalculator'
 import PrivateListingContact from '@/components/PrivateListingContact'
 import { createClient } from '@/lib/supabase/client'
 import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
+import dynamic from 'next/dynamic'
+
+const GoogleMapWrapper = dynamic(() => import('@/components/maps/GoogleMapWrapper'), {
+  ssr: false,
+  loading: () => <div className="h-[400px] bg-gray-100 rounded-lg animate-pulse" />,
+})
+const NearbyPlaces = dynamic(() => import('@/components/maps/NearbyPlaces'), {
+  ssr: false,
+})
 
 interface Property {
   id: string
@@ -30,6 +39,8 @@ interface Property {
   neighborhood?: string
   address?: string
   show_address?: boolean
+  latitude?: number | null
+  longitude?: number | null
   bedrooms?: number
   bathrooms?: number
   house_size_value?: number
@@ -471,6 +482,30 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
               ) : (
                 <p className="text-gray-600">
                   {property.city || 'Location details available upon request'}
+                </p>
+              )}
+            </div>
+
+            {/* Approximate Location Map */}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold mb-2">Approximate Location</h2>
+              {property.latitude && property.longitude ? (
+                <>
+                  <GoogleMapWrapper
+                    latitude={property.latitude}
+                    longitude={property.longitude}
+                  />
+                  <p className="text-xs text-gray-400 mt-2 italic">
+                    Pin shows approximate area only. Contact the agent for the exact address.
+                  </p>
+                  <NearbyPlaces
+                    latitude={property.latitude}
+                    longitude={property.longitude}
+                  />
+                </>
+              ) : (
+                <p className="text-gray-500 text-sm italic">
+                  Map location not yet available for this property
                 </p>
               )}
             </div>
