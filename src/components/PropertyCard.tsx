@@ -159,7 +159,7 @@ export function PropertyCard({
 
   if (variant === 'list') {
     return (
-      <Link href={`/properties/${property.id}`}>
+      <Link href={`/properties/${property.seo?.slug || property.id}`}>
         <div className={cn(
           "group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-green-300",
           className
@@ -169,7 +169,7 @@ export function PropertyCard({
             <div className="relative w-64 h-48 flex-shrink-0">
               <Image
                 src={getImageUrl(property.images, 0)}
-                alt={property.title}
+                alt={`${property.title}${property.city ? ` - ${property.city}` : ''}`}
                 fill
                 className={cn(
                   "object-cover transition-all duration-300 group-hover:scale-105",
@@ -302,7 +302,7 @@ export function PropertyCard({
 
   // Grid and Featured variants
   return (
-    <Link href={`/properties/${property.id}`}>
+    <Link href={`/properties/${property.seo?.slug || property.id}`}>
       <div className={cn(
         "group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-green-300",
         variant === 'featured' && "lg:flex lg:flex-row",
@@ -315,7 +315,7 @@ export function PropertyCard({
         )}>
           <Image
             src={getImageUrl(property.images, 0)}
-            alt={property.title}
+            alt={`${property.title}${property.city ? ` - ${property.city}` : ''}`}
             fill
             className={cn(
               "object-cover transition-all duration-300 group-hover:scale-105",

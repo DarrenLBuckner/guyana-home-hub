@@ -23,16 +23,21 @@ export async function generateMetadata(): Promise<Metadata> {
   const country = await getCountryFromHeaders();
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
-  const description = country === 'JM' 
-    ? 'Find verified properties, trusted agents, and secure real estate transactions in Jamaica. Safe property buying for locals and diaspora.' 
-    : 'Find verified properties, trusted agents, and secure real estate transactions in Guyana. Safe property buying for locals and diaspora.';
-  
-  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
-  
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
+
+  const description = country === 'JM'
+    ? 'Browse verified properties for sale and rent in Jamaica. Trusted agents, real listings, secure transactions. Serving locals and Jamaican diaspora worldwide.'
+    : 'Browse verified properties for sale and rent in Guyana. Trusted agents, real listings, secure transactions. Serving locals and Guyanese diaspora worldwide.';
+
   return {
-    title: siteName,
+    title: {
+      default: country === 'JM'
+        ? 'Jamaica Real Estate | Buy, Sell & Rent Property | Jamaica Home Hub'
+        : 'Guyana Real Estate | Buy, Sell & Rent Property | Guyana Home Hub',
+      template: `%s | ${siteName}`,
+    },
     description: description,
-    keywords: `${countryName} real estate, property for sale ${countryName}, ${countryName} homes, diaspora property investment, verified agents ${countryName}, safe property buying`,
+    keywords: `${countryName} real estate, property for sale ${countryName}, ${countryName} homes, diaspora property investment, verified agents ${countryName}, safe property buying, buy property ${countryName}, rent property ${countryName}`,
     icons: {
       icon: "/favicon.ico",
       apple: "/icons/apple-touch-icon.png",
@@ -42,6 +47,10 @@ export async function generateMetadata(): Promise<Metadata> {
       capable: true,
       statusBarStyle: "default",
       title: "GY HomeHub",
+    },
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: '/',
     },
     other: {
       "facebook-domain-verification": "f6dqrciz798c8xtuauxdmdquuq1g0y",
@@ -56,27 +65,20 @@ export async function generateMetadata(): Promise<Metadata> {
       "max-video-preview": -1,
     },
     openGraph: {
-      title: siteName,
+      title: country === 'JM'
+        ? 'Jamaica Real Estate | Buy, Sell & Rent Property | Jamaica Home Hub'
+        : 'Guyana Real Estate | Buy, Sell & Rent Property | Guyana Home Hub',
       description: description,
       type: 'website',
       locale: 'en_US',
       url: baseUrl,
       siteName: siteName,
-      images: [
-        {
-          url: `${baseUrl}/images/social-share-default.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `${siteName} - Your Gateway to ${countryName} Real Estate`,
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: siteName,
       description: description,
-      images: [`${baseUrl}/images/social-share-default.jpg`],
-      creator: `@${siteName.replace(' ', '').toLowerCase()}`,
+      creator: `@${siteName.replace(/ /g, '').toLowerCase()}`,
     },
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
@@ -95,9 +97,83 @@ export default async function RootLayout({
   const country = await getCountryFromHeaders();
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
   const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
-  
+
+  const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
+  const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
+
+  // Organization schema (RealEstateAgent type for rich results)
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": siteName,
+    "alternateName": `${countryName} Home Hub`,
+    "url": baseUrl,
+    "logo": `${baseUrl}/images/ghh-logo.png`,
+    "description": `${siteName} is ${countryName}'s trusted online real estate platform. Browse verified properties for sale and rent from professional agents.`,
+    "parentOrganization": {
+      "@type": "Organization",
+      "name": "Caribbean Home Hub, LLC",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "Missouri",
+        "addressCountry": "US"
+      }
+    },
+    "telephone": "+592-762-9797",
+    "email": "info@guyanahomehub.com",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+592-762-9797",
+      "contactType": "Customer Service",
+      "availableLanguage": ["English"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": countryName
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": countryName
+    },
+    "sameAs": [
+      "https://facebook.com/guyanahomehub",
+      "https://instagram.com/guyanahomehub",
+    ],
+  };
+
+  // WebSite schema with SearchAction
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": siteName,
+    "url": baseUrl,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${baseUrl}/properties?search={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} antialiased`}
       >
@@ -125,4 +201,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

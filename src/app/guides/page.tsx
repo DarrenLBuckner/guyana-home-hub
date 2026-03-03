@@ -8,12 +8,16 @@ export async function generateMetadata(): Promise<Metadata> {
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   
   return {
-    title: `Property Guides - ${siteName}`,
-    description: `Complete guides for buying property in ${countryName}. Expert advice for diaspora buyers, locals, and investors. Avoid scams, understand the process, and make informed decisions.`,
+    title: `${countryName} Property Guides | Buying, Selling & Investing`,
+    description: `Expert guides for buying, selling, and investing in ${countryName} real estate. Advice for diaspora buyers, locals, and investors. Avoid scams and make smart decisions.`,
     keywords: `${countryName} property guides, buying property ${countryName}, diaspora property investment, ${countryName} real estate guides, property buying advice`,
+    alternates: {
+      canonical: '/guides',
+    },
     openGraph: {
-      title: `Property Guides - ${siteName}`,
-      description: `Complete guides for buying property in ${countryName}. Expert advice for diaspora buyers, locals, and investors.`,
+      title: `${countryName} Property Guides | Buying, Selling & Investing`,
+      description: `Expert guides for buying, selling, and investing in ${countryName} real estate. Advice for diaspora buyers, locals, and investors.`,
+      url: `https://www.guyanahomehub.com/guides`,
       type: 'website',
     },
   };

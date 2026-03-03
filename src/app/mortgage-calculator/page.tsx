@@ -2,8 +2,11 @@ import MortgageCalculator from '@/components/MortgageCalculator';
 import { CurrencyCalculatorWidget } from '@/components/CurrencyCalculatorWidget';
 
 export const metadata = {
-  title: 'Mortgage Calculator | HomeHub',
-  description: 'Calculate your mortgage payments with current rates from local banks.',
+  title: 'Guyana Mortgage Calculator | Estimate Monthly Payments',
+  description: 'Calculate your monthly mortgage payments for Guyana property. Compare rates from local banks. Free tool for homebuyers and investors.',
+  alternates: {
+    canonical: '/mortgage-calculator',
+  },
 };
 
 export default function MortgageCalculatorPage() {

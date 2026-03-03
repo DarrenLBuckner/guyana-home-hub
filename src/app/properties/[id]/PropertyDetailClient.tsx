@@ -144,17 +144,21 @@ function TruncatedDescription({ description, maxLength = 300 }: { description: s
 
 interface PropertyDetailClientProps {
   propertyId: string
+  initialData?: Property | null
 }
 
-export default function PropertyDetailClient({ propertyId }: PropertyDetailClientProps) {
-  const [property, setProperty] = useState<Property | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function PropertyDetailClient({ propertyId, initialData }: PropertyDetailClientProps) {
+  const [property, setProperty] = useState<Property | null>(initialData || null)
+  const [loading, setLoading] = useState(!initialData)
   const [error, setError] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showViewingModal, setShowViewingModal] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
   useEffect(() => {
+    // Skip fetch if we already have data from server-side rendering
+    if (initialData || property) return
+
     if (propertyId) {
       fetch(`/api/properties/${propertyId}`)
         .then(res => {
@@ -171,7 +175,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
           setLoading(false)
         })
     }
-  }, [propertyId])
+  }, [propertyId, initialData, property])
 
   // Increment view count on page load (fire-and-forget)
   useEffect(() => {
@@ -315,7 +319,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     >
                       <img
                         src={image}
-                        alt={`Thumbnail ${index + 1}`}
+                        alt={`${property.title} - Photo ${index + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
@@ -575,7 +579,7 @@ export default function PropertyDetailClient({ propertyId }: PropertyDetailClien
                     {property.agent_profile.profile_image ? (
                       <img
                         src={property.agent_profile.profile_image}
-                        alt={`${property.agent_profile.first_name} ${property.agent_profile.last_name}`}
+                        alt={`${property.agent_profile.first_name} ${property.agent_profile.last_name} - Real Estate Agent`}
                         className="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg"
                         onError={(e) => {
                           // Fallback to initials if image fails to load

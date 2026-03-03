@@ -1,7 +1,21 @@
-'use client';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import PropertiesListingFixed from '@/components/PropertiesListingFixed';
 import PropertySearchTabs from '@/components/PropertySearchTabs';
+
+export const metadata: Metadata = {
+  title: 'Properties for Rent in Guyana | Houses, Apartments',
+  description: 'Browse rental properties across Guyana. Houses, apartments, and commercial spaces. Verified landlords and agents. Filter by location, price, and bedrooms.',
+  alternates: {
+    canonical: '/properties/rent',
+  },
+  openGraph: {
+    title: 'Properties for Rent in Guyana | Houses, Apartments',
+    description: 'Browse rental properties across Guyana. Houses, apartments, and commercial spaces. Verified landlords and agents.',
+    url: 'https://www.guyanahomehub.com/properties/rent',
+    type: 'website',
+  },
+};
 
 function RentPropertiesContent() {
   return (

@@ -1,7 +1,21 @@
-'use client';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import PropertiesListingFixed from '@/components/PropertiesListingFixed';
 import PropertySearchTabs from '@/components/PropertySearchTabs';
+
+export const metadata: Metadata = {
+  title: 'Properties for Sale in Guyana | Houses, Land, Apartments',
+  description: 'Find houses, apartments, land, and condos for sale across Guyana. Verified listings from professional agents. Browse by region, price, and property type.',
+  alternates: {
+    canonical: '/properties/buy',
+  },
+  openGraph: {
+    title: 'Properties for Sale in Guyana | Houses, Land, Apartments',
+    description: 'Find houses, apartments, land, and condos for sale across Guyana. Verified listings from professional agents.',
+    url: 'https://www.guyanahomehub.com/properties/buy',
+    type: 'website',
+  },
+};
 
 function BuyPropertiesContent() {
   return (

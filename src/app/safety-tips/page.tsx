@@ -3,8 +3,11 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Property Safety Tips | Guyana Home Hub',
-  description: 'Important safety tips for buying, selling, and renting property in Guyana. Protect yourself from fraud and scams.',
+  title: 'Property Safety Tips for Buying in Guyana',
+  description: 'Important safety tips for buying, selling, and renting property in Guyana. Protect yourself from fraud and scams. Essential for diaspora buyers.',
+  alternates: {
+    canonical: '/safety-tips',
+  },
 };
 
 export default function SafetyTipsPage() {
