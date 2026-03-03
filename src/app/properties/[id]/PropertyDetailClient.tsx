@@ -837,6 +837,43 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
       )}
 
       {/* Property Schema for Rich Search Results */}
+      {/* Helpful Resources — contextual guide links */}
+      {property && (
+        <section className="max-w-6xl mx-auto px-4 py-8">
+          <div className="bg-gray-50 rounded-xl p-6 sm:p-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Helpful Resources</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {(property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent'
+                ? [
+                    { title: 'Safety Tips for Renters', description: 'Stay safe when renting property in Guyana.', href: '/safety-tips' },
+                    { title: 'How to Avoid Property Scams', description: 'Red flags and verification steps.', href: '/guides/avoid-property-scams' },
+                  ]
+                : [
+                    { title: 'Buying Property from Abroad', description: 'The complete guide for diaspora buyers.', href: '/guides/buying-from-abroad' },
+                    { title: 'How to Avoid Property Scams', description: 'Red flags and verification steps.', href: '/guides/avoid-property-scams' },
+                  ]
+              ).map((guide) => (
+                <a
+                  key={guide.href}
+                  href={guide.href}
+                  className="flex items-start gap-3 bg-white rounded-lg border border-gray-100 p-4 hover:border-green-200 hover:shadow-sm transition-all duration-150"
+                >
+                  <div className="bg-green-100 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{guide.title}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">{guide.description}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {property && (
         <PropertySchemaClient
           property={{

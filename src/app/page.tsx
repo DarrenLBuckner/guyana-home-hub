@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Home, Users, MapPin, Briefcase, Globe, ShieldCheck, Gift, Building2 } from "lucide-react";
+import { Home, Users, MapPin, Briefcase, Globe, ShieldCheck, Gift, Building2, BookOpen, Shield, TrendingUp, ArrowRight } from "lucide-react";
 import Hero from "../components/Hero";
 import BrowsePropertiesCards from "../components/BrowsePropertiesCards";
 import ListYourPropertyCards from "../components/ListYourPropertyCards";
@@ -141,6 +141,94 @@ export default function HomePage() {
 
             {/* Featured Commercial Properties Showcase - Live from database */}
             <FeaturedCommercialProperties countryName={countryName} />
+
+            {/* ==================== RESOURCES FOR BUYERS ==================== */}
+            <section className="bg-gray-50 rounded-2xl py-14 px-6 sm:px-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-2">Resources for Buyers &amp; Investors</h2>
+              <p className="text-center text-gray-500 mb-10 max-w-lg mx-auto text-sm">Expert guides to help you navigate Guyana&apos;s property market with confidence.</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: BookOpen,
+                    title: "Buying Property from Abroad",
+                    description: "Everything diaspora buyers need to know about purchasing property safely and legally.",
+                    slug: "buying-from-abroad",
+                  },
+                  {
+                    icon: Shield,
+                    title: "How to Avoid Property Scams",
+                    description: "Red flags, verification steps, and safety tips to protect your investment.",
+                    slug: "avoid-property-scams",
+                  },
+                  {
+                    icon: TrendingUp,
+                    title: "Real Estate Investment Guide",
+                    description: "Why Guyana real estate is one of the best opportunities for diaspora investors.",
+                    slug: "investment-guide",
+                  },
+                ].map((guide) => (
+                  <a
+                    key={guide.slug}
+                    href={`/guides/${guide.slug}`}
+                    className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 group"
+                  >
+                    <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                      <guide.icon className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1.5">{guide.title}</h3>
+                    <p className="text-sm text-gray-500 mb-3">{guide.description}</p>
+                    <span className="text-sm font-medium text-green-600 group-hover:text-green-700 inline-flex items-center gap-1 transition-colors">
+                      Read Guide <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+              <div className="text-center mt-8">
+                <a href="/guides" className="text-sm font-medium text-green-600 hover:text-green-700 inline-flex items-center gap-1 transition-colors">
+                  Browse All Guides <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </section>
+
+            {/* ==================== LATEST FROM THE BLOG ==================== */}
+            <section className="py-14">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-2">Latest from the Blog</h2>
+              <p className="text-center text-gray-500 mb-10 max-w-lg mx-auto text-sm">Market insights, buyer stories, and expert analysis.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "The Real Estate Chaos Costing Diaspora Buyers Millions",
+                    excerpt: "The exposed underbelly of Guyana\u2019s emerging real estate market \u2014 and what diaspora buyers can do to protect themselves.",
+                    slug: "real-estate-chaos-costing-millions",
+                    category: "Diaspora Buyers",
+                  },
+                  {
+                    title: "Top 5 Mistakes Diaspora Buyers Make",
+                    excerpt: "Learn from the common pitfalls that overseas Guyanese buyers encounter and how to avoid them.",
+                    slug: "diaspora-buyer-mistakes",
+                    category: "Diaspora Tips",
+                  },
+                ].map((post) => (
+                  <a
+                    key={post.slug}
+                    href={`/blog/${post.slug}`}
+                    className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 group"
+                  >
+                    <span className="inline-block text-xs font-semibold uppercase tracking-wide text-green-600 mb-3">{post.category}</span>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-green-700 transition-colors">{post.title}</h3>
+                    <p className="text-sm text-gray-500 mb-3">{post.excerpt}</p>
+                    <span className="text-sm font-medium text-green-600 group-hover:text-green-700 inline-flex items-center gap-1 transition-colors">
+                      Read Article <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </a>
+                ))}
+              </div>
+              <div className="text-center mt-8">
+                <a href="/blog" className="text-sm font-medium text-green-600 hover:text-green-700 inline-flex items-center gap-1 transition-colors">
+                  Read All Articles <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </section>
 
             {/* Why Choose Us Section */}
             <section className="bg-gray-50 rounded-lg p-8">
