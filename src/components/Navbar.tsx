@@ -131,9 +131,10 @@ export default function Navbar() {
   const handleOAuthSignIn = async (provider: "google" | "facebook") => {
     setAccountOpen(false);
     setMenuOpen(false);
+    const returnTo = encodeURIComponent(pathname);
     await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?returnTo=${returnTo}` },
     });
   };
 
@@ -184,7 +185,7 @@ export default function Navbar() {
       </button>
 
       <Link
-        href="/signin"
+        href={`/signin?returnTo=${encodeURIComponent(pathname)}`}
         onClick={() => { onAction?.(); setAccountOpen(false); closeMenu(); }}
         className="w-full flex items-center px-4 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
       >

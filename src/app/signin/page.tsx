@@ -1,38 +1,44 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { createClient } from '@/lib/supabase/client'
 
-export default function CustomerSignIn() {
+function SignInContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
   const [origin, setOrigin] = useState('')
 
+  const returnTo = searchParams.get('returnTo')
+
   useEffect(() => {
-    // Set origin only on client side
     setOrigin(window.location.origin)
   }, [])
 
   useEffect(() => {
-    // Listen for all auth events (including OAuth)
     const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth event:', event, 'Session exists:', !!session)
-      
+
       if (event === 'SIGNED_IN' && session) {
         console.log('User signed in, redirecting to profile page')
-        // Always redirect to profile page - let the profile page handle the redirect logic
         router.push('/onboard/profile')
       }
     })
 
-    // Cleanup our listener on unmount
     return () => {
       listener.subscription.unsubscribe()
     }
   }, [router, supabase])
+
+  // Build callback URL, preserving returnTo if present
+  const callbackUrl = origin
+    ? returnTo
+      ? `${origin}/auth/callback?returnTo=${encodeURIComponent(returnTo)}`
+      : `${origin}/auth/callback`
+    : '/auth/callback'
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gray-50">
@@ -49,7 +55,7 @@ export default function CustomerSignIn() {
           appearance={{ theme: ThemeSupa }}
           providers={['google', 'facebook']}
           magicLink={true}
-          redirectTo={origin ? `${origin}/auth/callback` : '/auth/callback'}
+          redirectTo={callbackUrl}
         />
       </div>
 
@@ -59,8 +65,8 @@ export default function CustomerSignIn() {
           <p className="text-sm text-green-800 mb-2">
             <strong>Are you a Property Agent?</strong>
           </p>
-          <a 
-            href="/agent-login" 
+          <a
+            href="/agent-login"
             className="text-green-700 hover:text-green-800 font-medium underline"
           >
             Click here for Agent Login
@@ -68,5 +74,17 @@ export default function CustomerSignIn() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CustomerSignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    }>
+      <SignInContent />
+    </Suspense>
   )
 }
