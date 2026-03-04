@@ -37,7 +37,7 @@ export default function PropertySchemaClient({ property }: PropertySchemaClientP
 
     const siteName = 'Guyana Home Hub';
     const countryName = 'Guyana';
-    const baseUrl = 'https://guyanahomehub.com';
+    const baseUrl = 'https://www.guyanahomehub.com';
     
     // Generate comprehensive property schema
     const propertySchema = {

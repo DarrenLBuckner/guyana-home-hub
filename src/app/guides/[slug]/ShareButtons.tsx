@@ -19,7 +19,7 @@ export function ShareButtons({ guide }: ShareButtonsProps) {
     if (typeof window !== 'undefined') {
       return window.location.href;
     }
-    return `https://guyanahomehub.com/guides/${guide.slug}`;
+    return `https://www.guyanahomehub.com/guides/${guide.slug}`;
   };
   
   const handleFacebookShare = () => {

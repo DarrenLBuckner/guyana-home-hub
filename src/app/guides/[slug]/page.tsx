@@ -1783,7 +1783,7 @@ export default async function GuidePage({ params }: { params: { slug: string } }
               "name": siteName,
               "logo": {
                 "@type": "ImageObject",
-                "url": `${country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com'}/images/logo.png`
+                "url": `${country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com'}/images/logo.png`
               }
             },
             "datePublished": guide.lastUpdated,

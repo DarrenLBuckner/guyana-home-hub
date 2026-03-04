@@ -32,7 +32,7 @@ export default async function PropertySchema({ property }: PropertySchemaProps) 
   const country = await getCountryFromHeaders();
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
   const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
-  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
   
   // Determine property schema type based on listing type
   const getSchemaType = () => {
@@ -273,7 +273,7 @@ export async function PropertyListingPageSchema({
 }) {
   const country = await getCountryFromHeaders();
   const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
-  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
   
   const listingPageSchema = {
     "@context": "https://schema.org",
@@ -323,7 +323,7 @@ export async function PropertyListingPageSchema({
 export async function AgentSchema({ agent }: { agent: any }) {
   const country = await getCountryFromHeaders();
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
-  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
   
   const agentSchema = {
     "@context": "https://schema.org",

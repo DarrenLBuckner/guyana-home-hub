@@ -30,7 +30,7 @@ export default async function SocialMetaTags({
   const country = await getCountryFromHeaders();
   const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
-  const baseUrl = country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com';
+  const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
   
   // Default values
   const defaultTitle = `${siteName} - Your Gateway to ${countryName} Real Estate`;

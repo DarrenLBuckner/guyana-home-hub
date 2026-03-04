@@ -221,7 +221,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               "name": siteName,
               "logo": {
                 "@type": "ImageObject",
-                "url": `${country === 'JM' ? 'https://jamaicahomehub.com' : 'https://guyanahomehub.com'}/images/logo.png`
+                "url": `${country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com'}/images/logo.png`
               }
             },
             "datePublished": post.publishedDate,
@@ -284,7 +284,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               </div>
               <div className="flex gap-3">
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(post.title + ' - ' + 'https://guyanahomehub.com/blog/' + post.slug)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(post.title + ' - ' + 'https://www.guyanahomehub.com/blog/' + post.slug)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
@@ -295,7 +295,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                   WhatsApp
                 </a>
                 <a
-                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://guyanahomehub.com/blog/' + post.slug)}`}
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://www.guyanahomehub.com/blog/' + post.slug)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
