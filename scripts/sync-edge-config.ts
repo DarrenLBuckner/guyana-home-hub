@@ -9,8 +9,13 @@
  *   (also runs automatically via vercel-build)
  */
 
+import dotenv from 'dotenv'
+import path from 'path'
+
+// Load .env.local for local runs (Vercel injects env vars in CI)
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
+
 import { createClient } from '@supabase/supabase-js'
-import 'dotenv/config'
 
 interface Territory {
   country_code: string
