@@ -16,8 +16,8 @@ function getCountryCodeFromHostname(hostname: string): string {
     return 'GY'
   }
 
-  // Extract country from pattern: {country}homehub.com
-  const match = hostname.match(/^([a-z]+)homehub\./i)
+  // Extract country from pattern: {country}homehub.com or www.{country}homehub.com
+  const match = hostname.match(/^(?:www\.)?([a-z]+)homehub\./i)
   if (match) {
     const country = match[1].toUpperCase()
     const countryMap: Record<string, string> = {
@@ -40,23 +40,6 @@ function getCountryCodeFromHostname(hostname: string): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // ===== DEBUG LOGGING: Remove after hostname issue resolved =====
-  const debugNextUrlHostname = request.nextUrl.hostname
-  const debugHostHeader = request.headers.get('host')
-  const debugXForwardedHost = request.headers.get('x-forwarded-host')
-  const debugXForwardedFor = request.headers.get('x-forwarded-for')
-  const debugUrl = request.url
-  console.log(`🔍 MIDDLEWARE DEBUG [${pathname}]:`, JSON.stringify({
-    'nextUrl.hostname': debugNextUrlHostname,
-    'host_header': debugHostHeader,
-    'x-forwarded-host': debugXForwardedHost,
-    'x-forwarded-for': debugXForwardedFor,
-    'request.url': debugUrl,
-    'nextUrl.host': request.nextUrl.host,
-    'nextUrl.origin': request.nextUrl.origin,
-  }))
-  // ===== END DEBUG LOGGING =====
-
   // Skip routing for status pages and API routes to prevent rewrite loops
   if (
     pathname.startsWith('/coming-soon/') ||
@@ -71,7 +54,7 @@ export async function middleware(request: NextRequest) {
     || request.headers.get('host')?.split(':')[0]
     || request.nextUrl.hostname
   const countryCode = getCountryCodeFromHostname(hostname)
-  console.log(`🌍 MIDDLEWARE: Detected ${countryCode} from "${hostname}" (x-fwd-host: ${debugXForwardedHost}, host: ${debugHostHeader}, nextUrl: ${debugNextUrlHostname})`)
+  console.log(`🌍 MIDDLEWARE: Detected ${countryCode} from "${hostname}"`)
 
   // Look up territory in Edge Config
   let territory: TerritoryData | undefined
