@@ -119,13 +119,15 @@ export async function POST() {
     console.error('Territory sync failed:', message)
 
     // Log failed sync (best-effort, don't throw if logging fails)
-    const { data: { user } } = await supabase.auth.getUser()
-    await supabase.from('edge_config_sync_log').insert({
-      sync_status: 'failed',
-      territories_synced: 0,
-      error_message: message,
-      synced_by: user?.id ?? null,
-    }).catch(() => {})
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      await supabase.from('edge_config_sync_log').insert({
+        sync_status: 'failed',
+        territories_synced: 0,
+        error_message: message,
+        synced_by: user?.id ?? null,
+      })
+    } catch { /* ignore logging errors */ }
 
     return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
