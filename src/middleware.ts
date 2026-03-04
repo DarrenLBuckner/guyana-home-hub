@@ -40,6 +40,23 @@ function getCountryCodeFromHostname(hostname: string): string {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // ===== DEBUG LOGGING: Remove after hostname issue resolved =====
+  const debugNextUrlHostname = request.nextUrl.hostname
+  const debugHostHeader = request.headers.get('host')
+  const debugXForwardedHost = request.headers.get('x-forwarded-host')
+  const debugXForwardedFor = request.headers.get('x-forwarded-for')
+  const debugUrl = request.url
+  console.log(`🔍 MIDDLEWARE DEBUG [${pathname}]:`, JSON.stringify({
+    'nextUrl.hostname': debugNextUrlHostname,
+    'host_header': debugHostHeader,
+    'x-forwarded-host': debugXForwardedHost,
+    'x-forwarded-for': debugXForwardedFor,
+    'request.url': debugUrl,
+    'nextUrl.host': request.nextUrl.host,
+    'nextUrl.origin': request.nextUrl.origin,
+  }))
+  // ===== END DEBUG LOGGING =====
+
   // Skip routing for status pages and API routes to prevent rewrite loops
   if (
     pathname.startsWith('/coming-soon/') ||
@@ -49,10 +66,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Use host header for actual domain (nextUrl.hostname can be internal on Vercel)
-  const hostname = request.headers.get('host')?.split(':')[0] || request.nextUrl.hostname
+  // Use x-forwarded-host first (set by Vercel proxy), then host header, then nextUrl
+  const hostname = request.headers.get('x-forwarded-host')?.split(':')[0]
+    || request.headers.get('host')?.split(':')[0]
+    || request.nextUrl.hostname
   const countryCode = getCountryCodeFromHostname(hostname)
-  console.log(`🌍 MIDDLEWARE: Detected ${countryCode} from ${hostname}`)
+  console.log(`🌍 MIDDLEWARE: Detected ${countryCode} from "${hostname}" (x-fwd-host: ${debugXForwardedHost}, host: ${debugHostHeader}, nextUrl: ${debugNextUrlHostname})`)
 
   // Look up territory in Edge Config
   let territory: TerritoryData | undefined
