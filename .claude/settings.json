@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(python -c:*)"
+      "Bash(python -c:*)",
+      "Bash(test -f /c/Dev/guyana-home-hub/public/images/default-property-og.jpg)"
     ],
     "additionalDirectories": [
       "C:\\Dev\\Portal-home-hub\\src\\app\\dashboard\\owner\\edit-property\\[id]"
