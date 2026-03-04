@@ -49,7 +49,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const hostname = request.nextUrl.hostname
+  // Use host header for actual domain (nextUrl.hostname can be internal on Vercel)
+  const hostname = request.headers.get('host')?.split(':')[0] || request.nextUrl.hostname
   const countryCode = getCountryCodeFromHostname(hostname)
   console.log(`🌍 MIDDLEWARE: Detected ${countryCode} from ${hostname}`)
 
