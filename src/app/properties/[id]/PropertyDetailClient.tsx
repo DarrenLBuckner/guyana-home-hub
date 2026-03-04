@@ -61,6 +61,13 @@ interface Property {
   owner_email?: string
   owner_whatsapp?: string
   images?: string[]
+  property_media?: Array<{
+    media_url: string
+    media_type?: string
+    display_order: number
+    is_primary: boolean
+    alt_text?: string | null
+  }>
   hero_index?: number
   video_url?: string
   views?: number
@@ -194,6 +201,16 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
     }
   }, [propertyId])
 
+  // Build alt text lookup from property_media
+  const getAltText = (index: number, fallbackPrefix = 'Image') => {
+    if (property?.property_media && property.images) {
+      const imageUrl = property.images[index]
+      const media = property.property_media.find(m => m.media_url === imageUrl)
+      if (media?.alt_text) return media.alt_text
+    }
+    return `${property?.title || 'Property'} - ${fallbackPrefix} ${index + 1}`
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -261,7 +278,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
               >
                 <img
                   src={property.images[currentImageIndex]}
-                  alt={`${property.title} - Image ${currentImageIndex + 1}`}
+                  alt={getAltText(currentImageIndex)}
                   className="max-w-full max-h-[600px] w-auto h-auto object-contain"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
@@ -319,7 +336,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                     >
                       <img
                         src={image}
-                        alt={`${property.title} - Photo ${index + 1}`}
+                        alt={getAltText(index, 'Photo')}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
@@ -348,7 +365,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
             open={lightboxOpen}
             close={() => setLightboxOpen(false)}
             index={currentImageIndex}
-            slides={property.images.map((src) => ({ src }))}
+            slides={property.images.map((src, i) => ({ src, alt: getAltText(i) }))}
             plugins={[Zoom]}
             on={{
               view: ({ index }) => setCurrentImageIndex(index),
