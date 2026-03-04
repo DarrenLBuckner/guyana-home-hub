@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "vercel-build": "npm run sync-territories && next build",
+    "build": "npm run sync-territories && next build",
+    "build:next": "next build",
     "start": "next start",
     "lint": "next lint",
     "sync-territories": "tsx scripts/sync-edge-config.ts"

@@ -1,8 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { get } from '@vercel/edge-config'
 
-export const runtime = 'edge'
-
 interface TerritoryData {
   status: 'active' | 'pending' | 'suspended' | 'terminated'
   display_name: string
