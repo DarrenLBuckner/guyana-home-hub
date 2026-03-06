@@ -12,6 +12,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import FacebookPixel from "@/components/FacebookPixel";
 import { FloatingWhatsAppButton } from "@/components/WhatsAppButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
+import { ScrollRestoration } from "@/components/ScrollRestoration";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -195,6 +196,7 @@ export default async function RootLayout({
             <Footer />
             <FloatingWhatsAppButton />
             <ExitIntentPopup />
+            <ScrollRestoration />
           </AppProviders>
         </CountryThemeProvider>
       </body>
