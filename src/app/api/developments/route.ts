@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     let query = supabase
       .from('developments')
       .select(
-        'id, name, slug, tagline, developer_name, notable_partners, location_area, city, development_type, total_units, price_from, price_to, currency, status, hero_image, hero_image_mobile, featured'
+        'id, name, slug, tagline, developer_name, notable_partners, location_area, city, development_type, total_units, price_from, price_to, currency, status, hero_image, hero_image_mobile, featured, views'
       )
       .eq('published', true)
 

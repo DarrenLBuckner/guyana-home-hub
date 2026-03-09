@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { MapPin, Building2, Users, Star } from 'lucide-react';
+import { MapPin, Building2, Users, Star, Eye } from 'lucide-react';
 import PropertySearchTabs from '@/components/PropertySearchTabs';
 
 interface ApiDevelopment {
@@ -23,6 +23,7 @@ interface ApiDevelopment {
   hero_image: string | null;
   hero_image_mobile: string | null;
   featured: boolean;
+  views: number | null;
 }
 
 interface Development {
@@ -44,6 +45,7 @@ interface Development {
   imageMobile: string | null;
   featured: boolean;
   slug: string;
+  views: number;
 }
 
 const STATUS_MAP: Record<string, string> = {
@@ -92,6 +94,7 @@ function mapDevelopment(d: ApiDevelopment): Development {
     imageMobile: d.hero_image_mobile,
     featured: d.featured,
     slug: d.slug,
+    views: d.views || 0,
   };
 }
 
@@ -236,6 +239,12 @@ function DevelopmentsContent() {
                             <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
                             Featured
                           </span>
+                        </div>
+                      )}
+                      {dev.views > 0 && (
+                        <div className="absolute bottom-3 left-3 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium flex items-center shadow-sm">
+                          <Eye className="h-3 w-3 mr-1" />
+                          {dev.views.toLocaleString()}
                         </div>
                       )}
                     </div>

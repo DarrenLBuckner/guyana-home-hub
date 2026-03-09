@@ -14,7 +14,7 @@ export async function GET(
     const { data, error } = await supabase
       .from('developments')
       .select(
-        'id, name, slug, tagline, description, developer_name, developer_logo, developer_website, notable_partners, location_area, city, region, development_type, total_units, units_available, price_from, price_to, currency, status, construction_start, expected_completion, amenities, key_features, hero_image, hero_image_mobile, gallery_images, floor_plan_images, video_url, virtual_tour_url, contact_phone, contact_email, contact_whatsapp, sales_office_address, featured'
+        'id, name, slug, tagline, description, developer_name, developer_logo, developer_website, notable_partners, location_area, city, region, development_type, total_units, units_available, price_from, price_to, currency, status, construction_start, expected_completion, amenities, key_features, hero_image, hero_image_mobile, gallery_images, floor_plan_images, video_url, virtual_tour_url, contact_phone, contact_email, contact_whatsapp, sales_office_address, featured, views'
       )
       .eq('slug', slug)
       .eq('published', true)

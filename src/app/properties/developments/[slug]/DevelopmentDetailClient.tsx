@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { buildDevelopmentMessage, buildWhatsAppUrl as buildWAUrl } from '@/lib/whatsapp'
+import { createClient } from '@/lib/supabase/client'
 import {
   MapPin,
   Building2,
@@ -15,6 +16,7 @@ import {
   Star,
   Check,
   Play,
+  Eye,
 } from 'lucide-react'
 
 interface Development {
@@ -52,6 +54,7 @@ interface Development {
   contact_whatsapp: string | null
   sales_office_address: string | null
   featured: boolean
+  views: number | null
 }
 
 const STATUS_MAP: Record<string, string> = {
@@ -112,6 +115,29 @@ export default function DevelopmentDetailClient({ slug }: { slug: string }) {
     }
     load()
   }, [slug])
+
+  // Record development view on page load (fire-and-forget)
+  useEffect(() => {
+    if (!dev?.id) return
+    const recordView = async () => {
+      try {
+        let sessionId = sessionStorage.getItem('ghh_session_id')
+        if (!sessionId) {
+          sessionId = crypto.randomUUID()
+          sessionStorage.setItem('ghh_session_id', sessionId)
+        }
+        const supabase = createClient()
+        await supabase.rpc('record_development_view', {
+          p_development_id: dev.id,
+          p_referrer: document.referrer || '',
+          p_session_id: sessionId,
+        })
+      } catch (error) {
+        console.error('Failed to record development view:', error)
+      }
+    }
+    recordView()
+  }, [dev?.id])
 
   if (loading) {
     return (
@@ -240,6 +266,12 @@ export default function DevelopmentDetailClient({ slug }: { slug: string }) {
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-green-600" />
                   Expected {new Date(dev.expected_completion).getFullYear()}
+                </div>
+              )}
+              {dev.views != null && dev.views > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <Eye className="w-4 h-4 text-green-600" />
+                  {dev.views.toLocaleString()} views
                 </div>
               )}
             </div>
