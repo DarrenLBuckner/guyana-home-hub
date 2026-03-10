@@ -291,19 +291,23 @@ export class PropertyRepository {
     }
   }
 
-  // Increment property views
-  async incrementPropertyViews(id: string): Promise<void> {
+  // Record property view with event tracking
+  async incrementPropertyViews(id: string, referrer = '', sessionId = ''): Promise<void> {
     try {
       const { error } = await this.supabase
-        .rpc('increment_property_views', { property_id: id })
+        .rpc('record_property_view', {
+          p_property_id: id,
+          p_referrer: referrer,
+          p_session_id: sessionId,
+        })
 
       if (error) {
-        console.error('Error incrementing views:', error)
+        console.error('Error recording view:', error)
         // Don't throw error for analytics failures
       }
 
     } catch (error) {
-      console.error('Error incrementing property views:', error)
+      console.error('Error recording property view:', error)
     }
   }
 
