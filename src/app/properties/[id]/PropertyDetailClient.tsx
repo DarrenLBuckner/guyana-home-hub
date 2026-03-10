@@ -184,30 +184,20 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
     }
   }, [propertyId, initialData, property])
 
-  // Record property view on page load (fire-and-forget)
+  // Increment view count on page load (fire-and-forget)
   useEffect(() => {
-    const recordView = async () => {
+    const incrementViews = async () => {
       try {
-        let sessionId = sessionStorage.getItem('ghh_session_id')
-        if (!sessionId) {
-          sessionId = crypto.randomUUID()
-          sessionStorage.setItem('ghh_session_id', sessionId)
-        }
-
         const supabase = createClient()
-        await supabase.rpc('record_property_view', {
-          p_property_id: propertyId,
-          p_referrer: document.referrer || '',
-          p_session_id: sessionId,
-        })
+        await supabase.rpc('increment_property_views', { property_id: propertyId })
       } catch (error) {
-        // Silent fail - don't block page rendering for view tracking
-        console.error('Failed to record view:', error)
+        // Silent fail - don't block page rendering for view increment
+        console.error('Failed to increment views:', error)
       }
     }
 
     if (propertyId) {
-      recordView()
+      incrementViews()
     }
   }, [propertyId])
 
