@@ -137,6 +137,8 @@ export default function Footer() {
               <Link href="/acceptable-use" className="hover:text-gray-300 transition-colors">Acceptable Use</Link>
               <span>&middot;</span>
               <Link href="/professional-services" className="hover:text-gray-300 transition-colors">Service Agreement</Link>
+              <span>&middot;</span>
+              <Link href="/privacy/delete-request" className="hover:text-gray-300 transition-colors">Delete My Data</Link>
             </div>
 
             {/* Social Icons */}
