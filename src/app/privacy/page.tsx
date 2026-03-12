@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy - Guyana Home Hub',
@@ -324,6 +325,22 @@ export default function PrivacyPolicyPage() {
               Preferred method for fastest response • +592 762-9797
             </p>
           </div>
+        </div>
+
+        <hr className="my-8" />
+
+        {/* Data Deletion CTA */}
+        <div className="bg-green-50 border border-green-200 rounded-xl p-8 my-8 text-center">
+          <h3 className="text-xl font-bold text-green-800 mb-2">Request Data Deletion</h3>
+          <p className="text-gray-700 mb-6 max-w-xl mx-auto">
+            You have the right to request that we delete your personal data. Submit a request below and we will process it within 30 days.
+          </p>
+          <Link
+            href="/privacy/delete-request"
+            className="inline-block bg-green-700 hover:bg-green-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+          >
+            Request Data Deletion
+          </Link>
         </div>
 
         <hr className="my-8" />
