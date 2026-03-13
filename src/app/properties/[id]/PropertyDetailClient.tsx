@@ -18,6 +18,7 @@ import MortgageCalculator from '@/components/MortgageCalculator'
 import PrivateListingContact from '@/components/PrivateListingContact'
 import { createClient } from '@/lib/supabase/client'
 import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
+import { useTrackClick } from '@/hooks/useTrackClick'
 import dynamic from 'next/dynamic'
 
 const GoogleMapsProvider = dynamic(
@@ -161,6 +162,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showViewingModal, setShowViewingModal] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const { trackClick } = useTrackClick()
 
   useEffect(() => {
     // Skip fetch if we already have data from server-side rendering
@@ -682,6 +684,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                             const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
 
                             // Open in new window
+                            trackClick({ action_type: 'whatsapp', source_page: 'property_listing', property_id: property.id, agent_id: property.agent_profile?.id });
                             window.open(whatsappUrl, '_blank');
                           }}
                           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-md"
@@ -721,6 +724,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                               const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
 
                               // Open in new window
+                              trackClick({ action_type: 'whatsapp', source_page: 'property_listing', property_id: property.id, agent_id: property.agent_profile?.id });
                               window.open(whatsappUrl, '_blank');
                             }}
                             className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-md"
@@ -731,7 +735,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                             Contact {property.agent_profile.first_name}
                           </button>
                           <button
-                            onClick={() => setShowViewingModal(true)}
+                            onClick={() => { trackClick({ action_type: 'request_viewing', source_page: 'property_listing', property_id: property.id, agent_id: property.agent_profile?.id }); setShowViewingModal(true) }}
                             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-md"
                           >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -762,6 +766,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <a
                       href={`mailto:${property.owner_email}`}
+                      onClick={() => trackClick({ action_type: 'email', source_page: 'property_listing', property_id: property.id })}
                       className="bg-blue-600 text-white text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       Email Owner
@@ -777,13 +782,14 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                         }))}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackClick({ action_type: 'whatsapp', source_page: 'property_listing', property_id: property.id })}
                         className="bg-green-600 text-white text-center py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
                       >
                         WhatsApp Owner
                       </a>
                     )}
                     <button
-                      onClick={() => setShowViewingModal(true)}
+                      onClick={() => { trackClick({ action_type: 'request_viewing', source_page: 'property_listing', property_id: property.id }); setShowViewingModal(true) }}
                       className="bg-purple-600 text-white text-center py-3 px-6 rounded-lg hover:bg-purple-700 transition-colors"
                     >
                       {property.status === 'under_contract' || property.status === 'pending' ? 'Backup Offers' : 'Request Viewing'}
@@ -812,6 +818,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                       propertyId: property.id,
                     });
                     const whatsappUrl = buildWhatsAppUrl(phoneNumber, message);
+                    trackClick({ action_type: 'whatsapp', source_page: 'property_listing', property_id: property.id });
                     window.open(whatsappUrl, '_blank');
                   }}
                   className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
@@ -822,7 +829,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                   Contact via WhatsApp
                 </button>
                 <button
-                  onClick={() => setShowViewingModal(true)}
+                  onClick={() => { trackClick({ action_type: 'request_viewing', source_page: 'property_listing', property_id: property.id }); setShowViewingModal(true) }}
                   className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
