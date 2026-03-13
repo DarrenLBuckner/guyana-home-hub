@@ -14,6 +14,11 @@ interface AgentReport {
   total: number
 }
 
+interface UserProfile {
+  user_type: string
+  country_code: string | null
+}
+
 type DateRange = 'this_week' | 'this_month' | 'last_month' | 'custom'
 
 function getDateRange(range: DateRange, customStart?: string, customEnd?: string) {
@@ -52,27 +57,63 @@ export default function EngagementReportPage() {
   const [customStart, setCustomStart] = useState('')
   const [customEnd, setCustomEnd] = useState('')
   const [totalClicks, setTotalClicks] = useState(0)
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
+  const [accessDenied, setAccessDenied] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
 
   const supabase = createClient()
 
+  // Check user role on mount
+  useEffect(() => {
+    const checkAccess = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setAccessDenied(true)
+        setAuthChecked(true)
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('user_type, country_code')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile || !['super_admin', 'owner_admin'].includes(profile.user_type)) {
+        setAccessDenied(true)
+        setAuthChecked(true)
+        return
+      }
+
+      setCurrentUser(profile)
+      setAuthChecked(true)
+    }
+    checkAccess()
+  }, [supabase])
+
   const fetchReport = useCallback(async () => {
+    if (!currentUser) return
+
     setLoading(true)
     setError(null)
 
     const { start, end } = getDateRange(dateRange, customStart, customEnd)
 
-    const { data, error: fetchError } = await supabase
+    let query = supabase
       .from('agent_engagement_clicks')
       .select(`
         agent_id,
         action_type,
         profiles!agent_id (
           full_name,
-          email
+          email,
+          country_code
         )
       `)
       .gte('created_at', start)
       .lte('created_at', end)
+
+    const { data, error: fetchError } = await query
 
     if (fetchError) {
       setError(fetchError.message)
@@ -80,7 +121,12 @@ export default function EngagementReportPage() {
       return
     }
 
-    const aggregated = (data as any[])?.reduce((acc: Record<string, AgentReport>, click: any) => {
+    // Owner admin: filter client-side to only their territory's agents
+    const filtered = currentUser.user_type === 'owner_admin' && currentUser.country_code
+      ? (data as any[])?.filter((click: any) => click.profiles?.country_code === currentUser.country_code)
+      : data
+
+    const aggregated = (filtered as any[])?.reduce((acc: Record<string, AgentReport>, click: any) => {
       const agentId = click.agent_id || '_unknown'
       if (!acc[agentId]) {
         acc[agentId] = {
@@ -107,13 +153,32 @@ export default function EngagementReportPage() {
     setReport(aggregated)
     setTotalClicks(Object.values(aggregated as Record<string, AgentReport>).reduce((sum, a) => sum + a.total, 0))
     setLoading(false)
-  }, [supabase, dateRange, customStart, customEnd])
+  }, [supabase, dateRange, customStart, customEnd, currentUser])
 
   useEffect(() => {
-    fetchReport()
-  }, [fetchReport])
+    if (authChecked && currentUser) fetchReport()
+  }, [fetchReport, authChecked, currentUser])
 
   const sortedAgents = Object.entries(report).sort(([, a], [, b]) => b.total - a.total)
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400">Checking access...</p>
+      </div>
+    )
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg font-semibold text-gray-700 mb-2">Access Denied</p>
+          <p className="text-sm text-gray-500">This report is available to super admins and owner admins only.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
