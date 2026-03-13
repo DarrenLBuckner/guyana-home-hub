@@ -7,15 +7,15 @@ import QRCode from 'qrcode'
 
 interface Agent {
   id: string
+  slug: string
   full_name: string
-  first_name: string
-  last_name: string
-  email: string
-  phone: string
   profile_image: string | null
+  phone: string | null
+  email: string | null
   company: string | null
   is_founding_member: boolean
   is_verified_agent: boolean
+  is_premium_agent: boolean
   active_listing_count: number
   years_experience: number | null
 }

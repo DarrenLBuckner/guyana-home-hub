@@ -11,21 +11,23 @@ function createServiceClient() {
   )
 }
 
-// premier_agents is a Supabase view not in generated types
+// Matches the rebuilt premier_agents view exactly
 interface PremierAgent {
   id: string
-  full_name: string
-  first_name: string
-  last_name: string
-  email: string
-  phone: string
-  profile_image: string | null
-  company: string | null
   slug: string
+  full_name: string
+  profile_image: string | null
+  phone: string | null
+  email: string | null
+  company: string | null
   is_founding_member: boolean
   is_verified_agent: boolean
-  active_listing_count: number
+  is_premium_agent: boolean
+  bio: string | null
+  specialties: string[] | null
+  target_region: string | null
   years_experience: number | null
+  active_listing_count: number
 }
 
 interface AgentPageProps {
@@ -44,7 +46,7 @@ async function getAgent(slug: string) {
   const agent = data as unknown as PremierAgent | null
   if (error || !agent) return null
 
-  // Fetch active listings for this agent
+  // Fetch active listings for this agent using agent.id
   const { data: listings } = await supabase
     .from('properties')
     .select(`
@@ -58,35 +60,27 @@ async function getAgent(slug: string) {
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  // Fetch bio/specialties from agent_vetting
-  const { data: vetting } = await supabase
-    .from('agent_vetting' as any)
-    .select('bio, specialties, target_region')
-    .eq('user_id', agent.id)
-    .single()
-
-  // Normalize specialties — may be a string, JSON string, or actual array
-  let normalizedVetting = null
-  if (vetting) {
-    let specialties: string[] = []
-    if (Array.isArray((vetting as any).specialties)) {
-      specialties = (vetting as any).specialties
-    } else if (typeof (vetting as any).specialties === 'string') {
-      try {
-        const parsed = JSON.parse((vetting as any).specialties)
-        specialties = Array.isArray(parsed) ? parsed : [(vetting as any).specialties]
-      } catch {
-        specialties = (vetting as any).specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
-      }
-    }
-    normalizedVetting = {
-      bio: (vetting as any).bio || null,
-      specialties,
-      target_region: (vetting as any).target_region || null,
+  // Normalize specialties from the view — runtime type may vary from TS interface
+  let specialties: string[] = []
+  const rawSpecialties = agent.specialties as unknown
+  if (Array.isArray(rawSpecialties)) {
+    specialties = rawSpecialties
+  } else if (typeof rawSpecialties === 'string') {
+    try {
+      const parsed = JSON.parse(rawSpecialties)
+      specialties = Array.isArray(parsed) ? parsed : [rawSpecialties]
+    } catch {
+      specialties = rawSpecialties.split(',').map((s: string) => s.trim()).filter(Boolean)
     }
   }
 
-  return { agent, listings: Array.isArray(listings) ? listings : [], vetting: normalizedVetting }
+  const vetting = {
+    bio: agent.bio || null,
+    specialties,
+    target_region: agent.target_region || null,
+  }
+
+  return { agent, listings: Array.isArray(listings) ? listings : [], vetting }
 }
 
 export async function generateMetadata({ params }: AgentPageProps): Promise<Metadata> {
