@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { CurrencyFormatter, convertGydToUsd } from '@/lib/currency'
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
+import { isComingSoon, COMING_SOON_IMAGE } from '@/lib/comingSoonImage'
 import { FSBOBadge } from '@/components/FSBOBadge'
 import { WatchButton } from '@/components/WatchButton'
 
@@ -58,7 +59,11 @@ export function PropertyCard({
   }
 
   // Helper to handle both image formats: string[] or { url: string }[]
+  // Coming Soon properties show branded placeholder as first image
   const getImageUrl = (images: any[] | undefined, index: number = 0): string => {
+    if (index === 0 && isComingSoon(property.available_from)) {
+      return COMING_SOON_IMAGE
+    }
     const image = images?.[index]
     if (!image) return '/images/placeholder-property.jpg'
     return typeof image === 'string' ? image : image.url || '/images/placeholder-property.jpg'
