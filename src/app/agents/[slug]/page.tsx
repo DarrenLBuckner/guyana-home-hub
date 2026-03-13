@@ -1,7 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import AgentProfileClient from './AgentProfileClient'
 import type { Metadata } from 'next'
+
+// Service role client to bypass RLS for server-side reads
+function createServiceClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 // premier_agents is a Supabase view not in generated types
 interface PremierAgent {
@@ -25,7 +33,7 @@ interface AgentPageProps {
 }
 
 async function getAgent(slug: string) {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data, error } = await supabase
     .from('premier_agents' as any)

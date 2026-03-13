@@ -1,7 +1,14 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+
+function createServiceClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export const metadata: Metadata = {
   title: 'Premier Agents',
@@ -23,7 +30,7 @@ function getInitials(name: string) {
 }
 
 export default async function PremierAgentsPage() {
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const { data: agents } = await supabase
     .from('premier_agents' as any)
