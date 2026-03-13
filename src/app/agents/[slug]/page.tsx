@@ -1,33 +1,16 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 import AgentProfileClient from './AgentProfileClient'
 import type { Metadata } from 'next'
 
-// Service role client to bypass RLS for server-side reads
+const PREMIER_THRESHOLD = 6
+
 function createServiceClient() {
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-}
-
-// Matches the rebuilt premier_agents view
-interface PremierAgent {
-  id: string
-  slug: string
-  full_name: string
-  profile_image: string | null
-  phone: string | null
-  email: string | null
-  company: string | null
-  is_founding_member: boolean
-  is_verified_agent: boolean
-  is_premium_agent: boolean
-  bio: string | null
-  specialties: string[] | null
-  target_region: string | null
-  years_experience: number | null
-  active_listing_count: number
 }
 
 interface AgentPageProps {
@@ -37,48 +20,47 @@ interface AgentPageProps {
 async function getAgent(slug: string) {
   const supabase = createServiceClient()
 
-  const { data, error } = await supabase
-    .from('premier_agents' as any)
-    .select('*')
+  // Query profiles directly so page works for ANY agent, not just premier
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('id, slug, full_name, first_name, last_name, profile_image, phone, email, company, is_founding_member, is_verified_agent, is_premium_agent')
     .eq('slug', slug)
     .single()
 
-  const agent = data as unknown as PremierAgent | null
-  if (error || !agent) return null
+  if (error || !profile) return null
+  if (!profile.id) return null
 
-  // Guard: if agent.id is missing, we can't filter listings
-  if (!agent.id) return null
+  // Get years_experience from agent_vetting
+  const { data: vetting } = await supabase
+    .from('agent_vetting')
+    .select('years_experience')
+    .eq('user_id', profile.id)
+    .single()
 
-  // Fetch active listings for this agent
+  // Count active listings to determine premier status
   const { data: listings } = await supabase
     .from('properties')
     .select(`
-      id, title, price, currency, bedrooms, bathrooms, area_sqft,
+      id, title, price, currency, bedrooms, bathrooms,
       city, region, listing_type, status, slug,
       property_media!property_media_property_id_fkey (
         media_url, media_type, display_order, is_primary
       )
     `)
-    .eq('user_id', agent.id)
+    .eq('user_id', profile.id)
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  // Normalize specialties — runtime type may vary
-  let specialties: string[] = []
-  const rawSpecialties = agent.specialties as unknown
-  if (Array.isArray(rawSpecialties)) {
-    specialties = rawSpecialties
-  } else if (typeof rawSpecialties === 'string') {
-    try {
-      const parsed = JSON.parse(rawSpecialties)
-      specialties = Array.isArray(parsed) ? parsed : [rawSpecialties]
-    } catch {
-      specialties = rawSpecialties.split(',').map((s: string) => s.trim()).filter(Boolean)
-    }
-  }
+  const activeListings = Array.isArray(listings) ? listings : []
+  const isPremier = activeListings.length >= PREMIER_THRESHOLD
+
+  // Build full_name from parts if not set
+  const fullName = profile.full_name
+    || [profile.first_name, profile.last_name].filter(Boolean).join(' ')
+    || 'Agent'
 
   // Transform listings to include primary image
-  const transformedListings = (Array.isArray(listings) ? listings : []).map((listing: any) => {
+  const transformedListings = activeListings.map((listing: any) => {
     const images = listing.property_media
       ?.filter((m: any) => m.media_type === 'image')
       ?.sort((a: any, b: any) => {
@@ -95,7 +77,6 @@ async function getAgent(slug: string) {
       currency: listing.currency,
       bedrooms: listing.bedrooms,
       bathrooms: listing.bathrooms,
-      area_sqft: listing.area_sqft,
       city: listing.city,
       region: listing.region,
       listing_type: listing.listing_type,
@@ -105,13 +86,22 @@ async function getAgent(slug: string) {
   })
 
   return {
-    agent,
-    listings: transformedListings,
-    vetting: {
-      bio: agent.bio || null,
-      specialties,
-      target_region: agent.target_region || null,
+    agent: {
+      id: profile.id,
+      slug: profile.slug,
+      full_name: fullName,
+      profile_image: profile.profile_image,
+      phone: profile.phone,
+      email: profile.email,
+      company: profile.company,
+      is_founding_member: profile.is_founding_member ?? false,
+      is_verified_agent: profile.is_verified_agent ?? false,
+      is_premium_agent: profile.is_premium_agent ?? false,
+      active_listing_count: activeListings.length,
+      years_experience: vetting?.years_experience ?? null,
     },
+    listings: transformedListings,
+    isPremier,
   }
 }
 
@@ -123,14 +113,15 @@ export async function generateMetadata({ params }: AgentPageProps): Promise<Meta
     return { title: 'Agent Not Found | Guyana HomeHub' }
   }
 
-  const { agent } = result
-  const description = `${agent.full_name} has ${agent.active_listing_count || 0} active listings in Guyana. Contact directly on Guyana HomeHub.`
+  const { agent, isPremier } = result
+  const label = isPremier ? 'Premier Agent' : 'Agent'
+  const description = `${agent.full_name} has ${agent.active_listing_count} active listings in Guyana. Contact directly on Guyana HomeHub.`
 
   return {
-    title: `${agent.full_name} | Premier Agent`,
+    title: `${agent.full_name} | ${label}`,
     description,
     openGraph: {
-      title: `${agent.full_name} | Premier Agent | Guyana HomeHub`,
+      title: `${agent.full_name} | ${label} | Guyana HomeHub`,
       description,
       type: 'profile',
       ...(agent.profile_image ? { images: [{ url: agent.profile_image }] } : {}),
@@ -147,11 +138,13 @@ export default async function AgentProfilePage({ params }: AgentPageProps) {
   }
 
   return (
-    <AgentProfileClient
-      agent={result.agent}
-      listings={result.listings}
-      vetting={result.vetting}
-      slug={slug}
-    />
+    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
+      <AgentProfileClient
+        agent={result.agent}
+        listings={result.listings}
+        isPremier={result.isPremier}
+        slug={slug}
+      />
+    </Suspense>
   )
 }
