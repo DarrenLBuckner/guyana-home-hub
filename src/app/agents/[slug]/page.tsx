@@ -65,7 +65,28 @@ async function getAgent(slug: string) {
     .eq('user_id', agent.id)
     .single()
 
-  return { agent, listings: listings || [], vetting: vetting as any }
+  // Normalize specialties — may be a string, JSON string, or actual array
+  let normalizedVetting = null
+  if (vetting) {
+    let specialties: string[] = []
+    if (Array.isArray((vetting as any).specialties)) {
+      specialties = (vetting as any).specialties
+    } else if (typeof (vetting as any).specialties === 'string') {
+      try {
+        const parsed = JSON.parse((vetting as any).specialties)
+        specialties = Array.isArray(parsed) ? parsed : [(vetting as any).specialties]
+      } catch {
+        specialties = (vetting as any).specialties.split(',').map((s: string) => s.trim()).filter(Boolean)
+      }
+    }
+    normalizedVetting = {
+      bio: (vetting as any).bio || null,
+      specialties,
+      target_region: (vetting as any).target_region || null,
+    }
+  }
+
+  return { agent, listings: Array.isArray(listings) ? listings : [], vetting: normalizedVetting }
 }
 
 export async function generateMetadata({ params }: AgentPageProps): Promise<Metadata> {

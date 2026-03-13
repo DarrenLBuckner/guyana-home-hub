@@ -66,7 +66,8 @@ function cleanPhone(phone: string) {
   return phone.replace(/[^0-9+]/g, '')
 }
 
-export default function AgentProfileClient({ agent, listings, vetting, slug }: AgentProfileClientProps) {
+export default function AgentProfileClient({ agent, listings: rawListings, vetting, slug }: AgentProfileClientProps) {
+  const listings = Array.isArray(rawListings) ? rawListings : []
   const [qrDataUrl, setQrDataUrl] = useState<string>('')
   const [copied, setCopied] = useState(false)
   const profileUrl = `https://www.guyanahomehub.com/agents/${slug}`
