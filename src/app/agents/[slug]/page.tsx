@@ -11,7 +11,7 @@ function createServiceClient() {
   )
 }
 
-// Matches the rebuilt premier_agents view exactly
+// Matches the rebuilt premier_agents view
 interface PremierAgent {
   id: string
   slug: string
@@ -46,13 +46,16 @@ async function getAgent(slug: string) {
   const agent = data as unknown as PremierAgent | null
   if (error || !agent) return null
 
-  // Fetch active listings for this agent using agent.id
+  // Guard: if agent.id is missing, we can't filter listings
+  if (!agent.id) return null
+
+  // Fetch active listings for this agent
   const { data: listings } = await supabase
     .from('properties')
     .select(`
       id, title, price, currency, bedrooms, bathrooms, area_sqft,
       city, region, listing_type, status, slug,
-      property_media (
+      property_media!property_media_property_id_fkey (
         media_url, media_type, display_order, is_primary
       )
     `)
@@ -60,7 +63,7 @@ async function getAgent(slug: string) {
     .eq('status', 'active')
     .order('created_at', { ascending: false })
 
-  // Normalize specialties from the view — runtime type may vary from TS interface
+  // Normalize specialties — runtime type may vary
   let specialties: string[] = []
   const rawSpecialties = agent.specialties as unknown
   if (Array.isArray(rawSpecialties)) {
@@ -74,13 +77,42 @@ async function getAgent(slug: string) {
     }
   }
 
-  const vetting = {
-    bio: agent.bio || null,
-    specialties,
-    target_region: agent.target_region || null,
-  }
+  // Transform listings to include primary image
+  const transformedListings = (Array.isArray(listings) ? listings : []).map((listing: any) => {
+    const images = listing.property_media
+      ?.filter((m: any) => m.media_type === 'image')
+      ?.sort((a: any, b: any) => {
+        if (a.is_primary && !b.is_primary) return -1
+        if (!a.is_primary && b.is_primary) return 1
+        return (a.display_order || 0) - (b.display_order || 0)
+      })
+      ?.map((m: any) => m.media_url) || []
 
-  return { agent, listings: Array.isArray(listings) ? listings : [], vetting }
+    return {
+      id: listing.id,
+      title: listing.title,
+      price: listing.price,
+      currency: listing.currency,
+      bedrooms: listing.bedrooms,
+      bathrooms: listing.bathrooms,
+      area_sqft: listing.area_sqft,
+      city: listing.city,
+      region: listing.region,
+      listing_type: listing.listing_type,
+      slug: listing.slug,
+      image: images[0] || null,
+    }
+  })
+
+  return {
+    agent,
+    listings: transformedListings,
+    vetting: {
+      bio: agent.bio || null,
+      specialties,
+      target_region: agent.target_region || null,
+    },
+  }
 }
 
 export async function generateMetadata({ params }: AgentPageProps): Promise<Metadata> {
@@ -114,40 +146,11 @@ export default async function AgentProfilePage({ params }: AgentPageProps) {
     notFound()
   }
 
-  const { agent, listings, vetting } = result
-
-  // Transform listings to include primary image
-  const transformedListings = listings.map((listing: any) => {
-    const images = listing.property_media
-      ?.filter((m: any) => m.media_type === 'image')
-      ?.sort((a: any, b: any) => {
-        if (a.is_primary && !b.is_primary) return -1
-        if (!a.is_primary && b.is_primary) return 1
-        return a.display_order - b.display_order
-      })
-      ?.map((m: any) => m.media_url) || []
-
-    return {
-      id: listing.id,
-      title: listing.title,
-      price: listing.price,
-      currency: listing.currency,
-      bedrooms: listing.bedrooms,
-      bathrooms: listing.bathrooms,
-      area_sqft: listing.area_sqft,
-      city: listing.city,
-      region: listing.region,
-      listing_type: listing.listing_type,
-      slug: listing.slug,
-      image: images[0] || null,
-    }
-  })
-
   return (
     <AgentProfileClient
-      agent={agent}
-      listings={transformedListings}
-      vetting={vetting}
+      agent={result.agent}
+      listings={result.listings}
+      vetting={result.vetting}
       slug={slug}
     />
   )
