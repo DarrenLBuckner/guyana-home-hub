@@ -15,8 +15,20 @@
     <rect x="70" y="70" width="660" height="460" rx="15" fill="none" stroke="white" stroke-width="1"/>
   </g>
 
-  <!-- House icon — white -->
-  <g transform="translate(400, 175)" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+  <!-- Guyana Flag (Golden Arrowhead) — top right corner -->
+  <g transform="translate(680, 30)">
+    <rect width="90" height="54" rx="4" fill="#009E49"/>
+    <polygon points="0,0 90,27 0,54" fill="#FCD116"/>
+    <polygon points="0,3 82,27 0,51" fill="white"/>
+    <polygon points="0,5 78,27 0,49" fill="#CE1126"/>
+    <polygon points="0,8 45,27 0,46" fill="#CE1126"/>
+    <polygon points="0,7 48,27 0,47" fill="black"/>
+    <polygon points="0,10 42,27 0,44" fill="#CE1126"/>
+    <rect width="90" height="54" rx="4" fill="none" stroke="white" stroke-width="1.5" opacity="0.6"/>
+  </g>
+
+  <!-- House icon — red outline -->
+  <g transform="translate(400, 170)" fill="none" stroke="#CE1126" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
     <!-- Roof -->
     <path d="M-60,20 L0,-30 L60,20" stroke-width="4"/>
     <!-- House body -->
@@ -27,7 +39,7 @@
     <rect x="-38" y="32" width="18" height="16" rx="2"/>
     <rect x="20" y="32" width="18" height="16" rx="2"/>
     <!-- Doorknob -->
-    <circle cx="8" cy="63" r="2" fill="white"/>
+    <circle cx="8" cy="63" r="2" fill="#CE1126"/>
   </g>
 
   <!-- "COMING SOON" main text — white -->
@@ -36,11 +48,13 @@
   <!-- White divider line -->
   <rect x="250" y="325" width="300" height="3" rx="1.5" fill="white" opacity="0.5"/>
 
-  <!-- "Another Property" subtitle — emerald-100 -->
-  <text x="400" y="370" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="24" fill="#d1fae5" letter-spacing="2">Another Property</text>
+  <!-- "Another Property" subtitle — red -->
+  <text x="400" y="370" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="600" font-size="24" fill="#CE1126" letter-spacing="2">Another Property</text>
 
-  <!-- Brand name — white -->
-  <text x="400" y="415" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="30" fill="white" letter-spacing="1">Guyana Home Hub</text>
+  <!-- Brand name: "Guyana" white, "HomeHub" gold -->
+  <text x="400" y="415" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="30" letter-spacing="1">
+    <tspan fill="white">Guyana </tspan><tspan fill="#f59e0b">HomeHub</tspan>
+  </text>
 
   <!-- Bottom tagline — emerald-100 -->
   <text x="400" y="460" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="16" fill="#d1fae5" letter-spacing="1">Stay tuned for details</text>
