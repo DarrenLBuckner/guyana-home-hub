@@ -18,6 +18,7 @@ import {
 import { PropertyStatusRibbon } from '@/components/PropertyStatusRibbon'
 import { FSBOBadge } from '@/components/FSBOBadge'
 import { WatchButton } from '@/components/WatchButton'
+import { isComingSoon, COMING_SOON_IMAGE } from '@/lib/comingSoonImage'
 
 interface Property {
   id: string
@@ -609,20 +610,26 @@ function PropertiesListingContent({
               <div key={property.id} className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${
                 viewMode === 'list' ? 'flex' : ''
               }`}>
-                {/* Property Image */}
+                {/* Property Image — Coming Soon properties show branded placeholder */}
                 <div className={`relative ${viewMode === 'list' ? 'w-1/3' : 'h-48'}`}>
-                  {property.images && property.images.length > 0 ? (
-                    <img
-                      src={property.images[property.hero_index || 0] || property.images[0]}
-                      alt={property.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                        if (fallback) fallback.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
+                  {(() => {
+                    const comingSoon = isComingSoon(property.available_from)
+                    const cardImage = comingSoon
+                      ? COMING_SOON_IMAGE
+                      : (property.images?.[property.hero_index || 0] || property.images?.[0])
+                    return cardImage ? (
+                      <img
+                        src={cardImage}
+                        alt={comingSoon ? 'Another Property - Guyana Home Hub - Coming Soon' : property.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'flex';
+                        }}
+                      />
+                    ) : null
+                  })()}
                   <div className={`w-full h-full bg-gray-200 flex items-center justify-center ${property.images && property.images.length > 0 ? 'hidden' : ''}`}>
                     <Home className="h-12 w-12 text-gray-400" />
                   </div>
@@ -701,21 +708,21 @@ function PropertiesListingContent({
                         const isRental = property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent';
                         if (isRental) {
                           if (isSentinel) {
-                            return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon</span>;
+                            return <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-amber-500 text-white shadow-sm mt-1">Coming Soon</span>;
                           }
                           if (!af || new Date(af) <= new Date()) {
-                            return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700 mt-1">Available Now</span>;
+                            return <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-green-500 text-white shadow-sm mt-1">Available Now</span>;
                           }
                           const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
-                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 mt-1">Available {label}</span>;
+                          return <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-amber-500 text-white shadow-sm mt-1">Available {label}</span>;
                         }
                         // Sale/other: show badge if coming soon (sentinel or real future date)
                         if (isSentinel) {
-                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon</span>;
+                          return <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-amber-500 text-white shadow-sm mt-1">Coming Soon</span>;
                         }
                         if (af && new Date(af) > new Date()) {
                           const label = new Date(af).toLocaleString('default', { month: 'short', year: 'numeric' });
-                          return <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 mt-1">Coming Soon — {label}</span>;
+                          return <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-amber-500 text-white shadow-sm mt-1">Coming Soon — {label}</span>;
                         }
                         return null;
                       })()}

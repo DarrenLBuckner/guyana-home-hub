@@ -19,6 +19,7 @@ import PrivateListingContact from '@/components/PrivateListingContact'
 import { createClient } from '@/lib/supabase/client'
 import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from '@/lib/whatsapp'
 import { useTrackClick } from '@/hooks/useTrackClick'
+import { getDisplayImages, COMING_SOON_IMAGE } from '@/lib/comingSoonImage'
 import dynamic from 'next/dynamic'
 
 const GoogleMapsProvider = dynamic(
@@ -215,8 +216,9 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
 
   // Build alt text lookup from property_media
   const getAltText = (index: number, fallbackPrefix = 'Image') => {
+    const imageUrl = displayImages[index]
+    if (imageUrl === COMING_SOON_IMAGE) return 'Another Property - Guyana Home Hub - Coming Soon'
     if (property?.property_media && property.images) {
-      const imageUrl = property.images[index]
       const media = property.property_media.find(m => m.media_url === imageUrl)
       if (media?.alt_text) return media.alt_text
     }
@@ -243,16 +245,19 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
   }
 
   const nextImage = () => {
-    if (property?.images) {
-      setCurrentImageIndex((prev) => (prev + 1) % property.images!.length)
+    if (displayImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % displayImages.length)
     }
   }
 
   const prevImage = () => {
-    if (property?.images) {
-      setCurrentImageIndex((prev) => (prev - 1 + property.images!.length) % property.images!.length)
+    if (displayImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length)
     }
   }
+
+  // Coming Soon: prepend branded placeholder as first image
+  const displayImages = getDisplayImages(property?.images, property?.available_from)
 
   // Private listing detection
   const isPrivateListing = property?.is_private_listing || false
@@ -280,7 +285,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
         )}
 
         {/* Image Gallery */}
-        {property.images && property.images.length > 0 ? (
+        {displayImages.length > 0 ? (
           <div className="mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative w-full max-h-[600px] min-h-[300px] bg-gray-100 flex items-center justify-center">
               <button
@@ -289,7 +294,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                 aria-label="Click to enlarge image"
               >
                 <img
-                  src={property.images[currentImageIndex]}
+                  src={displayImages[currentImageIndex]}
                   alt={getAltText(currentImageIndex)}
                   className="max-w-full max-h-[600px] w-auto h-auto object-contain"
                   onError={(e) => {
@@ -313,7 +318,7 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                 listingType={property.listing_type as 'sale' | 'rent'}
               />
 
-              {property.images.length > 1 && (
+              {displayImages.length > 1 && (
                 <>
                   <button
                     onClick={prevImage}
@@ -331,14 +336,14 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
               )}
 
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                {currentImageIndex + 1} / {property.images.length}
+                {currentImageIndex + 1} / {displayImages.length}
               </div>
             </div>
 
-            {property.images.length > 1 && (
+            {displayImages.length > 1 && (
               <div className="p-4 bg-gray-50">
                 <div className="flex space-x-2 overflow-x-auto">
-                  {property.images.map((image, index) => (
+                  {displayImages.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentImageIndex(index)}
@@ -372,12 +377,12 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
         )}
 
         {/* Fullscreen Lightbox */}
-        {property.images && property.images.length > 0 && (
+        {displayImages.length > 0 && (
           <Lightbox
             open={lightboxOpen}
             close={() => setLightboxOpen(false)}
             index={currentImageIndex}
-            slides={property.images.map((src, i) => ({ src, alt: getAltText(i) }))}
+            slides={displayImages.map((src, i) => ({ src, alt: getAltText(i) }))}
             plugins={[Zoom]}
             on={{
               view: ({ index }) => setCurrentImageIndex(index),
@@ -416,21 +421,21 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                   const isRental = property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent';
                   // Sentinel = "Coming Soon" with no date, for any listing type
                   if (isSentinel) {
-                    return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200 mt-2 mb-1">Coming Soon</span>;
+                    return <span className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-1.5 rounded-full bg-amber-500 text-white shadow-sm mt-2 mb-1">Coming Soon</span>;
                   }
                   if (!af || new Date(af) <= new Date()) {
                     if (isRental) {
-                      return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 mt-2 mb-1">Available Now</span>;
+                      return <span className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-1.5 rounded-full bg-green-500 text-white shadow-sm mt-2 mb-1">Available Now</span>;
                     }
                     return null;
                   }
                   // Real future date
                   if (isRental) {
                     const label = new Date(af).toLocaleString('default', { month: 'long', year: 'numeric' });
-                    return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 mt-2 mb-1">Available from {label}</span>;
+                    return <span className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-1.5 rounded-full bg-amber-500 text-white shadow-sm mt-2 mb-1">Available from {label}</span>;
                   }
                   const label = new Date(af).toLocaleString('default', { month: 'long', year: 'numeric' });
-                  return <span className="inline-block text-sm font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200 mt-2 mb-1">Coming Soon — {label}</span>;
+                  return <span className="inline-flex items-center gap-1.5 text-sm font-bold px-4 py-1.5 rounded-full bg-amber-500 text-white shadow-sm mt-2 mb-1">Coming Soon — {label}</span>;
                 })()}
                 {/* FSBO Badge */}
                 <FSBOBadge listedByType={property.listed_by_type} className="mt-2" />
