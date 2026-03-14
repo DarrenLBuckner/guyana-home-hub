@@ -19,6 +19,8 @@ interface Agent {
   is_premium_agent: boolean
   active_listing_count: number
   years_experience: number | null
+  bio: string | null
+  specialties: string[] | null
 }
 
 interface Listing {
@@ -61,6 +63,40 @@ function cleanPhone(phone: string) {
 }
 
 const LISTINGS_PER_PAGE = 9
+
+function AgentBioSection({ bio, specialties, firstName }: { bio: string; specialties: string[] | null; firstName: string }) {
+  const [expanded, setExpanded] = useState(false)
+
+  // Show first 200 chars as preview, full on expand
+  const isLong = bio.length > 200
+  const displayBio = expanded || !isLong ? bio : bio.slice(0, 200).trimEnd() + '...'
+
+  return (
+    <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 sm:p-5">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">About {firstName}</h2>
+      </div>
+      <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">{displayBio}</p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-2 transition-colors"
+        >
+          {expanded ? 'Show less' : 'Read full bio'}
+        </button>
+      )}
+      {specialties && specialties.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-3 pt-3 border-t border-gray-100">
+          {specialties.map((s) => (
+            <span key={s} className="bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full text-xs font-medium">
+              {s}
+            </span>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
 
 export default function AgentProfileClient({ agent, listings: rawListings, isPremier, slug }: AgentProfileClientProps) {
   const listings = Array.isArray(rawListings) ? rawListings : []
@@ -238,6 +274,11 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
       </div>
 
       <div className="max-w-6xl mx-auto px-4 pb-6 space-y-4">
+        {/* About / Bio Section */}
+        {agent.bio && (
+          <AgentBioSection bio={agent.bio} specialties={agent.specialties} firstName={agent.full_name.split(' ')[0]} />
+        )}
+
         {isPremier ? (
           /* ═══ PREMIER: Full listings grid ═══ */
           <section id="listings">

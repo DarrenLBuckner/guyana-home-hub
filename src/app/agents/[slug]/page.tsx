@@ -32,10 +32,10 @@ async function getAgent(slug: string) {
   if (error || !profile) return null
   if (!profile.id) return null
 
-  // Get years_experience from agent_vetting
+  // Get years_experience and bio from agent_vetting
   const { data: vetting } = await supabase
     .from('agent_vetting')
-    .select('years_experience')
+    .select('years_experience, bio, specialties')
     .eq('user_id', profile.id)
     .single()
 
@@ -101,6 +101,8 @@ async function getAgent(slug: string) {
       is_premium_agent: profile.is_premium_agent ?? false,
       active_listing_count: activeListings.length,
       years_experience: vetting?.years_experience ?? null,
+      bio: vetting?.bio ?? null,
+      specialties: vetting?.specialties ?? null,
     },
     listings: transformedListings,
     isPremier,
