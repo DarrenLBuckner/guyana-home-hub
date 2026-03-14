@@ -29,6 +29,8 @@ function getInitials(name: string) {
     .slice(0, 2)
 }
 
+export const revalidate = 300 // refresh every 5 minutes
+
 export default async function PremierAgentsPage() {
   const supabase = createServiceClient()
 

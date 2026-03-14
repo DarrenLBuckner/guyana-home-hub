@@ -4,6 +4,8 @@ import { Suspense } from 'react'
 import AgentProfileClient from './AgentProfileClient'
 import type { Metadata } from 'next'
 
+export const revalidate = 300 // refresh every 5 minutes
+
 const PREMIER_THRESHOLD = 6
 
 function createServiceClient() {
