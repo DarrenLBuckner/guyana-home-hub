@@ -462,7 +462,6 @@ export default function PropertySearchTabs({
       >
         {/* ── MOBILE LAYOUT (<lg) ── */}
         <div className="lg:hidden space-y-3">
-          {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
@@ -473,7 +472,6 @@ export default function PropertySearchTabs({
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 min-h-[44px]"
             />
           </div>
-          */}
 
           {/* Development Type (developments tab only) */}
           {isDev && (
@@ -630,7 +628,6 @@ export default function PropertySearchTabs({
           {isHero ? (
             /* ── Hero desktop: search-first, filters-second ── */
             <>
-              {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -642,7 +639,6 @@ export default function PropertySearchTabs({
                   className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl text-base focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder:text-gray-400"
                 />
               </div>
-              */}
 
               {/* All filters as pill row */}
               <div className="flex items-center gap-2 flex-wrap">
@@ -790,7 +786,6 @@ export default function PropertySearchTabs({
             <>
               {/* Row 1: Property Type + Min Price + Max Price */}
               <div className="flex items-start gap-3">
-                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
                 <div className="flex-1 relative min-w-[180px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -801,7 +796,6 @@ export default function PropertySearchTabs({
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
-                */}
 
                 {isDev && (
                   <div className="w-44">

@@ -368,6 +368,18 @@ function PropertiesListingContent({
             <div className="hidden lg:block p-4">
               {/* Primary row: Type, Price, Beds, Search, Clear */}
               <div className="flex items-center gap-3">
+                {/* Location Search */}
+                <div className="flex-1 relative min-w-[200px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <input
+                    type="text"
+                    placeholder="Search location, title..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+
                 {/* Property Type */}
                 <select
                   value={selectedType}
@@ -411,19 +423,6 @@ function PropertiesListingContent({
                   <option value="4">4+ Beds</option>
                   <option value="5">5+ Beds</option>
                 </select>
-
-                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
-                <div className="flex-1 relative min-w-[200px]">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <input
-                    type="text"
-                    placeholder="Search location, title..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-                */}
 
                 {/* More Filters toggle */}
                 <button
@@ -599,10 +598,90 @@ function PropertiesListingContent({
 
         {/* Properties Grid/List */}
         {filteredProperties.length === 0 ? (
-          <div className="text-center py-12">
-            <Home className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No properties found</h3>
-            <p className="text-gray-600">Try adjusting your filters to see more results.</p>
+          <div>
+            {/* No-results message */}
+            <div className="text-center py-8 mb-6 bg-amber-50 border border-amber-200 rounded-xl">
+              <Home className="h-10 w-10 text-amber-400 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-gray-900 mb-1">
+                {searchTerm
+                  ? `No properties found in "${searchTerm}"`
+                  : "No properties match your filters"}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {searchTerm
+                  ? "Showing all available properties below."
+                  : "Try adjusting your filters to see more results."}
+              </p>
+            </div>
+            {/* Show all properties as fallback when search term was used */}
+            {searchTerm && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {properties
+                  .filter(property => {
+                    // Apply all non-location filters still
+                    let matchesType = !selectedType;
+                    if (selectedType) {
+                      const typeValues = selectedType.split(',').map(t => t.trim().toLowerCase()).filter(Boolean);
+                      matchesType = typeValues.length === 0 || typeValues.includes(property.property_type?.toLowerCase() || '');
+                    }
+                    const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms);
+                    const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms);
+                    const listingType = property.listing_type || 'sale';
+                    const matchesListingType = filterType === 'all' ||
+                      (Array.isArray(filterType) ? filterType.includes(listingType) : filterType === listingType);
+                    let matchesPrice = true;
+                    if (priceRange) {
+                      const [min, max] = priceRange.split('-').map(p => parseInt(p));
+                      matchesPrice = property.price >= min && property.price <= max;
+                    } else {
+                      if (minPrice) matchesPrice = property.price >= parseInt(minPrice);
+                      if (maxPrice) matchesPrice = matchesPrice && property.price <= parseInt(maxPrice);
+                    }
+                    return matchesType && matchesBedrooms && matchesBathrooms && matchesListingType && matchesPrice;
+                  })
+                  .sort((a, b) => b.price - a.price)
+                  .map((property) => (
+                    <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="relative h-48">
+                        {(() => {
+                          const comingSoon = isComingSoon(property.available_from);
+                          const cardImage = comingSoon ? COMING_SOON_IMAGE : (property.images?.[property.hero_index || 0] || property.images?.[0]);
+                          return cardImage ? (
+                            <img
+                              src={cardImage}
+                              alt={property.title}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                              <Home className="h-12 w-12 text-gray-400" />
+                            </div>
+                          );
+                        })()}
+                        <PropertyStatusRibbon status={property.status} listingType={property.listing_type as 'sale' | 'rent' | 'lease' | 'short_term_rent'} />
+                        <div className="absolute top-2 right-2">
+                          <WatchButton propertyId={property.id} variant="icon" />
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-2">{property.title}</h3>
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{property.description}</p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                          <div className="flex items-center"><Bed className="h-4 w-4 mr-1" /><span>{property.bedrooms}</span></div>
+                          <div className="flex items-center"><Bath className="h-4 w-4 mr-1" /><span>{property.bathrooms}</span></div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <div className="text-2xl font-bold text-green-600">{formatPrice(property.price, property.price_type)}</div>
+                          <Link href={`/properties/${property.id}`} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm font-medium transition-colors">
+                            View Details
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-6'}>
@@ -775,7 +854,6 @@ function PropertiesListingContent({
               </div>
 
               <div className="space-y-4">
-                {/* TEMPORARILY HIDDEN - Location search not yet functional - TODO: Build proper geocoding
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Search</label>
                   <div className="relative">
@@ -789,7 +867,6 @@ function PropertiesListingContent({
                     />
                   </div>
                 </div>
-                */}
 
                 {/* Bathrooms */}
                 <div>
