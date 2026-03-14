@@ -241,7 +241,8 @@ function PropertiesListingContent({
   const filteredProperties = properties.filter(property => {
     const matchesSearch = property.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          property.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         property.description?.toLowerCase().includes(searchTerm.toLowerCase())
+                         property.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         property.city?.toLowerCase().includes(searchTerm.toLowerCase())
     
     // Property type filter - supports comma-separated multi-select (e.g. "house,apartment")
     let matchesType = !selectedType;
