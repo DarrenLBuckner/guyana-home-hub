@@ -54,7 +54,7 @@ async function getAgent(slug: string) {
     .order('created_at', { ascending: false })
 
   const activeListings = Array.isArray(listings) ? listings : []
-  const isPremier = activeListings.length >= PREMIER_THRESHOLD
+  const isPremier = profile.is_premium_agent || activeListings.length >= PREMIER_THRESHOLD
 
   // Build full_name from parts if not set
   const fullName = profile.full_name

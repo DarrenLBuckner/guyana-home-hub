@@ -21,6 +21,7 @@ import { buildPropertyMessage, buildBackupOfferMessage, buildWhatsAppUrl } from 
 import { useTrackClick } from '@/hooks/useTrackClick'
 import { getDisplayImages, COMING_SOON_IMAGE } from '@/lib/comingSoonImage'
 import dynamic from 'next/dynamic'
+import PremierBadge from '@/components/PremierBadge'
 
 const GoogleMapsProvider = dynamic(
   () => import('@/components/maps/GoogleMapsProvider').then((mod) => ({ default: mod.GoogleMapsProvider })),
@@ -90,6 +91,7 @@ interface Property {
     is_founding_member?: boolean
     is_founding_advisor?: boolean
     is_verified_agent?: boolean
+    is_premium_agent?: boolean
   }
   // Private listing fields
   is_private_listing?: boolean
@@ -647,6 +649,11 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                             ⭐ Founding Advisor
                           </span>
                         )}
+                      </div>
+                    )}
+                    {property.agent_profile.is_premium_agent && (
+                      <div className="mb-1">
+                        <PremierBadge variant="badge" />
                       </div>
                     )}
                     {property.agent_profile.company && (

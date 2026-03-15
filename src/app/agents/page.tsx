@@ -2,6 +2,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
+import PremierBadge from '@/components/PremierBadge'
 
 function createServiceClient() {
   return createSupabaseClient(
@@ -122,9 +123,7 @@ export default async function AgentsPage() {
                     {/* Badges */}
                     <div className="flex flex-wrap gap-2 mb-4">
                       {isPremier && (
-                        <span className="bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 px-2.5 py-0.5 rounded-full text-xs font-semibold border border-amber-200">
-                          Premier Agent
-                        </span>
+                        <PremierBadge variant="badge" />
                       )}
                       {agent.is_founding_member && (
                         <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium">
