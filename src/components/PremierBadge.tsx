@@ -5,11 +5,12 @@
  *
  * Single source of truth for Premier Agent badge rendering.
  * Uses official brand assets with responsive breakpoints.
+ * Desktop asset: 1205x375 (3.21:1), Mobile asset: 371x374 (~1:1 square)
  *
  * Variants:
- *   - 'badge': Compact badge for agent cards (default)
+ *   - 'badge': For agent cards and section headers (default)
  *   - 'banner': Full-width banner for agent profile page headers
- *   - 'inline': Small badge for property detail pages
+ *   - 'inline': Compact for property detail pages
  */
 
 interface PremierBadgeProps {
@@ -26,13 +27,13 @@ export default function PremierBadge({ variant = 'badge', className = '' }: Prem
           <img
             src="/images/homehub-premier-agent-mobile.png"
             alt="HomeHub Premier Agent"
-            className="sm:hidden h-12 w-auto"
+            className="sm:hidden h-14 w-14 object-contain"
           />
           {/* Desktop: horizontal badge */}
           <img
             src="/images/homehub-premier-agent-desktop.png"
             alt="HomeHub Premier Agent"
-            className="hidden sm:block h-10 w-auto"
+            className="hidden sm:block h-14 w-auto object-contain"
           />
         </div>
       </div>
@@ -42,22 +43,36 @@ export default function PremierBadge({ variant = 'badge', className = '' }: Prem
   if (variant === 'inline') {
     return (
       <span className={`inline-flex items-center ${className}`}>
+        {/* Mobile: square */}
+        <img
+          src="/images/homehub-premier-agent-mobile.png"
+          alt="HomeHub Premier Agent"
+          className="sm:hidden h-8 w-8 object-contain"
+        />
+        {/* Desktop: horizontal */}
         <img
           src="/images/homehub-premier-agent-desktop.png"
           alt="HomeHub Premier Agent"
-          className="h-7 w-auto"
+          className="hidden sm:block h-8 w-auto object-contain"
         />
       </span>
     );
   }
 
-  // Default: 'badge' variant — for agent cards
+  // Default: 'badge' variant — for agent cards and section headers
   return (
     <span className={`inline-flex items-center ${className}`}>
+      {/* Mobile: square */}
+      <img
+        src="/images/homehub-premier-agent-mobile.png"
+        alt="HomeHub Premier Agent"
+        className="sm:hidden h-10 w-10 object-contain"
+      />
+      {/* Desktop: horizontal */}
       <img
         src="/images/homehub-premier-agent-desktop.png"
         alt="HomeHub Premier Agent"
-        className="h-8 w-auto"
+        className="hidden sm:block h-10 w-auto object-contain"
       />
     </span>
   );

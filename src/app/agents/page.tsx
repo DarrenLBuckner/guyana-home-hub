@@ -78,10 +78,17 @@ export default async function AgentsPage() {
         {premierAgents.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
+              {/* Mobile: square badge */}
+              <img
+                src="/images/homehub-premier-agent-mobile.png"
+                alt="HomeHub Premier Agent"
+                className="sm:hidden h-12 w-12 object-contain"
+              />
+              {/* Desktop: horizontal badge */}
               <img
                 src="/images/homehub-premier-agent-desktop.png"
                 alt="HomeHub Premier Agent"
-                className="h-8 w-auto"
+                className="hidden sm:block h-12 w-auto object-contain"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
