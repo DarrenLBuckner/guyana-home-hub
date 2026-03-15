@@ -651,13 +651,13 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                         )}
                       </div>
                     )}
-                    {property.agent_profile.is_premium_agent && (
-                      <div className="mb-1">
-                        <PremierBadge variant="badge" />
-                      </div>
-                    )}
                     {property.agent_profile.company && (
-                      <div className="text-gray-600 mb-2">{property.agent_profile.company}</div>
+                      <div className="text-gray-600 mb-1">{property.agent_profile.company}</div>
+                    )}
+                    {property.agent_profile.is_premium_agent && (
+                      <div className="mb-2">
+                        <PremierBadge variant="inline" />
+                      </div>
                     )}
                     {property.agent_profile.slug && (
                       <a
