@@ -80,6 +80,7 @@ interface Property {
   status?: string
   agent_profile?: {
     id: string
+    slug?: string
     first_name: string
     last_name: string
     phone: string
@@ -650,6 +651,17 @@ export default function PropertyDetailClient({ propertyId, initialData }: Proper
                     )}
                     {property.agent_profile.company && (
                       <div className="text-gray-600 mb-2">{property.agent_profile.company}</div>
+                    )}
+                    {property.agent_profile.slug && (
+                      <a
+                        href={`/agents/${property.agent_profile.slug}`}
+                        className="inline-flex items-center gap-1.5 text-sm text-emerald-700 font-medium hover:text-emerald-800 mb-3"
+                      >
+                        View Profile
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
                     )}
 
                     {/* Contact Buttons - Status-aware */}

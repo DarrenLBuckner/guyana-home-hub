@@ -10,11 +10,13 @@ function createServiceClient() {
   )
 }
 
+const PREMIER_THRESHOLD = 6
+
 export const metadata: Metadata = {
-  title: 'Premier Agents',
-  description: 'Browse verified real estate agents in Guyana. Find experienced professionals with active listings on Guyana HomeHub.',
+  title: 'Our Agents | Guyana HomeHub',
+  description: 'Browse verified real estate agents in Guyana. Find experienced professionals on Guyana HomeHub.',
   openGraph: {
-    title: 'Premier Agents | Guyana HomeHub',
+    title: 'Our Agents | Guyana HomeHub',
     description: 'Browse verified real estate agents in Guyana.',
     type: 'website',
   },
@@ -31,97 +33,130 @@ function getInitials(name: string) {
 
 export const revalidate = 300 // refresh every 5 minutes
 
-export default async function PremierAgentsPage() {
+export default async function AgentsPage() {
   const supabase = createServiceClient()
 
+  // Get all verified agents with their active listing counts
   const { data: agents } = await supabase
     .from('premier_agents' as any)
     .select('*')
     .order('active_listing_count', { ascending: false })
+
+  // Also get verified agents who may not be in the premier_agents view
+  const { data: allVerifiedAgents } = await supabase
+    .from('profiles')
+    .select('id, slug, first_name, last_name, profile_image, company, is_founding_member, is_verified_agent, phone')
+    .eq('is_verified_agent', true)
+    .eq('user_type', 'agent')
+
+  // Merge: premier agents first (with listing counts), then remaining verified agents
+  const premierIds = new Set((agents as any[] || []).map((a: any) => a.id))
+  const remainingAgents = (allVerifiedAgents || [])
+    .filter((a: any) => !premierIds.has(a.id))
+    .map((a: any) => ({
+      ...a,
+      full_name: `${a.first_name || ''} ${a.last_name || ''}`.trim(),
+      active_listing_count: 0,
+      years_experience: null,
+    }))
+
+  const allAgents = [...(agents as any[] || []), ...remainingAgents]
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-3">Premier Agents</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-3">Our Agents</h1>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Guyana&apos;s top-performing real estate professionals with 6+ active listings on the platform.
+            Verified real estate professionals on Guyana HomeHub — trusted, experienced, and ready to help.
           </p>
         </div>
       </section>
 
       {/* Agent Grid */}
       <div className="max-w-7xl mx-auto px-4 py-10">
-        {!agents || agents.length === 0 ? (
+        {!allAgents || allAgents.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">No premier agents found at this time.</p>
+            <p className="text-gray-500 text-lg">No agents found at this time.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(agents as any[]).map((agent) => (
-              <Link
-                key={agent.id}
-                href={`/agents/${agent.slug}`}
-                className="bg-white rounded-lg shadow-md hover:shadow-xl border border-gray-200 hover:border-green-300 transition-all duration-300 overflow-hidden group"
-              >
-                <div className="p-6">
-                  {/* Avatar + Name */}
-                  <div className="flex items-center gap-4 mb-4">
-                    {agent.profile_image ? (
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-emerald-500 shrink-0">
-                        <Image
-                          src={agent.profile_image}
-                          alt={agent.full_name}
-                          fill
-                          className="object-cover"
-                        />
+            {allAgents.map((agent: any) => {
+              const isPremier = agent.active_listing_count >= PREMIER_THRESHOLD
+              return (
+                <Link
+                  key={agent.id}
+                  href={`/agents/${agent.slug}`}
+                  className="bg-white rounded-lg shadow-md hover:shadow-xl border border-gray-200 hover:border-green-300 transition-all duration-300 overflow-hidden group"
+                >
+                  <div className="p-6">
+                    {/* Avatar + Name */}
+                    <div className="flex items-center gap-4 mb-4">
+                      {agent.profile_image ? (
+                        <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-emerald-500 shrink-0">
+                          <Image
+                            src={agent.profile_image}
+                            alt={agent.full_name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center ring-2 ring-emerald-500 shrink-0">
+                          <span className="text-xl font-bold text-white">
+                            {getInitials(agent.full_name)}
+                          </span>
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <h2 className="font-bold text-gray-900 text-lg truncate group-hover:text-emerald-600 transition-colors">
+                          {agent.full_name}
+                        </h2>
+                        {agent.company && (
+                          <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                        )}
                       </div>
-                    ) : (
-                      <div className="w-16 h-16 rounded-full bg-emerald-600 flex items-center justify-center ring-2 ring-emerald-500 shrink-0">
-                        <span className="text-xl font-bold text-white">
-                          {getInitials(agent.full_name)}
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {isPremier && (
+                        <span className="bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 px-2.5 py-0.5 rounded-full text-xs font-semibold border border-amber-200">
+                          Premier Agent
                         </span>
-                      </div>
-                    )}
-                    <div className="min-w-0">
-                      <h2 className="font-bold text-gray-900 text-lg truncate group-hover:text-emerald-600 transition-colors">
-                        {agent.full_name}
-                      </h2>
-                      {agent.company && (
-                        <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                      )}
+                      {agent.is_founding_member && (
+                        <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                          Founding Member
+                        </span>
+                      )}
+                      {agent.is_verified_agent && (
+                        <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-xs font-medium">
+                          Verified
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center justify-between text-sm border-t pt-3">
+                      {agent.active_listing_count > 0 ? (
+                        <span className="text-gray-500">
+                          <span className="font-semibold text-emerald-600">{agent.active_listing_count}</span> active listings
+                        </span>
+                      ) : (
+                        <span className="text-gray-400 text-xs">Contact for listings</span>
+                      )}
+                      {agent.years_experience && (
+                        <span className="text-gray-500">
+                          {agent.years_experience}+ yrs experience
+                        </span>
                       )}
                     </div>
                   </div>
-
-                  {/* Badges */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {agent.is_founding_member && (
-                      <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                        Founding Member
-                      </span>
-                    )}
-                    {agent.is_verified_agent && (
-                      <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-xs font-medium">
-                        Verified
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-sm border-t pt-3">
-                    <span className="text-gray-500">
-                      <span className="font-semibold text-emerald-600">{agent.active_listing_count}</span> active listings
-                    </span>
-                    {agent.years_experience && (
-                      <span className="text-gray-500">
-                        {agent.years_experience}+ yrs experience
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         )}
       </div>
