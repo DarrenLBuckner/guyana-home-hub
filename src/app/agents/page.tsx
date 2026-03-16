@@ -96,10 +96,10 @@ export default async function AgentsPage() {
                 <Link
                   key={agent.id}
                   href={`/agents/${agent.slug}`}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-emerald-200 transition-all duration-300 overflow-hidden group"
+                  className="bg-emerald-50/40 rounded-xl shadow-sm hover:shadow-lg border-2 border-emerald-200 hover:border-emerald-400 transition-all duration-300 overflow-hidden group"
                 >
                   {/* Premier accent bar */}
-                  <div className="h-1 bg-gradient-to-r from-green-700 via-amber-500 to-green-700" />
+                  <div className="h-1.5 bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-600" />
                   <div className="p-5">
                     {/* Avatar + Name row */}
                     <div className="flex items-center gap-3.5 mb-3">
