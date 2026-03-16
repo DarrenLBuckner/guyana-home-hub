@@ -56,7 +56,8 @@ async function getAgent(slug: string) {
   const allListings = Array.isArray(listings) ? listings : []
   // Only count active/under_contract/off_market for premier threshold
   const activeListings = allListings.filter((l: any) => !['sold', 'rented'].includes(l.status))
-  const isPremier = profile.is_premium_agent || activeListings.length >= PREMIER_THRESHOLD
+  // Premier status is derived purely from active listing count (active + under_contract + off_market)
+  const isPremier = activeListings.length >= PREMIER_THRESHOLD
 
   // Build full_name from parts if not set
   const fullName = profile.full_name
