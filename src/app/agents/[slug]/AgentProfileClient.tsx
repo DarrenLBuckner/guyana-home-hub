@@ -119,6 +119,7 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
   const filteredListings = listings.filter((l) => {
     if (filter === 'sale') return l.listing_type === 'sale'
     if (filter === 'rent') return l.listing_type === 'rent'
+    if (filter === 'lease') return l.listing_type === 'lease'
     return true
   })
 
@@ -127,6 +128,7 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
 
   const saleCount = listings.filter((l) => l.listing_type === 'sale').length
   const rentCount = listings.filter((l) => l.listing_type === 'rent').length
+  const leaseCount = listings.filter((l) => l.listing_type === 'lease').length
 
   const updateParams = useCallback((newFilter?: string, newPage?: number) => {
     const params = new URLSearchParams()
@@ -316,6 +318,18 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
                   For Rent ({rentCount})
                 </button>
               )}
+              {leaseCount > 0 && (
+                <button
+                  onClick={() => updateParams('lease')}
+                  className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                    filter === 'lease'
+                      ? 'border-emerald-600 text-emerald-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  For Lease ({leaseCount})
+                </button>
+              )}
             </div>
 
             {/* Grid */}
@@ -343,9 +357,13 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
                       )}
                       <div className="absolute top-3 left-3">
                         <span className={`text-white px-2.5 py-1 rounded text-xs font-semibold ${
-                          listing.listing_type === 'rent' ? 'bg-blue-600' : 'bg-emerald-600'
+                          listing.listing_type === 'rent' ? 'bg-blue-600'
+                          : listing.listing_type === 'lease' ? 'bg-purple-600'
+                          : 'bg-emerald-600'
                         }`}>
-                          {listing.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
+                          {listing.listing_type === 'rent' ? 'For Rent'
+                          : listing.listing_type === 'lease' ? 'For Lease'
+                          : 'For Sale'}
                         </span>
                       </div>
                     </div>
