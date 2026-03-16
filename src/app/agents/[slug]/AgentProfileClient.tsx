@@ -65,7 +65,13 @@ function cleanPhone(phone: string) {
 
 const LISTINGS_PER_PAGE = 9
 
-function AgentBioSection({ bio, specialties, firstName }: { bio: string; specialties: string[] | null; firstName: string }) {
+function AgentBioSection({ bio, specialties: rawSpecialties, firstName }: { bio: string; specialties: string[] | string | null; firstName: string }) {
+  // Normalize: specialties may be a string or an array depending on how it was saved
+  const specialties = Array.isArray(rawSpecialties)
+    ? rawSpecialties
+    : typeof rawSpecialties === 'string' && rawSpecialties.trim()
+      ? rawSpecialties.split(',').map(s => s.trim()).filter(Boolean)
+      : null
   const [expanded, setExpanded] = useState(false)
 
   // Show first 200 chars as preview, full on expand
