@@ -19,19 +19,37 @@ export function PropertyStatusRibbon({ status, listingType, className }: Propert
   const getRibbonConfig = () => {
     // Sold takes highest priority
     if (status === 'sold') {
-      return { 
-        text: 'SOLD', 
+      return {
+        text: 'SOLD',
         color: 'bg-red-600 text-white',
-        priority: 1 
+        priority: 1
       }
     }
-    
+
+    // Rented — same priority as sold
+    if (status === 'rented') {
+      return {
+        text: 'RENTED',
+        color: 'bg-red-600 text-white',
+        priority: 1
+      }
+    }
+
     // Under contract / pending takes second priority
     if (status === 'under_contract' || status === 'pending') {
-      return { 
-        text: 'PENDING', 
+      return {
+        text: 'PENDING',
         color: 'bg-orange-500 text-white',
-        priority: 2 
+        priority: 2
+      }
+    }
+
+    // Off market
+    if (status === 'off_market') {
+      return {
+        text: 'OFF MARKET',
+        color: 'bg-gray-600 text-white',
+        priority: 2
       }
     }
     
@@ -96,13 +114,27 @@ export function PropertyStatusRibbonDiagonal({ status, listingType, className }:
       }
     }
     
+    if (status === 'rented') {
+      return {
+        text: 'RENTED',
+        color: 'bg-red-600 text-white',
+      }
+    }
+
     if (status === 'under_contract' || status === 'pending') {
-      return { 
-        text: 'PENDING', 
+      return {
+        text: 'PENDING',
         color: 'bg-orange-500 text-white',
       }
     }
-    
+
+    if (status === 'off_market') {
+      return {
+        text: 'OFF MARKET',
+        color: 'bg-gray-600 text-white',
+      }
+    }
+
     if (status === 'active' || status === 'available' || status === 'approved') {
       if (listingType === 'rent') {
         return {

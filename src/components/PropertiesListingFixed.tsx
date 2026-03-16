@@ -789,6 +789,8 @@ function PropertiesListingContent({
                       </div>
                       {/* Availability badge — card body, Zillow/Property24 style */}
                       {(() => {
+                        // Don't show availability badge for sold/rented properties — the ribbon handles that
+                        if (property.status === 'sold' || property.status === 'rented' || property.status === 'off_market') return null;
                         const af = property.available_from;
                         const isSentinel = af === '9999-12-31';
                         const isRental = property.listing_type === 'rent' || property.listing_type === 'lease' || property.listing_type === 'short_term_rent';
