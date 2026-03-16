@@ -34,6 +34,7 @@ interface Listing {
   city: string | null
   region: string | null
   listing_type: string
+  status?: string
   slug: string | null
   image: string | null
 }
@@ -357,11 +358,15 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
                       )}
                       <div className="absolute top-3 left-3">
                         <span className={`text-white px-2.5 py-1 rounded text-xs font-semibold ${
-                          listing.listing_type === 'rent' ? 'bg-blue-600'
+                          listing.status === 'sold' ? 'bg-red-600'
+                          : listing.status === 'rented' ? 'bg-red-600'
+                          : listing.listing_type === 'rent' ? 'bg-blue-600'
                           : listing.listing_type === 'lease' ? 'bg-purple-600'
                           : 'bg-emerald-600'
                         }`}>
-                          {listing.listing_type === 'rent' ? 'For Rent'
+                          {listing.status === 'sold' ? 'Sold'
+                          : listing.status === 'rented' ? 'Rented'
+                          : listing.listing_type === 'rent' ? 'For Rent'
                           : listing.listing_type === 'lease' ? 'For Lease'
                           : 'For Sale'}
                         </span>
