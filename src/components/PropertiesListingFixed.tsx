@@ -300,18 +300,24 @@ function PropertiesListingContent({
 
     return matchesSearch && matchesType && matchesBedrooms && matchesBathrooms && matchesPrice && matchesListingType && matchesCategory
   }).sort((a, b) => {
-    // Apply sorting
+    // Demote sold/rented listings to the bottom, then apply user sort within each group
+    const demoted = new Set(['sold', 'rented'])
+    const aD = demoted.has(a.status) ? 1 : 0
+    const bD = demoted.has(b.status) ? 1 : 0
+    if (aD !== bD) return aD - bD
+
+    // Apply user-selected sort within same priority group
     switch (sortBy) {
       case 'price-high':
-        return b.price - a.price // Highest first
+        return b.price - a.price
       case 'price-low':
-        return a.price - b.price // Lowest first
+        return a.price - b.price
       case 'newest':
         return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       case 'oldest':
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       default:
-        return b.price - a.price // Default to highest price first
+        return b.price - a.price
     }
   })
 

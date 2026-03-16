@@ -39,7 +39,7 @@ async function getAgent(slug: string) {
     .eq('user_id', profile.id)
     .single()
 
-  // Count active listings to determine premier status
+  // Fetch visible listings — sold/rented kept for social proof, demoted to bottom
   const { data: listings } = await supabase
     .from('properties')
     .select(`
@@ -50,10 +50,12 @@ async function getAgent(slug: string) {
       )
     `)
     .eq('user_id', profile.id)
-    .eq('status', 'active')
+    .in('status', ['active', 'under_contract', 'off_market', 'sold', 'rented'])
     .order('created_at', { ascending: false })
 
-  const activeListings = Array.isArray(listings) ? listings : []
+  const allListings = Array.isArray(listings) ? listings : []
+  // Only count active/under_contract/off_market for premier threshold
+  const activeListings = allListings.filter((l: any) => !['sold', 'rented'].includes(l.status))
   const isPremier = profile.is_premium_agent || activeListings.length >= PREMIER_THRESHOLD
 
   // Build full_name from parts if not set
@@ -61,8 +63,16 @@ async function getAgent(slug: string) {
     || [profile.first_name, profile.last_name].filter(Boolean).join(' ')
     || 'Agent'
 
+  // Sort: active/under_contract/off_market first, sold/rented last
+  const demotedStatuses = new Set(['sold', 'rented'])
+  const sortedListings = [...allListings].sort((a: any, b: any) => {
+    const aD = demotedStatuses.has(a.status) ? 1 : 0
+    const bD = demotedStatuses.has(b.status) ? 1 : 0
+    return aD - bD
+  })
+
   // Transform listings to include primary image
-  const transformedListings = activeListings.map((listing: any) => {
+  const transformedListings = sortedListings.map((listing: any) => {
     const images = listing.property_media
       ?.filter((m: any) => m.media_type === 'image')
       ?.sort((a: any, b: any) => {
@@ -82,6 +92,7 @@ async function getAgent(slug: string) {
       city: listing.city,
       region: listing.region,
       listing_type: listing.listing_type,
+      status: listing.status,
       slug: listing.slug,
       image: images[0] || null,
     }
