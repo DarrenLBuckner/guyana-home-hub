@@ -113,7 +113,7 @@ export default function AgentProfileClient({ agent, listings: rawListings, isPre
   const { trackClick } = useTrackClick()
   const profileUrl = `https://www.guyanahomehub.com/agents/${slug}`
 
-  const filter = (searchParams.get('filter') as 'all' | 'sale' | 'rent') || 'all'
+  const filter = (searchParams.get('filter') as 'all' | 'sale' | 'rent' | 'lease') || 'all'
   const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10))
 
   const filteredListings = listings.filter((l) => {
