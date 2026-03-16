@@ -44,7 +44,7 @@ async function getAgent(slug: string) {
     .from('properties')
     .select(`
       id, title, price, currency, bedrooms, bathrooms,
-      city, region, listing_type, status, slug,
+      city, region, listing_type, status, slug, images,
       property_media!property_media_property_id_fkey (
         media_url, media_type, display_order, is_primary
       )
@@ -94,7 +94,7 @@ async function getAgent(slug: string) {
       listing_type: listing.listing_type,
       status: listing.status,
       slug: listing.slug,
-      image: images[0] || null,
+      image: images[0] || listing.images?.[0] || null,
     }
   })
 
