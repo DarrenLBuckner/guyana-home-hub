@@ -1,17 +1,42 @@
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+
+export const revalidate = 300; // refresh every 5 minutes
 
 export const metadata: Metadata = {
   title: 'Press & Media | Guyana HomeHub',
   description: 'Guyana HomeHub press coverage, media kit, and contact information. Featured on NewsSource Guyana Morning Live with Gordon Moseley.',
 };
 
-const quickFacts = [
-  { label: 'Launched', value: 'January 7, 2026' },
-  { label: 'Agents', value: '14' },
-  { label: 'Properties Listed', value: '23' },
-  { label: 'Website', value: 'guyanahomehub.com' },
-];
+function createServiceClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
+async function getQuickFacts() {
+  const supabase = createServiceClient();
+
+  const [{ count: agentCount }, { count: propertyCount }] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_verified_agent', true),
+    supabase
+      .from('properties')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['active', 'under_contract', 'off_market']),
+  ]);
+
+  return [
+    { label: 'Launched', value: 'January 7, 2026' },
+    { label: 'Agents', value: String(agentCount ?? 0) },
+    { label: 'Properties Listed', value: String(propertyCount ?? 0) },
+    { label: 'Website', value: 'guyanahomehub.com' },
+  ];
+}
 
 const pressDownloads = [
   {
@@ -59,7 +84,9 @@ const newsArticleSchema = {
   "description": "Guyana HomeHub CEO Darren Buckner discusses the platform, Guyana's oil boom, and the diaspora investment opportunity on Morning Live with Gordon Moseley."
 };
 
-export default function PressPage() {
+export default async function PressPage() {
+  const quickFacts = await getQuickFacts();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <script
