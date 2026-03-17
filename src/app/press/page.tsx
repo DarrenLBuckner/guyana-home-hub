@@ -23,7 +23,7 @@ async function getQuickFacts() {
     supabase
       .from('profiles')
       .select('id', { count: 'exact', head: true })
-      .eq('is_verified_agent', true),
+      .eq('user_type', 'agent'),
     supabase
       .from('properties')
       .select('id', { count: 'exact', head: true })
