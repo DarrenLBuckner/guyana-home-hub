@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'Press & Media | Guyana HomeHub',
-  description: 'Press resources, media kit, and contact information for journalists covering Guyana HomeHub.',
+  description: 'Guyana HomeHub press coverage, media kit, and contact information. Featured on NewsSource Guyana Morning Live with Gordon Moseley.',
 };
 
 const quickFacts = [
@@ -36,9 +36,36 @@ const pressDownloads = [
   },
 ];
 
+const newsArticleSchema = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": "Guyana HomeHub Featured on NewsSource Guyana's Morning Live",
+  "datePublished": "2026-02-11",
+  "dateModified": "2026-03-17",
+  "author": {
+    "@type": "Person",
+    "name": "Gordon Moseley"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "NewsSource Guyana"
+  },
+  "about": {
+    "@type": "Organization",
+    "name": "Guyana Home Hub",
+    "url": "https://www.guyanahomehub.com"
+  },
+  "url": "https://www.guyanahomehub.com/press",
+  "description": "Guyana HomeHub CEO Darren Buckner discusses the platform, Guyana's oil boom, and the diaspora investment opportunity on Morning Live with Gordon Moseley."
+};
+
 export default function PressPage() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(newsArticleSchema) }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -47,6 +74,125 @@ export default function PressPage() {
             Resources for journalists and media covering Guyana HomeHub
           </p>
         </div>
+
+        {/* Featured Press Coverage */}
+        <section className="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
+          <div className="bg-emerald-600 px-6 py-3">
+            <span className="text-emerald-100 text-xs font-semibold uppercase tracking-wide">Featured Coverage</span>
+          </div>
+          <div className="p-6">
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+              <span>NewsSource Guyana — Morning Live</span>
+              <span className="text-gray-300">|</span>
+              <time dateTime="2026-02-11">February 11, 2026</time>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Guyana HomeHub Featured on NewsSource Guyana&apos;s Morning Live
+            </h2>
+            <p className="text-gray-600 mb-6">
+              CEO Darren Buckner discusses the platform, the oil boom, and what it means for diaspora buyers looking to invest back home
+            </p>
+
+            {/* YouTube Embed */}
+            <div className="rounded-lg overflow-hidden mb-8">
+              <iframe
+                width="100%"
+                style={{ aspectRatio: '16/9' }}
+                src="https://www.youtube.com/embed/KP196IvQCfY"
+                title="Guyana HomeHub Featured on NewsSource Guyana Morning Live"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            {/* Article Body */}
+            <div className="prose prose-gray max-w-none space-y-4 text-gray-700">
+              <p>
+                Guyana HomeHub founder and CEO Darren Buckner appeared live on Morning Live with Gordon Moseley
+                on NewsSource Guyana on February 11, 2026 — his first major media appearance since launching
+                the platform.
+              </p>
+              <p>
+                In the interview, Buckner explained what brought an American entrepreneur to build a real estate
+                platform for Guyana. The answer is personal. His wife Rochelle is Guyanese — daughter of former
+                national cricketer Milton Pydana, known across Guyana as &quot;Golden Glove.&quot; The couple
+                had been trying to buy land in Guyana to build a retirement home and found the experience
+                frustrating — scattered Facebook groups, unverified WhatsApp listings, and no central trusted source.
+              </p>
+
+              <blockquote className="border-l-4 border-emerald-500 pl-4 py-2 my-6 bg-emerald-50 rounded-r-lg">
+                <p className="text-gray-800 italic">
+                  &quot;We were trying to look through Facebook and a bunch of WhatsApp groups and I mean, you
+                  just got lost. When we go to the United States, we just go to one website. So we built that
+                  for Guyana.&quot;
+                </p>
+              </blockquote>
+
+              <p>
+                Buckner described Guyana HomeHub as a platform where buyers, sellers, renters, and agents all
+                come together in one place — with verified agent profiles, photo requirements, and clear property
+                descriptions that eliminate the guesswork diaspora buyers face when transacting from abroad.
+              </p>
+
+              <p className="font-semibold text-gray-900">
+                On Guyana&apos;s oil boom and what it means for real estate:
+              </p>
+
+              <blockquote className="border-l-4 border-emerald-500 pl-4 py-2 my-6 bg-emerald-50 rounded-r-lg">
+                <p className="text-gray-800 italic">
+                  &quot;Properties that maybe in 2010, 2012 were going for $20 million Guyana are now going for
+                  $100, $200 million Guyana in certain areas. The supply and demand game is being played — and
+                  it&apos;s actually good for the people of Guyana because if you own something, you&apos;ve
+                  seen the value go up.&quot;
+                </p>
+              </blockquote>
+
+              <p className="font-semibold text-gray-900">
+                On the diaspora opportunity:
+              </p>
+
+              <blockquote className="border-l-4 border-emerald-500 pl-4 py-2 my-6 bg-emerald-50 rounded-r-lg">
+                <p className="text-gray-800 italic">
+                  &quot;The Guyanese in New York, in Toronto, in London — they&apos;re looking for opportunities
+                  to invest back home. They want to make sure they&apos;re working with a trusted source, a
+                  reliable agent. That&apos;s what Guyana HomeHub provides.&quot;
+                </p>
+              </blockquote>
+
+              <p>
+                Buckner also addressed the trust problem head-on — referencing a personal connection to someone
+                who had been a victim of real estate fraud in Guyana, and explaining why the platform requires
+                minimum photo counts, full property descriptions, and agent verification before listings go live.
+              </p>
+
+              <p className="text-gray-600 text-sm">
+                The full interview is available above and on the NewsSource Guyana YouTube channel and Facebook page.
+              </p>
+            </div>
+
+            {/* About Sections */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 pt-6 border-t border-gray-100">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-2">About Guyana HomeHub</h3>
+                <p className="text-sm text-gray-600">
+                  Guyana HomeHub (guyanahomehub.com) is Guyana&apos;s dedicated real estate search platform —
+                  built for buyers, sellers, renters, and agents. It is operated by Caribbean HomeHub LLC, a
+                  US-based company headquartered in Missouri. The platform connects the Guyanese diaspora in
+                  North America, the UK, and beyond with verified agents and real listings across Guyana.
+                </p>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-2">About NewsSource Guyana</h3>
+                <p className="text-sm text-gray-600">
+                  NewsSource Guyana is one of Guyana&apos;s leading independent media outlets, founded by
+                  journalist Gordon Moseley. Morning Live is the platform&apos;s flagship morning program
+                  covering news, business, and community affairs across Guyana.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Quick Facts Section */}
         <section className="bg-white rounded-lg shadow-sm p-6 mb-8">
