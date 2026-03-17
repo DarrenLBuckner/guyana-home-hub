@@ -2,6 +2,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import AgentProfileClient from './AgentProfileClient'
+import { AgentSchema } from '@/components/PropertySchema'
 import type { Metadata } from 'next'
 
 export const revalidate = 300 // refresh every 5 minutes
@@ -35,7 +36,7 @@ async function getAgent(slug: string) {
   // Get years_experience and bio from agent_vetting
   const { data: vetting } = await supabase
     .from('agent_vetting')
-    .select('years_experience, bio, specialties')
+    .select('years_experience, bio, specialties, bio_questionnaire')
     .eq('user_id', profile.id)
     .single()
 
@@ -58,6 +59,11 @@ async function getAgent(slug: string) {
   const activeListings = allListings.filter((l: any) => !['sold', 'rented'].includes(l.status))
   // Premier status is derived purely from active listing count (active + under_contract + off_market)
   const isPremier = activeListings.length >= PREMIER_THRESHOLD
+
+  // Extract neighborhoods from bio questionnaire for schema areaServed
+  const neighborhoods: string[] = Array.isArray(vetting?.bio_questionnaire?.neighborhoods)
+    ? vetting.bio_questionnaire.neighborhoods
+    : []
 
   // Build full_name from parts if not set
   const fullName = profile.full_name
@@ -118,6 +124,7 @@ async function getAgent(slug: string) {
     },
     listings: transformedListings,
     isPremier,
+    neighborhoods,
   }
 }
 
@@ -154,13 +161,23 @@ export default async function AgentProfilePage({ params }: AgentPageProps) {
   }
 
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
-      <AgentProfileClient
-        agent={result.agent}
-        listings={result.listings}
-        isPremier={result.isPremier}
-        slug={slug}
-      />
-    </Suspense>
+    <>
+      <AgentSchema agent={{
+        name: result.agent.full_name,
+        email: result.agent.email,
+        phone: result.agent.phone,
+        slug: result.agent.slug,
+        profileImage: result.agent.profile_image,
+        neighborhoods: result.neighborhoods,
+      }} />
+      <Suspense fallback={<div className="min-h-screen bg-gray-50" />}>
+        <AgentProfileClient
+          agent={result.agent}
+          listings={result.listings}
+          isPremier={result.isPremier}
+          slug={slug}
+        />
+      </Suspense>
+    </>
   )
 }

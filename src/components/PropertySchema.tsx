@@ -323,36 +323,37 @@ export async function PropertyListingPageSchema({
 export async function AgentSchema({ agent }: { agent: any }) {
   const country = await getCountryFromHeaders();
   const countryName = country === 'JM' ? 'Jamaica' : 'Guyana';
+  const siteName = country === 'JM' ? 'Jamaica Home Hub' : 'Guyana Home Hub';
   const baseUrl = country === 'JM' ? 'https://www.jamaicahomehub.com' : 'https://www.guyanahomehub.com';
-  
+
+  // Granular areaServed from neighborhoods, omit if empty
+  const neighborhoods: string[] = Array.isArray(agent.neighborhoods) ? agent.neighborhoods : [];
+  const areaServed = neighborhoods.length > 0
+    ? neighborhoods.map((n: string) => ({ "@type": "Place" as const, "name": n }))
+    : undefined;
+
   const agentSchema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": agent.name,
     "email": agent.email,
     "telephone": agent.phone,
-    "url": `${baseUrl}/agents/${agent.id}`,
+    "url": `${baseUrl}/agents/${agent.slug}`,
     "image": agent.profileImage,
-    
+
     "hasOccupation": {
       "@type": "Occupation",
       "name": "Real Estate Agent",
       "occupationalCategory": "Real Estate"
     },
 
-    "worksFor": agent.company ? {
+    "worksFor": {
       "@type": "Organization",
-      "name": agent.company,
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": countryName
-      }
-    } : undefined,
-
-    "areaServed": {
-      "@type": "Country",
-      "name": countryName
+      "name": siteName,
+      "url": baseUrl
     },
+
+    ...(areaServed ? { "areaServed": areaServed } : {}),
 
     "knowsAbout": [
       "Real Estate",
