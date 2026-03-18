@@ -63,7 +63,7 @@ export default async function AgentsPage() {
 
   const { data: allVerifiedAgents } = await supabase
     .from('profiles')
-    .select('id, slug, first_name, last_name, profile_image, company, is_founding_member, is_verified_agent, phone')
+    .select('id, slug, first_name, last_name, profile_image, company, is_founding_member, is_founding_advisor, is_verified_agent, phone')
     .eq('is_verified_agent', true)
     .eq('user_type', 'agent')
 
@@ -172,6 +172,11 @@ export default async function AgentsPage() {
                           Founding Member
                         </span>
                       )}
+                      {agent.is_founding_advisor && (
+                        <span className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-[11px] font-medium border border-purple-200">
+                          Founding Advisor
+                        </span>
+                      )}
                       {agent.is_verified_agent && (
                         <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded text-[11px] font-medium border border-emerald-200">
                           Verified
@@ -265,6 +270,11 @@ export default async function AgentsPage() {
                       {agent.is_founding_member && (
                         <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded text-[11px] font-medium border border-amber-200">
                           Founding Member
+                        </span>
+                      )}
+                      {agent.is_founding_advisor && (
+                        <span className="bg-purple-50 text-purple-700 px-2 py-0.5 rounded text-[11px] font-medium border border-purple-200">
+                          Founding Advisor
                         </span>
                       )}
                       {agent.is_verified_agent && (

@@ -26,7 +26,7 @@ async function getAgent(slug: string) {
   // Query profiles directly so page works for ANY agent, not just premier
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('id, slug, full_name, first_name, last_name, profile_image, phone, email, company, is_founding_member, is_verified_agent, is_premium_agent')
+    .select('id, slug, full_name, first_name, last_name, profile_image, phone, email, company, is_founding_member, is_founding_advisor, is_verified_agent, is_premium_agent')
     .eq('slug', slug)
     .single()
 
@@ -115,6 +115,7 @@ async function getAgent(slug: string) {
       email: profile.email,
       company: profile.company,
       is_founding_member: profile.is_founding_member ?? false,
+      is_founding_advisor: profile.is_founding_advisor ?? false,
       is_verified_agent: profile.is_verified_agent ?? false,
       is_premium_agent: profile.is_premium_agent ?? false,
       active_listing_count: activeListings.length,
