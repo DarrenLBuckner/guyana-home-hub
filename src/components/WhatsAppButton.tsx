@@ -66,7 +66,12 @@ export default function WhatsAppButton({
 
   const handleClick = async () => {
     setClicked(true)
-    
+
+    // Fire Meta Pixel Contact event
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'Contact')
+    }
+
     // Track the WhatsApp click event
     try {
       await analytics.whatsappClick(source, propertyId)
