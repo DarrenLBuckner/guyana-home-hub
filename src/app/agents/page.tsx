@@ -2,7 +2,6 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
-import PremierBadge from '@/components/PremierBadge'
 
 function createServiceClient() {
   return createSupabaseClient(
@@ -10,8 +9,6 @@ function createServiceClient() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 }
-
-const PREMIER_THRESHOLD = 6
 
 export const metadata: Metadata = {
   title: 'Our Agents | Guyana HomeHub',
@@ -32,6 +29,10 @@ function getInitials(name: string) {
     .slice(0, 2)
 }
 
+function cleanPhone(phone: string): string {
+  return phone.replace(/[\s\-\+\(\)]/g, '')
+}
+
 export const revalidate = 300
 
 export default async function AgentsPage() {
@@ -48,6 +49,24 @@ export default async function AgentsPage() {
     .eq('is_verified_agent', true)
     .eq('user_type', 'agent')
 
+  // Fetch neighborhoods from agent_vetting bio_questionnaire
+  const allAgentIds = [
+    ...(agents as any[] || []).map((a: any) => a.id),
+    ...(allVerifiedAgents || []).map((a: any) => a.id),
+  ]
+  const { data: vettingData } = await supabase
+    .from('agent_vetting')
+    .select('user_id, bio_questionnaire')
+    .in('user_id', allAgentIds)
+
+  const neighborhoodMap = new Map<string, string[]>()
+  for (const v of (vettingData || [])) {
+    const hoods = v.bio_questionnaire?.neighborhoods
+    if (Array.isArray(hoods) && hoods.length > 0) {
+      neighborhoodMap.set(v.user_id, hoods)
+    }
+  }
+
   const premierIds = new Set((agents as any[] || []).map((a: any) => a.id))
   const remainingAgents = (allVerifiedAgents || [])
     .filter((a: any) => !premierIds.has(a.id))
@@ -56,9 +75,13 @@ export default async function AgentsPage() {
       full_name: `${a.first_name || ''} ${a.last_name || ''}`.trim(),
       active_listing_count: 0,
       years_experience: null,
+      neighborhoods: neighborhoodMap.get(a.id) || [],
     }))
 
-  const premierAgents = (agents as any[] || [])
+  const premierAgents = (agents as any[] || []).map((a: any) => ({
+    ...a,
+    neighborhoods: neighborhoodMap.get(a.id) || [],
+  }))
   const otherAgents = remainingAgents
 
   return (
@@ -68,66 +91,61 @@ export default async function AgentsPage() {
         <div className="max-w-7xl mx-auto px-4 py-12 sm:py-16 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">Our Agents</h1>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Verified real estate professionals on Guyana HomeHub — trusted, experienced, and ready to help.
+            Connect directly with verified agents in Guyana.<br />
+            Call or message instantly — no middleman.
           </p>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="max-w-7xl mx-auto px-4 pt-6 pb-10">
         {/* Premier Agents Section */}
         {premierAgents.length > 0 && (
           <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              {/* Mobile: square badge */}
-              <img
-                src="/images/homehub-premier-agent-mobile.png"
-                alt="HomeHub Premier Agent"
-                className="sm:hidden h-12 w-12 object-contain"
-              />
-              {/* Desktop: horizontal badge */}
-              <img
-                src="/images/homehub-premier-agent-desktop.png"
-                alt="HomeHub Premier Agent"
-                className="hidden sm:block h-12 w-auto object-contain"
-              />
-            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {premierAgents.map((agent: any) => (
-                <Link
+                <div
                   key={agent.id}
-                  href={`/agents/${agent.slug}`}
-                  className="bg-emerald-50/40 rounded-xl shadow-sm hover:shadow-lg border-2 border-emerald-200 hover:border-emerald-400 transition-all duration-300 overflow-hidden group"
+                  className="bg-emerald-50/40 rounded-xl shadow-sm border-2 border-emerald-200 hover:border-emerald-400 transition-all duration-300 overflow-hidden"
                 >
                   {/* Premier accent bar */}
                   <div className="h-1.5 bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-600" />
                   <div className="p-5">
-                    {/* Avatar + Name row */}
-                    <div className="flex items-center gap-3.5 mb-3">
-                      {agent.profile_image ? (
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-emerald-400 shrink-0">
-                          <Image
-                            src={agent.profile_image}
-                            alt={agent.full_name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center ring-2 ring-emerald-400 shrink-0">
-                          <span className="text-lg font-bold text-white">
-                            {getInitials(agent.full_name)}
-                          </span>
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <h2 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
-                          {agent.full_name}
-                        </h2>
-                        {agent.company && (
-                          <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                    {/* Clickable profile area */}
+                    <Link href={`/agents/${agent.slug}`} className="block group mb-3">
+                      <div className="flex items-center gap-3.5">
+                        {agent.profile_image ? (
+                          <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-emerald-400 shrink-0">
+                            <Image
+                              src={agent.profile_image}
+                              alt={agent.full_name}
+                              width={56}
+                              height={56}
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center ring-2 ring-emerald-400 shrink-0">
+                            <span className="text-lg font-bold text-white">
+                              {getInitials(agent.full_name)}
+                            </span>
+                          </div>
                         )}
+                        <div className="min-w-0 flex-1">
+                          <h2 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
+                            {agent.full_name}
+                          </h2>
+                          {agent.company && (
+                            <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                          )}
+                        </div>
+                        {/* Premier badge */}
+                        <img
+                          src="/images/homehub-premier-agent-mobile.png"
+                          alt="HomeHub Premier Agent"
+                          className="h-10 w-10 object-contain shrink-0"
+                        />
                       </div>
-                    </div>
+                    </Link>
 
                     {/* Badges row */}
                     <div className="flex flex-wrap items-center gap-1.5 mb-3">
@@ -143,19 +161,45 @@ export default async function AgentsPage() {
                       )}
                     </div>
 
-                    {/* Stats */}
-                    <div className="flex items-center justify-between text-sm border-t border-gray-100 pt-3">
-                      <span className="text-gray-600">
-                        <span className="font-semibold text-emerald-600">{agent.active_listing_count}</span> listings
-                      </span>
-                      {agent.years_experience && (
-                        <span className="text-gray-400 text-xs">
-                          {agent.years_experience}+ yrs exp
-                        </span>
-                      )}
+                    {/* Experience + Coverage */}
+                    {agent.years_experience && (
+                      <p className="text-xs text-gray-400 mb-1">
+                        {agent.years_experience}+ yrs experience
+                      </p>
+                    )}
+                    {agent.neighborhoods.length > 0 && (
+                      <p className="text-xs text-gray-500 mb-3 truncate">
+                        📍 Covers: {agent.neighborhoods.join(' | ')}
+                      </p>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="flex gap-2 pt-3 border-t border-gray-100">
+                      <Link
+                        href={`/agents/${agent.slug}`}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-gray-800 text-white hover:bg-gray-900 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205l3 1m1.5.5l-1.5-.5M6.75 7.364V3h-3v18m3-13.636l10.5-3.819" />
+                        </svg>
+                        View {agent.active_listing_count} Listings
+                      </Link>
+                      {agent.phone ? (
+                        <a
+                          href={`https://wa.me/${cleanPhone(agent.phone)}?text=${encodeURIComponent(`Hi ${agent.full_name}, I saw your profile on Guyana Home Hub. I'm interested in a property.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                          </svg>
+                          WhatsApp
+                        </a>
+                      ) : null}
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
@@ -169,38 +213,41 @@ export default async function AgentsPage() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {otherAgents.map((agent: any) => (
-                <Link
+                <div
                   key={agent.id}
-                  href={`/agents/${agent.slug}`}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-lg border border-gray-100 hover:border-gray-300 transition-all duration-300 overflow-hidden group"
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 hover:border-gray-300 transition-all duration-300 overflow-hidden"
                 >
                   <div className="p-5">
-                    <div className="flex items-center gap-3.5 mb-3">
-                      {agent.profile_image ? (
-                        <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-gray-200 shrink-0">
-                          <Image
-                            src={agent.profile_image}
-                            alt={agent.full_name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ring-2 ring-gray-200 shrink-0">
-                          <span className="text-lg font-bold text-white">
-                            {getInitials(agent.full_name)}
-                          </span>
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <h2 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
-                          {agent.full_name}
-                        </h2>
-                        {agent.company && (
-                          <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                    {/* Clickable profile area */}
+                    <Link href={`/agents/${agent.slug}`} className="block group mb-3">
+                      <div className="flex items-center gap-3.5">
+                        {agent.profile_image ? (
+                          <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-gray-200 shrink-0">
+                            <Image
+                              src={agent.profile_image}
+                              alt={agent.full_name}
+                              width={56}
+                              height={56}
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center ring-2 ring-gray-200 shrink-0">
+                            <span className="text-lg font-bold text-white">
+                              {getInitials(agent.full_name)}
+                            </span>
+                          </div>
                         )}
+                        <div className="min-w-0 flex-1">
+                          <h2 className="font-semibold text-gray-900 truncate group-hover:text-emerald-600 transition-colors">
+                            {agent.full_name}
+                          </h2>
+                          {agent.company && (
+                            <p className="text-sm text-gray-500 truncate">{agent.company}</p>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    </Link>
 
                     <div className="flex flex-wrap items-center gap-1.5 mb-3">
                       {agent.is_founding_member && (
@@ -215,11 +262,35 @@ export default async function AgentsPage() {
                       )}
                     </div>
 
-                    <div className="flex items-center text-sm border-t border-gray-100 pt-3">
-                      <span className="text-gray-400 text-xs">Contact for listings</span>
-                    </div>
+                    {/* Coverage areas */}
+                    {agent.neighborhoods.length > 0 && (
+                      <p className="text-xs text-gray-500 mb-3 truncate">
+                        📍 Covers: {agent.neighborhoods.join(' | ')}
+                      </p>
+                    )}
+
+                    {/* WhatsApp button only */}
+                    {agent.phone ? (
+                      <div className="pt-3 border-t border-gray-100">
+                        <a
+                          href={`https://wa.me/${cleanPhone(agent.phone)}?text=${encodeURIComponent(`Hi ${agent.full_name}, I saw your profile on Guyana Home Hub. I'm interested in a property.`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg text-sm font-medium bg-green-500 text-white hover:bg-green-600 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                          </svg>
+                          WhatsApp
+                        </a>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-gray-400 italic text-center pt-3 border-t border-gray-100">
+                        Contact unavailable
+                      </p>
+                    )}
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
