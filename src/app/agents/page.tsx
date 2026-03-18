@@ -24,7 +24,9 @@ export const metadata: Metadata = {
     url: 'https://www.guyanahomehub.com/agents',
     images: [
       {
-        url: 'https://www.guyanahomehub.com/images/ghh-logo.png',
+        url: 'https://www.guyanahomehub.com/images/og-agents.png',
+        width: 1200,
+        height: 630,
         alt: 'Guyana HomeHub Agents',
       },
     ],
