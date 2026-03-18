@@ -12,12 +12,27 @@ function createServiceClient() {
 }
 
 export const metadata: Metadata = {
-  title: 'Our Agents | Guyana HomeHub',
-  description: 'Browse verified real estate agents in Guyana. Find experienced professionals on Guyana HomeHub.',
+  title: 'Find Property in Guyana — Message Agents Directly',
+  description: 'Browse listings and connect with verified agents on WhatsApp.',
+  alternates: {
+    canonical: 'https://www.guyanahomehub.com/agents',
+  },
   openGraph: {
-    title: 'Our Agents | Guyana HomeHub',
-    description: 'Browse verified real estate agents in Guyana.',
+    title: 'Find Property in Guyana — Message Agents Directly',
+    description: 'Browse listings and connect with verified agents on WhatsApp.',
     type: 'website',
+    url: 'https://www.guyanahomehub.com/agents',
+    images: [
+      {
+        url: 'https://www.guyanahomehub.com/images/ghh-logo.png',
+        alt: 'Guyana HomeHub Agents',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Find Property in Guyana — Message Agents Directly',
+    description: 'Browse listings and connect with verified agents on WhatsApp.',
   },
 }
 
