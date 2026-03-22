@@ -50,70 +50,52 @@ export default function HomePageClient() {
         <div className="max-w-4xl mx-auto px-4">
 
           {/* Main Action Buttons - Side by Side */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex flex-row gap-3 justify-center mb-6">
 
             {/* Browse For Sale Button */}
             <button
               onClick={() => router.push('/properties/buy')}
-              className="flex-1 flex items-center justify-center gap-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+              className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
               </svg>
-              Browse Properties for Sale
+              For Sale
             </button>
 
             {/* Browse For Rent Button */}
             <button
               onClick={() => router.push('/properties/rent')}
-              className="flex-1 flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-5 px-8 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 text-lg"
+              className="flex items-center justify-center gap-2 bg-white hover:bg-emerald-50 text-emerald-700 border-2 border-emerald-600 font-semibold py-3 px-6 rounded-full shadow-md transition-all duration-200 hover:scale-105 text-sm"
             >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd"/>
               </svg>
-              Browse Properties for Rent
+              For Rent
             </button>
           </div>
 
           {/* Secondary CTA - List Property */}
-          <div className="flex justify-center">
-            <a
-              href="/advertise"
-              className="inline-flex items-center gap-2 bg-white border-2 border-amber-500 text-amber-600 hover:bg-amber-50 font-semibold py-3 px-8 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl text-base"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd"/>
-              </svg>
-              List My Property (Free)
+          <div className="flex justify-center mt-2">
+            <a href="/advertise" className="text-sm text-gray-500 hover:text-emerald-600 transition-colors">
+              Own a property? List it free →
             </a>
           </div>
         </div>
       </section>
 
       {/* Agent CTA Banner - Prominent call-to-action for real estate agents */}
-      <section className="w-full bg-gradient-to-br from-blue-900 to-blue-700 py-8 md:py-10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-amber-500 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full mb-4 shadow-md">
-            <span className="animate-pulse">⚡</span> FREE DURING LAUNCH
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
-            Real Estate Agent?
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
-            List unlimited properties. Reach {countryAdjective} buyers in <span className="font-semibold text-white">New York, Toronto & London</span>.
+      <section className="w-full bg-emerald-600 py-3">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
+          <p className="text-white text-sm font-medium">
+            Are you a real estate agent? List unlimited properties free during launch.
           </p>
           <a
             href="/advertise#agents"
-            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 text-base sm:text-lg"
+            className="flex-shrink-0 inline-flex items-center gap-1.5 bg-white text-emerald-700 font-semibold text-sm py-1.5 px-4 rounded-full hover:bg-emerald-50 transition-colors"
           >
-            Register as an Agent — It&apos;s Free
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
+            Register Free →
           </a>
-          <p className="text-blue-200 text-sm mt-4">
-            Join agents already listing on {theme.name}
-          </p>
         </div>
       </section>
 
