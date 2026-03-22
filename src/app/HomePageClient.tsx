@@ -86,9 +86,9 @@ export default function HomePageClient() {
 
       {/* Agent CTA Banner - Prominent call-to-action for real estate agents */}
       <section className="w-full bg-emerald-600 py-3">
-        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
-          <p className="text-white text-sm font-medium">
-            Are you a real estate agent? List unlimited properties free during launch.
+        <div className="max-w-4xl mx-auto px-4 flex flex-row items-center justify-center gap-3 flex-wrap">
+          <p className="text-white text-sm font-medium whitespace-nowrap">
+            Are you an agent?
           </p>
           <a
             href="/advertise#agents"

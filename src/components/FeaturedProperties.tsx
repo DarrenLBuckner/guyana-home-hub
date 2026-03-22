@@ -94,7 +94,7 @@ export default function FeaturedProperties({ countryName }: FeaturedPropertiesPr
     return (
       <section className="text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-8">
-          Discover Beautiful Properties Across {displayCountryName}
+          Properties Available Now
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <PropertyCardSkeleton />
@@ -114,7 +114,7 @@ export default function FeaturedProperties({ countryName }: FeaturedPropertiesPr
   return (
     <section className="text-center">
       <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Discover Beautiful Properties Across {displayCountryName}
+        Properties Available Now
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {properties.map((property) => {
