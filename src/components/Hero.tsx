@@ -43,18 +43,19 @@ export default function Hero({
   // Mobile image rotation
   const mobileImages = useMemo(() => {
     const countryCode = site;
-    const availableImages: Record<string, string[]> = {
+    const availableImages: Record<string, { src: string; objectPosition?: string }[]> = {
       guyana: [
-        `/images/countries/${countryCode}/hero-mobile-1.jpg`,
-        `/images/countries/${countryCode}/hero-mobile-2.jpg`
+        { src: `/images/countries/${countryCode}/hero-mobile-3.jpg`, objectPosition: "center 30%" },
+        { src: `/images/countries/${countryCode}/hero-mobile-1.jpg` },
+        { src: `/images/countries/${countryCode}/hero-mobile-2.jpg`, objectPosition: "center 30%" }
       ],
       jamaica: [
-        `/images/countries/${countryCode}/hero-mobile-1.jpg`,
-        `/images/countries/${countryCode}/hero-mobile-2.jpg`
+        { src: `/images/countries/${countryCode}/hero-mobile-1.jpg` },
+        { src: `/images/countries/${countryCode}/hero-mobile-2.jpg` }
       ]
     };
     return availableImages[countryCode] || [
-      `/images/countries/${countryCode}/hero-mobile-1.jpg`
+      { src: `/images/countries/${countryCode}/hero-mobile-1.jpg` }
     ];
   }, [site]);
 
@@ -107,14 +108,15 @@ export default function Hero({
         />
         {/* Mobile */}
         <div className="relative h-full w-full md:hidden">
-          {mobileImages.map((imgSrc, index) => (
+          {mobileImages.map((img, index) => (
             <img
-              key={imgSrc}
-              src={imgSrc}
+              key={img.src}
+              src={img.src}
               alt={`${country} homes background ${index + 1}`}
-              className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-1000 ease-in-out ${
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-in-out ${
                 index === mobileImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
+              style={{ objectPosition: img.objectPosition || "center top" }}
               fetchPriority={index === 0 ? "high" : "low"}
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -128,8 +130,7 @@ export default function Hero({
         {/* Title on image */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 pb-6 lg:pb-20 text-center text-white">
           <h1 className="text-2xl font-bold leading-tight drop-shadow-lg md:text-4xl lg:text-5xl">
-            <span className="md:hidden">Find Property in {country}</span>
-            <span className="hidden md:inline">Find Your Dream Property in {country}</span>
+            Find Property in {country}
           </h1>
           <p className="mt-2 text-sm md:text-base text-white/80 drop-shadow-md max-w-2xl">
             <span className="md:hidden">Real listings. Verified agents. One platform.</span>
