@@ -1,14 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const VALID_ACTIONS = ['whatsapp', 'request_viewing', 'email', 'phone', 'share'] as const
+const CONTACT_ACTIONS = ['whatsapp', 'request_viewing', 'email', 'phone'] as const
+const VALID_ACTIONS = [...CONTACT_ACTIONS, 'share'] as const
 const VALID_SOURCES = ['property_listing', 'agent_profile', 'search_results'] as const
 
 type ActionType = typeof VALID_ACTIONS[number]
 type SourcePage = typeof VALID_SOURCES[number]
 
-// Use service role to bypass RLS — the table allows public INSERT via policy,
-// but service role is simpler and avoids needing anon auth session setup.
+// Service role bypasses RLS for server-side inserts.
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -32,23 +32,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid source_page' }, { status: 400 })
     }
 
-    // Get country from Vercel geo headers (free, no extra service needed)
+    // Share clicks are valid but not stored in property_contact_events
+    if (action_type === 'share') {
+      return NextResponse.json({ success: true })
+    }
+
     const country_code = request.headers.get('x-vercel-ip-country') ?? null
     const referrer = request.headers.get('referer') ?? null
+    const userAgent = request.headers.get('user-agent') ?? null
 
     const { error } = await supabase
-      .from('agent_engagement_clicks')
+      .from('property_contact_events')
       .insert({
         action_type,
-        source_page,
         property_id: property_id ?? null,
         agent_id: agent_id ?? null,
-        country_code,
+        territory: country_code,
         referrer,
+        session_id: null,
+        device: userAgent,
       })
 
     if (error) {
-      console.error('Engagement tracking error:', error)
+      console.error('Contact event tracking error:', error)
       return NextResponse.json({ error: 'Failed to log' }, { status: 500 })
     }
 

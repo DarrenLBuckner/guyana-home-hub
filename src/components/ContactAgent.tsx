@@ -1,18 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { 
-  Phone, 
-  Mail, 
-  MessageSquare, 
-  Send, 
-  X, 
+import {
+  Phone,
+  Mail,
+  MessageSquare,
+  Send,
+  X,
   User,
   Calendar,
   Info,
   Heart,
   CheckCircle
 } from 'lucide-react'
+import { useTrackClick } from '@/hooks/useTrackClick'
 
 interface Property {
   id: string
@@ -32,6 +33,7 @@ interface ContactAgentProps {
 }
 
 export default function ContactAgent({ property, isModal = false, onCloseAction }: ContactAgentProps) {
+  const { trackClick } = useTrackClick()
   const [isOpen, setIsOpen] = useState(!isModal)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -266,7 +268,11 @@ export default function ContactAgent({ property, isModal = false, onCloseAction 
                 {property.contact_phone && (
                   <div className="flex items-center">
                     <Phone className="h-4 w-4 mr-2" />
-                    <a href={`tel:${property.contact_phone}`} className="hover:underline">
+                    <a
+                      href={`tel:${property.contact_phone}`}
+                      onClick={() => trackClick({ action_type: 'phone', source_page: 'property_listing', property_id: property.id })}
+                      className="hover:underline"
+                    >
                       {property.contact_phone}
                     </a>
                   </div>

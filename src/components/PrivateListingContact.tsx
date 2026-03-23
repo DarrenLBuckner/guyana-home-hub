@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { buildPropertyMessage, buildWhatsAppUrl } from '@/lib/whatsapp';
+import { useTrackClick } from '@/hooks/useTrackClick';
 
 // Helper function to format phone for WhatsApp
 function formatWhatsAppNumber(phone: string, countryCode: string = '592'): string {
@@ -61,6 +62,7 @@ export default function PrivateListingContact({
   propertyLocation,
   propertyId,
 }: PrivateListingContactProps) {
+  const { trackClick } = useTrackClick();
   const ownerWhatsapp = owner.phone ? formatWhatsAppNumber(owner.phone, '592') : '';
   const agentWhatsapp = agent?.phone ? formatWhatsAppNumber(agent.phone, '592') : '';
 
@@ -95,6 +97,7 @@ export default function PrivateListingContact({
             {owner.phone && (
               <a
                 href={`tel:${owner.phone}`}
+                onClick={() => trackClick({ action_type: 'phone', source_page: 'property_listing', property_id: propertyId })}
                 className="text-sm text-gray-600 hover:text-gray-800"
               >
                 {owner.phone}
