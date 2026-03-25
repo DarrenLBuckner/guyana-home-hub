@@ -17,22 +17,22 @@ const CATEGORIES = [
   'Legal & Financial',
   'Insurance & Banking',
   'Inspection Services',
+  'Photography & Media',
   'General Contractors',
 ];
 
 interface FormData {
-  business_name: string;
-  owner_name: string;
-  phone: string;
-  email: string;
+  name: string;
   category: string;
+  email: string;
   description: string;
+  phone: string;
+  website: string;
+  address: string;
 }
 
 interface FormErrors {
-  business_name?: string;
-  owner_name?: string;
-  phone?: string;
+  name?: string;
   email?: string;
   category?: string;
   description?: string;
@@ -42,12 +42,13 @@ type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export default function ListYourBusinessPage() {
   const [formData, setFormData] = useState<FormData>({
-    business_name: '',
-    owner_name: '',
-    phone: '',
-    email: '',
+    name: '',
     category: '',
+    email: '',
     description: '',
+    phone: '',
+    website: '',
+    address: '',
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
@@ -56,16 +57,8 @@ export default function ListYourBusinessPage() {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!formData.business_name || formData.business_name.length < 2) {
-      newErrors.business_name = 'Business name must be at least 2 characters';
-    }
-
-    if (!formData.owner_name || formData.owner_name.length < 2) {
-      newErrors.owner_name = 'Your name must be at least 2 characters';
-    }
-
-    if (!formData.phone || formData.phone.length < 7) {
-      newErrors.phone = 'Phone number must be at least 7 characters';
+    if (!formData.name || formData.name.length < 2) {
+      newErrors.name = 'Business name must be at least 2 characters';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -77,8 +70,8 @@ export default function ListYourBusinessPage() {
       newErrors.category = 'Please select a category';
     }
 
-    if (formData.description && formData.description.length > 200) {
-      newErrors.description = 'Description must be 200 characters or less';
+    if (formData.description && formData.description.length > 300) {
+      newErrors.description = 'Description must be 300 characters or less';
     }
 
     setErrors(newErrors);
@@ -96,19 +89,19 @@ export default function ListYourBusinessPage() {
     setErrorMessage('');
 
     try {
-      const response = await fetch('https://portalhomehub.com/api/public/business-submissions', {
+      const response = await fetch('https://www.portalhomehub.com/api/business-directory/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          site_id: 'GY',
-          business_name: formData.business_name,
-          owner_name: formData.owner_name,
-          phone: formData.phone,
-          email: formData.email,
+          name: formData.name,
           category: formData.category,
+          email: formData.email,
           description: formData.description || undefined,
+          phone: formData.phone || undefined,
+          website: formData.website || undefined,
+          address: formData.address || undefined,
         }),
       });
 
@@ -116,7 +109,7 @@ export default function ListYourBusinessPage() {
         setSubmitStatus('success');
       } else {
         const data = await response.json().catch(() => ({}));
-        setErrorMessage(data.message || 'Something went wrong. Please try again.');
+        setErrorMessage(data.error || 'Something went wrong. Please try again.');
         setSubmitStatus('error');
       }
     } catch {
@@ -130,7 +123,6 @@ export default function ListYourBusinessPage() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -147,7 +139,7 @@ export default function ListYourBusinessPage() {
           <div className="text-6xl mb-4">&#10003;</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h2>
           <p className="text-gray-600 mb-6">
-            We'll review your submission and contact you within 48 hours.
+            Thanks! Your listing is under review. We&apos;ll be in touch within 48 hours.
           </p>
           <Link
             href="/business-directory"
@@ -207,90 +199,22 @@ export default function ListYourBusinessPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Business Name */}
             <div>
-              <label htmlFor="business_name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                 Business Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="business_name"
-                name="business_name"
-                value={formData.business_name}
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 className={`w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.business_name ? 'border-red-500' : 'border-gray-300'
+                  errors.name ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="e.g., Demerara Contracting Services"
               />
-              {errors.business_name && (
-                <p className="mt-1 text-sm text-red-500">{errors.business_name}</p>
-              )}
-            </div>
-
-            {/* Owner Name */}
-            <div>
-              <label htmlFor="owner_name" className="block text-sm font-medium text-gray-700 mb-1">
-                Your Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="owner_name"
-                name="owner_name"
-                value={formData.owner_name}
-                onChange={handleInputChange}
-                className={`w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.owner_name ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="e.g., John Singh"
-              />
-              {errors.owner_name && (
-                <p className="mt-1 text-sm text-red-500">{errors.owner_name}</p>
-              )}
-            </div>
-
-            {/* WhatsApp/Phone */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                <span className="flex items-center gap-2">
-                  <svg className="h-4 w-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.785"/>
-                  </svg>
-                  WhatsApp / Phone <span className="text-red-500">*</span>
-                </span>
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className={`w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.phone ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="e.g., +592 600 1234"
-              />
-              {errors.phone && (
-                <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
-              )}
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="e.g., contact@mybusiness.com"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-500">{errors.name}</p>
               )}
             </div>
 
@@ -320,6 +244,27 @@ export default function ListYourBusinessPage() {
               )}
             </div>
 
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={`w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                  errors.email ? 'border-red-500' : 'border-gray-300'
+                }`}
+                placeholder="e.g., contact@mybusiness.com"
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+              )}
+            </div>
+
             {/* Description */}
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
@@ -345,12 +290,63 @@ export default function ListYourBusinessPage() {
                 )}
                 <span
                   className={`${
-                    formData.description.length > 200 ? 'text-red-500' : 'text-gray-500'
+                    formData.description.length > 300 ? 'text-red-500' : 'text-gray-500'
                   }`}
                 >
-                  {formData.description.length}/200
+                  {formData.description.length}/300
                 </span>
               </div>
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone{' '}
+                <span className="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="e.g., +592 600 1234"
+              />
+            </div>
+
+            {/* Website */}
+            <div>
+              <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
+                Website{' '}
+                <span className="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input
+                type="url"
+                id="website"
+                name="website"
+                value={formData.website}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="e.g., https://mybusiness.com"
+              />
+            </div>
+
+            {/* Region / Area */}
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                Region / Area{' '}
+                <span className="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                placeholder="e.g., Georgetown, East Bank Demerara"
+              />
             </div>
 
             {/* Error Message */}

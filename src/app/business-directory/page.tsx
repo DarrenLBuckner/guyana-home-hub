@@ -122,6 +122,13 @@ const directoryCategories: DirectoryCategory[] = [
     businessCount: 0
   },
   {
+    id: 'photography-media',
+    name: 'Photography & Media',
+    icon: '📸',
+    description: 'Real estate photographers, videographers, and drone operators',
+    businessCount: 0
+  },
+  {
     id: 'general-contractors',
     name: 'General Contractors',
     icon: '👷',
