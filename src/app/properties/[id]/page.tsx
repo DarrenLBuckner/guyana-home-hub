@@ -25,6 +25,11 @@ interface Property {
   listing_type?: 'sale' | 'rent' | 'lease'
   property_type?: string
   images?: string[]
+  property_media?: Array<{
+    media_url: string
+    display_order: number
+    is_primary: boolean
+  }>
   currency?: string
   latitude?: number | null
   longitude?: number | null
@@ -141,6 +146,46 @@ function buildSeoDescription(property: Property): string {
   return parts.join('. ')
 }
 
+// Resolve the best OG image as an absolute URL
+function getOgImage(property: Property): string {
+  // Priority: property_media (sorted by display_order) > images[0] > default
+  const mediaUrl = property.property_media
+    ?.sort((a, b) => {
+      if (a.is_primary && !b.is_primary) return -1
+      if (!a.is_primary && b.is_primary) return 1
+      return a.display_order - b.display_order
+    })[0]?.media_url
+
+  const raw = mediaUrl || property.images?.[0]
+  if (!raw) return `${BASE_URL}/opengraph-image`
+
+  // Ensure absolute URL — Supabase storage URLs are already absolute
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  return `${BASE_URL}${raw.startsWith('/') ? '' : '/'}${raw}`
+}
+
+// Build short social-card description: "For Sale in Georgetown · G$12,000,000"
+function buildSocialDescription(property: Property): string {
+  const parts: string[] = []
+
+  const type = property.property_type
+    ? property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1) + ' '
+    : ''
+  parts.push(`${type}${formatListingType(property.listing_type)}`)
+
+  const location = property.region || property.city
+  if (location) parts.push(`in ${location}`)
+
+  if (property.price) {
+    const currency = property.currency || 'GYD'
+    const symbol = currency === 'USD' ? 'US$' : 'G$'
+    const suffix = property.listing_type === 'rent' || property.listing_type === 'lease' ? '/mo' : ''
+    parts.push(`${symbol}${property.price.toLocaleString()}${suffix}`)
+  }
+
+  return parts.join(' · ')
+}
+
 // Generate dynamic metadata for SEO and social sharing
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id: idOrSlug } = await params
@@ -169,7 +214,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const seoTitle = buildSeoTitle(property)
   const seoDescription = buildSeoDescription(property)
-  const ogImage = property.images?.[0] || `${BASE_URL}/opengraph-image`
+  const socialDescription = buildSocialDescription(property)
+  const ogImage = getOgImage(property)
   const canonicalPath = `/properties/${resolved.slug || resolved.id}`
 
   return {
@@ -179,8 +225,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       canonical: canonicalPath,
     },
     openGraph: {
-      title: seoTitle,
-      description: seoDescription,
+      title: property.title,
+      description: socialDescription,
       url: `${BASE_URL}${canonicalPath}`,
       siteName: 'Guyana Home Hub',
       images: [
@@ -196,8 +242,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     },
     twitter: {
       card: 'summary_large_image',
-      title: seoTitle,
-      description: seoDescription,
+      title: property.title,
+      description: socialDescription,
       images: [ogImage],
     },
   }
